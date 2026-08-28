@@ -1398,10 +1398,8 @@ proton mail settings filters create --name Loud --match any \
 
 A condition reads `FIELD [not] COMPARATOR VALUE`:
 
-|            |                                                 |
-| ---------- | ----------------------------------------------- |
-| Field      | `subject`, `sender`, `recipient`, `attachments` |
-| Comparator | `contains`, `is`, `starts`, `ends`, `matches`   |
+* **Field** - `subject`, `sender`, `recipient`, `attachments`
+* **Comparator** - `contains`, `is`, `starts`, `ends`, `matches`
 
 `is` wants the whole value, `matches` takes `*` and `?` as wildcards, `not` inverts, and `attachments` takes no value - it asks whether there is one. Every condition has to hold unless you pass `--match any`.
 
@@ -7382,7 +7380,7 @@ The helper takes a URL and prints the solved token. A path that isn’t there, i
 
 The command is `proton`. Every install also puts `proton-cli` beside it as a second name, so a line written either way runs.
 
-|                  |                                                                                                  |
+| Platform         | Install                                                                                          |
 | ---------------- | ------------------------------------------------------------------------------------------------ |
 | **Linux, macOS** | `curl -fsSL https://raw.githubusercontent.com/roman-16/proton-cli/main/scripts/install.sh \| sh` |
 | **Windows**      | `irm https://raw.githubusercontent.com/roman-16/proton-cli/main/scripts/install.ps1 \| iex`      |
@@ -7533,7 +7531,7 @@ That plain build has no CAPTCHA helper. For a release-shaped binary, see [Contri
 
 # Limitations
 
-> proton aims for parity with what the Proton web clients let you do. Some things it will never do, because Proton's platform doesn't allow it; others aren't built yet.
+> proton-cli aims for parity with what the Proton web clients let you do. Some things it will never do, because Proton's platform doesn't allow it; others aren't built yet.
 
 ## Platform constraints
 
@@ -7569,7 +7567,7 @@ Proton answers some unrelated refusals with the same code. So one of these may a
 
 Each has an equivalent in a web client, and each is unbuilt for a stated reason rather than an oversight.
 
-|                                           | Why                                                                                             |
+| What’s missing                            | Why                                                                                             |
 | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | Drive computers and shared bookmarks      | Neither exists until you use a desktop client or open somebody’s link, so neither can be tested |
 | Mail forwarding itself to another address | Needs an OpenPGP forwarding primitive the Go libraries don’t implement                          |
@@ -7580,7 +7578,7 @@ Each has an equivalent in a web client, and each is unbuilt for a stated reason 
 
 [Section titled “Out of scope”](#out-of-scope)
 
-proton mirrors the Proton web clients for Mail, Drive, Calendar, Pass and Contacts. Other Proton products - VPN, Wallet, Docs, Meet, Lumo, Authenticator - are not covered, and neither are endpoints that exist in the API but have no equivalent action in a web client.
+proton-cli mirrors the Proton web clients for Mail, Drive, Calendar, Pass and Contacts. Other Proton products - VPN, Wallet, Docs, Meet, Lumo, Authenticator - are not covered, and neither are endpoints that exist in the API but have no equivalent action in a web client.
 
 Some things a web client does are out of reach from a terminal and stay that way: creating a passkey needs WebAuthn, adding a Zoom or Google Meet link needs that provider’s OAuth, and importing from Gmail or IMAP needs the same. Drive’s search builds its index in the browser rather than on the server, so `drive items list --pattern --recursive` walks the tree instead.
 
