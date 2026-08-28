@@ -1,0 +1,1478 @@
+<!DOCTYPE html><html lang="en" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-vdxcvpsm"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Command reference | proton-cli</title><link rel="canonical" href="https://proton-cli.lerchster.dev/commands/"/><link rel="sitemap" href="/sitemap-index.xml"/><link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v7.2.9"/><meta name="generator" content="Starlight v0.41.9"/><meta property="og:title" content="Command reference"/><meta property="og:type" content="article"/><meta property="og:url" content="https://proton-cli.lerchster.dev/commands/"/><meta property="og:locale" content="en"/><meta property="og:description" content="Every command in the tree, generated from the tree itself by just docs. The pages beside this one explain each app; this is the index."/><meta property="og:site_name" content="proton-cli"/><meta name="twitter:card" content="summary_large_image"/><meta name="description" content="Every command in the tree, generated from the tree itself by just docs. The pages beside this one explain each app; this is the index."/><style>@font-face{font-family:"Geist Sans-1605d0bc6e3335b0";src:url("/_astro/fonts/92af118ed0c26955.woff2") format("woff2");font-display:swap;font-weight:400;font-style:normal;}@font-face{font-family:"Geist Sans-1605d0bc6e3335b0 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:106.1012%;ascent-override:86.7097%;descent-override:20.7349%;line-gap-override:9.425%;}:root{--font-geist:"Geist Sans-1605d0bc6e3335b0","Geist Sans-1605d0bc6e3335b0 fallback: Arial",sans-serif;}</style><link rel="preload" href="/_astro/fonts/92af118ed0c26955.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6";src:url("/_astro/fonts/76d4f92291c9a94a.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6";src:url("/_astro/fonts/2ee0f95313df2fb5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:134.5893%;ascent-override:74.6716%;descent-override:21.9185%;line-gap-override:0%;}@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:134.5893%;ascent-override:74.6716%;descent-override:21.9185%;line-gap-override:0%;}:root{--font-geist-mono:"Geist Mono-692aa39bb8ac8bd6","Geist Mono-692aa39bb8ac8bd6 fallback: Arial",sans-serif;}</style><link rel="preload" href="/_astro/fonts/76d4f92291c9a94a.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/fonts/2ee0f95313df2fb5.woff2" as="font" type="font/woff2" crossorigin><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg><svg aria-hidden="true" class="dark astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg><svg aria-hidden="true" class="auto astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg></template><link rel="stylesheet" href="/_astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="/_astro/middleware.CIpTupg1.css"><style>@layer starlight.components{starlight-tabs:where(.astro-hbt4ddzs){display:block}.tablist-wrapper:where(.astro-hbt4ddzs){overflow-x:auto}:where(.astro-hbt4ddzs)[role=tablist]{border-bottom:2px solid var(--sl-color-gray-5);padding:0;list-style:none;display:flex}.tab:where(.astro-hbt4ddzs){display:flex}.tab:where(.astro-hbt4ddzs)>:where(.astro-hbt4ddzs)[role=tab]{--sl-tab-color-border:var(--sl-color-gray-5);line-height:var(--sl-line-height-headings);box-shadow:0 2px 0 var(--sl-tab-color-border);color:var(--sl-color-gray-3);outline-offset:var(--sl-outline-offset-inside);overflow-wrap:initial;align-items:center;gap:.5rem;padding:.275rem 1.25rem;text-decoration:none;display:flex}.tab:where(.astro-hbt4ddzs) :where(.astro-hbt4ddzs)[role=tab][aria-selected=true]{--sl-tab-color-border:var(--sl-color-text-accent);color:var(--sl-color-white);font-weight:600}.tablist-wrapper:where(.astro-hbt4ddzs)~[role=tabpanel]{margin-top:1rem}}.apps:where(.astro-jknjr6z3){grid-template-columns:repeat(auto-fit,minmax(min(100%,26rem),1fr));gap:1.5rem;display:grid}.app:where(.astro-jknjr6z3){background:var(--background);border:1px solid var(--border);border-radius:calc(var(--radius) + 4px);flex-direction:column;padding:1.5rem;display:flex}.name:where(.astro-jknjr6z3){color:var(--foreground);font-size:var(--sl-text-xl);align-items:center;gap:.625rem;font-weight:600;text-decoration:none;display:flex}.name:where(.astro-jknjr6z3):hover{color:var(--sl-color-text-accent)}.dot:where(.astro-jknjr6z3){background:var(--app);border-radius:999px;block-size:.75rem;inline-size:.75rem}.summary:where(.astro-jknjr6z3){color:var(--sl-color-gray-3);font-size:var(--sl-text-sm);margin-block:.5rem 1rem}.app:where(.astro-jknjr6z3) pre{margin-block-end:0}.app:where(.astro-jknjr6z3) .expressive-code{margin-block-start:auto}.install:where(.astro-swawiaf7){text-align:start;max-width:46rem;margin-inline:auto}.demo:where(.astro-lcdefpme){margin-block:4rem}.demo:where(.astro-lcdefpme) img:where(.astro-lcdefpme){block-size:auto;inline-size:100%}[data-theme=light] .only-dark:where(.astro-lcdefpme),[data-theme=dark] .only-light:where(.astro-lcdefpme){display:none}.traits:where(.astro-lcdefpme){grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:2rem;margin-block:4rem;display:grid}.trait:where(.astro-lcdefpme) h2:where(.astro-lcdefpme){font-size:var(--sl-text-base);border:0;margin:0 0 .5rem;padding:0;font-weight:600}.trait:where(.astro-lcdefpme) p:where(.astro-lcdefpme){color:var(--sl-color-gray-3);font-size:var(--sl-text-sm);margin:0}.what:where(.astro-lcdefpme){margin-block-start:5rem}.what:where(.astro-lcdefpme) h2:where(.astro-lcdefpme){font-size:var(--sl-text-3xl);letter-spacing:-.02em;border:0;margin:0;padding:0;font-weight:700}.lead:where(.astro-lcdefpme){color:var(--sl-color-gray-3);margin-block:.75rem 2rem}
+</style><script type="module" src="/_astro/page.Dwipeu-R.js"></script></head><body class="astro-vdxcvpsm"><a class="sl-skip-link astro-vxeigawq" href="#_top">Skip to content</a><div class="page sl-flex astro-gqpr5s5a"><header class="header astro-gqpr5s5a"><div class="header astro-nczgtkxc"><div class="title-wrapper sl-flex astro-nczgtkxc"><div class="astro-dozfb6yi"><a href="/" class="site-title sl-flex astro-clw6ags5"><img class="astro-clw6ags5" alt src="/_astro/logo.7whCswyQ.svg" width="256" height="256"><span class="astro-clw6ags5" translate="no">proton-cli</span></a><nav class="nav-bar astro-w7u5orl3"><a href="/installation/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3">Docs</a><a href="/commands/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3">Commands</a></nav><black-menu-button class="print:hidden astro-ce7grlvi"><button class="sl-flex md:sl-hidden astro-ce7grlvi" aria-expanded="false" aria-controls="starlight__sidebar"><div class="hamburger astro-ce7grlvi"><span class="bar bar-1 astro-ce7grlvi"></span><span class="bar bar-2 astro-ce7grlvi"></span></div><span class="label astro-ce7grlvi">Menu</span><span class="sr-only astro-ce7grlvi">Menu</span></button></black-menu-button><div class="mobile-nav astro-wtdqvjqh"><div class="mobile-nav-content astro-wtdqvjqh"><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Menu</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/installation/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh">Docs</a><a href="/commands/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh">Commands</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Start here</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/installation/" class="astro-wtdqvjqh" data-active="false">Installation</a><a href="/getting-started/" class="astro-wtdqvjqh" data-active="false">Getting started</a><a href="/language/" class="astro-wtdqvjqh" data-active="false">The language</a><a href="/output/" class="astro-wtdqvjqh" data-active="false">Output</a><a href="/references/" class="astro-wtdqvjqh" data-active="false">References</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Reference</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/commands/" class="astro-wtdqvjqh" data-active="true">Command reference</a><a href="/configuration/" class="astro-wtdqvjqh" data-active="false">Configuration</a><a href="/scripting/" class="astro-wtdqvjqh" data-active="false">Scripting</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Understanding it</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/how-it-works/" class="astro-wtdqvjqh" data-active="false">How it works</a><a href="/human-verification/" class="astro-wtdqvjqh" data-active="false">Human verification</a><a href="/limitations/" class="astro-wtdqvjqh" data-active="false">Limitations</a></div></div></div></div><script type="module">var e=class extends HTMLElement{btn=this.querySelector(`button`);constructor(){super(),this.btn.addEventListener(`click`,()=>this.toggleExpanded());let e=this.closest(`nav`);e&&e.addEventListener(`keyup`,e=>this.closeOnEscape(e)),matchMedia(`(min-width: 50em)`).addEventListener(`change`,()=>this.setExpanded(!1))}setExpanded(e){this.btn.setAttribute(`aria-expanded`,String(e)),document.body.toggleAttribute(`data-mobile-menu-expanded`,e),document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}toggleExpanded(){this.setExpanded(this.btn.getAttribute(`aria-expanded`)!==`true`)}closeOnEscape(e){e.code===`Escape`&&(this.setExpanded(!1),this.btn.focus())}};customElements.define(`black-menu-button`,e);</script></div></div><div class="sl-flex print:hidden astro-nczgtkxc"><site-search class="astro-nczgtkxc astro-r5ar4xm7" data-translations="{&quot;placeholder&quot;:&quot;Search&quot;}"><button data-open-modal disabled aria-label="Search" aria-keyshortcuts="Control+K" class="astro-r5ar4xm7"><svg aria-hidden="true" class="astro-r5ar4xm7 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg><span class="sl-hidden md:sl-block astro-r5ar4xm7" aria-hidden="true">Search</span><kbd class="sl-hidden md:sl-flex astro-r5ar4xm7" style="display: none;"><kbd class="astro-r5ar4xm7">Ctrl</kbd><kbd class="astro-r5ar4xm7">K</kbd></kbd></button><dialog style="padding:0" aria-label="Search" class="astro-r5ar4xm7"><div class="dialog-frame sl-flex astro-r5ar4xm7"><button data-close-modal class="sl-flex md:sl-hidden astro-r5ar4xm7">Cancel</button><div class="search-container astro-r5ar4xm7"><div id="starlight__search" class="astro-r5ar4xm7"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="/_astro/Search.astro_astro_type_script_index_0_lang.B-Vh4ymV.js"></script></div><div class="sl-hidden md:sl-flex print:hidden right-group astro-nczgtkxc"><div class="sl-flex social-icons astro-nczgtkxc"><a href="https://github.com/roman-16/proton-cli" rel="me" class="sl-flex astro-cg55etiy"><span class="sr-only astro-cg55etiy">GitHub</span><svg aria-hidden="true" class="astro-cg55etiy astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-black-select class="astro-4t64jrq6"><button aria-label="Select theme" aria-live="polite" class="sl-flex button astro-4t64jrq6" title="Select theme" data-variant="ghost"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4.5 astro-4t64jrq6"><path stroke="none" d="M0 0h24v24H0z" fill="none" class="astro-4t64jrq6"></path><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" class="astro-4t64jrq6"></path><path d="M12 3l0 18" class="astro-4t64jrq6"></path><path d="M12 9l4.65 -4.65" class="astro-4t64jrq6"></path><path d="M12 14.3l7.37 -7.37" class="astro-4t64jrq6"></path><path d="M12 19.6l8.85 -8.85" class="astro-4t64jrq6"></path></svg><span class="sr-only astro-4t64jrq6">Toggle theme</span></button></starlight-theme-black-select><script>
+  // eslint-disable-next-line no-undef
+  StarlightThemeProvider.updatePickers()
+</script><script type="module">var e=`starlight-theme`;function t(e){return e===`auto`||e===`dark`||e===`light`?e:`auto`}function n(){return t(typeof localStorage<`u`&&localStorage.getItem(e))}function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}function i(){return matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`}function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)}),customElements.define(`starlight-theme-black-select`,class extends HTMLElement{constructor(){super(),a(n());let e=this.querySelector(`button`);e?.addEventListener(`click`,()=>{let n=t(document.documentElement.dataset.theme),r=n===`dark`?`light`:n===`light`?`dark`:`auto`;a(r),e?.setAttribute(`aria-label`,`${r} theme`)})}});</script><script type="module">var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script></div></div></header><nav class="sidebar print:hidden astro-gqpr5s5a" aria-label="Main"><div id="starlight__sidebar" class="sidebar-pane astro-gqpr5s5a"><div class="sidebar-content sl-flex astro-gqpr5s5a"><sl-sidebar-state-persist data-hash="002ylj8" class="astro-f5yvicm7"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-epfkn2hl"><li class="container-sidebar-entry  first astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Start here</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/installation/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Installation</a></li><li class="astro-epfkn2hl"><a href="/getting-started/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Getting started</a></li><li class="astro-epfkn2hl"><a href="/language/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>The language</a></li><li class="astro-epfkn2hl"><a href="/output/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Output</a></li><li class="astro-epfkn2hl"><a href="/references/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>References</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Reference</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/commands/" aria-current="page" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Command reference</a></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">By app</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/commands/account/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Account</a></li><li class="astro-epfkn2hl"><a href="/commands/api/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Raw API</a></li><li class="astro-epfkn2hl"><a href="/commands/calendar/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Calendar</a></li><li class="astro-epfkn2hl"><a href="/commands/contacts/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Contacts</a></li><li class="astro-epfkn2hl"><a href="/commands/drive/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Drive</a></li><li class="astro-epfkn2hl"><a href="/commands/mail/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Mail</a></li><li class="astro-epfkn2hl"><a href="/commands/pass/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Pass</a></li></ul></div></li><li class="astro-epfkn2hl"><a href="/configuration/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Configuration</a></li><li class="astro-epfkn2hl"><a href="/scripting/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Scripting</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Understanding it</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/how-it-works/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>How it works</a></li><li class="astro-epfkn2hl"><a href="/human-verification/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Human verification</a></li><li class="astro-epfkn2hl"><a href="/limitations/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Limitations</a></li></ul></div></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist></div></div></nav><div class="main-frame astro-gqpr5s5a"><script type="module">var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-abfeecmu"><aside class="right-sidebar-container print:hidden astro-abfeecmu"><div class="right-sidebar astro-abfeecmu"><div class="lg:sl-hidden astro-q5mffni3"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-5ulgm6bh"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-5ulgm6bh"><details id="starlight__mobile-toc" class="astro-5ulgm6bh"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-5ulgm6bh"><span class="toggle sl-flex astro-5ulgm6bh">On this page<svg aria-hidden="true" class="caret astro-5ulgm6bh astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></span><span class="display-current astro-5ulgm6bh"></span></summary><div class="dropdown astro-5ulgm6bh"><ul class="isMobile astro-cxyftcne" style="--depth: 0;"><li style="--depth: 0;" class="astro-cxyftcne"><a href="#_top" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Overview</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#apps" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Apps</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#calendar" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">calendar</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#contacts" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">contacts</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#drive" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">drive</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#mail" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">mail</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#pass" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">pass</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#account" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Account</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#account-1" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">account</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#api" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">api</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#proton-itself" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">proton itself</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#changelog" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">changelog</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#completion" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">completion</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#uninstall" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">uninstall</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#update" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">update</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#version" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">version</span></a></li></ul></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.BcSo_yiZ.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-q5mffni3"><div class="sl-container astro-q5mffni3"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">On this page</h2><ul class="astro-cxyftcne" style="--depth: 0;"><li style="--depth: 0;" class="astro-cxyftcne"><a href="#_top" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Overview</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#apps" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Apps</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#calendar" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">calendar</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#contacts" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">contacts</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#drive" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">drive</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#mail" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">mail</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#pass" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">pass</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#account" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Account</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#account-1" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">account</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#api" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">api</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#proton-itself" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">proton itself</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#changelog" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">changelog</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#completion" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">completion</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#uninstall" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">uninstall</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#update" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">update</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#version" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">version</span></a></li></ul></li></ul></nav></starlight-toc><script type="module" src="/_astro/TableOfContents.astro_astro_type_script_index_0_lang.Csloo1VZ.js"></script></div></div></div></aside><div class="main-pane astro-abfeecmu"><main data-pagefind-body class="astro-vdxcvpsm" lang="en" dir="ltr"><div class="content-panel astro-oil7k7jf"><div class="sl-container astro-oil7k7jf"><div class="page-title astro-rbtcva32"><div class="page-title-header astro-rbtcva32"><h1 id="_top" class="astro-rbtcva32">Command reference</h1><div class="docs-nav astro-rbtcva32"><div class="markdown-actions astro-4eogccng"><button class="copy-page-action astro-4eogccng" data-content="---
+title: Command reference
+description: Every command in the tree, generated from the tree itself by just docs. The pages beside this one explain each app; this is the index.
+---
+
+Anywhere a command shows `REF`, you can pass a full ID, the eight-character short ID a list printed, or something human: a subject, a name, a path, an email address. See [References](/references/).
+
+## Apps
+
+### `calendar`
+
+Calendars and events
+
+| Command | What it does |
+| --- | --- |
+| `calendar events create` | Create an event |
+| `calendar events delete REF...` | Delete events |
+| `calendar events export` | Write events out as an .ics file |
+| `calendar events get REF` | Show one event, decrypted |
+| `calendar events import PATH` | Read events in from an .ics file |
+| `calendar events list` | List events in a date range |
+| `calendar events respond REF` | Answer an invitation, telling the organizer |
+| `calendar events update REF` | Change an event's title, time, location, description or recurrence |
+| `calendar invitations accept REF...` | Take a calendar somebody offered you |
+| `calendar invitations decline REF...` | Turn down a calendar somebody offered you |
+| `calendar invitations list` | List calendars other people have offered you |
+| `calendar reminders list` | List the reminders due in a date range |
+| `calendar reminders watch` | Print each reminder as it comes due |
+| `calendar settings calendars create` | Create a calendar, or subscribe to one published elsewhere |
+| `calendar settings calendars delete REF...` | Delete calendars, and every event in them |
+| `calendar settings calendars get REF` | Show one calendar, with the defaults it gives new events |
+| `calendar settings calendars list` | List your calendars |
+| `calendar settings calendars share add REF EMAIL` | Give somebody a calendar |
+| `calendar settings calendars share list REF` | List who has a calendar |
+| `calendar settings calendars share remove REF EMAIL` | Take somebody's access to a calendar away |
+| `calendar settings calendars update REF` | Rename or recolor a calendar, or change what it gives new events |
+| `calendar settings get` | Show the calendar settings now in effect |
+| `calendar settings list` | List the calendar settings that can be changed |
+| `calendar settings set KEY VALUE` | Change one calendar setting |
+
+### `contacts`
+
+Contacts, their groups and their pinned keys
+
+| Command | What it does |
+| --- | --- |
+| `contacts create` | Create a contact |
+| `contacts delete REF...` | Delete contacts |
+| `contacts export [REF...]` | Write contacts out as vCards |
+| `contacts get REF` | Show one contact in full |
+| `contacts groups add REF CONTACT_REF...` | Add contacts to a group |
+| `contacts groups create` | Create a contact group |
+| `contacts groups delete REF...` | Delete contact groups |
+| `contacts groups get REF` | Show one group and the addresses in it |
+| `contacts groups list` | List contact groups |
+| `contacts groups remove REF CONTACT_REF...` | Remove contacts from a group |
+| `contacts groups update REF` | Rename or recolor a contact group |
+| `contacts import PATH` | Read contacts in from a .vcf file |
+| `contacts keys list REF` | List the keys pinned to a contact |
+| `contacts keys pin REF` | Pin a public key so mail to a contact is encrypted to it |
+| `contacts keys unpin REF` | Remove the keys pinned to a contact |
+| `contacts list` | List contacts |
+| `contacts merge` | Fold duplicate contacts into one |
+| `contacts update REF` | Change a contact's details |
+
+### `drive`
+
+Files and folders in Drive
+
+| Command | What it does |
+| --- | --- |
+| `drive invitations accept REF...` | Accept invitations |
+| `drive invitations decline REF...` | Decline invitations |
+| `drive invitations list` | List invitations waiting for an answer |
+| `drive items copy [PATH...]` | Copy files into another folder |
+| `drive items create PATH` | Create a folder, and any missing folder above it |
+| `drive items delete [PATH...]` | Delete files or folders permanently |
+| `drive items download PATH` | Download a file |
+| `drive items get PATH` | Show a file or folder's details |
+| `drive items list [PATH]` | List what is in a folder |
+| `drive items move [PATH...]` | Move files or folders into another folder |
+| `drive items revisions delete PATH REVISION_REF` | Delete an earlier version permanently |
+| `drive items revisions download PATH REVISION_REF` | Download an earlier version of a file |
+| `drive items revisions list PATH` | List a file's earlier versions |
+| `drive items revisions restore PATH REVISION_REF` | Restore a file to an earlier version |
+| `drive items share add PATH EMAIL` | Invite someone to a file or folder |
+| `drive items share get PATH` | Show how a file or folder is shared |
+| `drive items share link PATH` | Create or update the public link for a file or folder |
+| `drive items share remove PATH EMAIL` | Revoke someone's access, or cancel their invitation |
+| `drive items share resend PATH EMAIL` | Send an unanswered invitation again |
+| `drive items share unlink PATH` | Remove the public links for a file or folder |
+| `drive items share update PATH EMAIL` | Change what somebody may do with a file or folder |
+| `drive items trash [PATH...]` | Move files or folders to the trash |
+| `drive items update PATH` | Rename a file or folder |
+| `drive items upload SRC [DEST]` | Upload a file or directory |
+| `drive photos albums add REF PHOTO_REF...` | Put photos into an album |
+| `drive photos albums create` | Create an album |
+| `drive photos albums delete REF...` | Delete albums |
+| `drive photos albums list` | List albums |
+| `drive photos albums remove REF PHOTO_REF...` | Take photos out of an album |
+| `drive photos albums update REF` | Change an album's cover |
+| `drive photos delete REF...` | Delete photos permanently |
+| `drive photos download REF` | Download a photo |
+| `drive photos favorite REF...` | Mark photos as favourites |
+| `drive photos list` | List photos |
+| `drive photos trash REF...` | Move photos to the trash |
+| `drive photos unfavorite REF...` | Remove photos from favourites |
+| `drive photos upload SRC` | Upload a photo to the library |
+| `drive settings get` | Show the drive settings now in effect |
+| `drive settings list` | List the drive settings that can be changed |
+| `drive settings set KEY VALUE` | Change one drive setting |
+| `drive shared list` | List what other people have shared with you |
+| `drive sharing list` | List what you have shared |
+| `drive trash empty` | Delete everything in the trash, permanently |
+| `drive trash list` | List what is in the trash |
+| `drive trash restore REF...` | Put items back where they came from |
+
+### `mail`
+
+Read, write and organize mail
+
+| Command | What it does |
+| --- | --- |
+| `mail conversations attachments download REF [ATTACHMENT_REF]` | Download and decrypt attachments from a thread |
+| `mail conversations attachments list REF` | List every attachment in a thread |
+| `mail conversations delete [REF...]` | Delete threads permanently |
+| `mail conversations export REF` | Write a whole thread out as .eml files or one mbox |
+| `mail conversations forward REF` | Forward the newest message in a thread |
+| `mail conversations get REF` | Show a whole thread, decrypted |
+| `mail conversations label [REF...]` | Attach a label to threads |
+| `mail conversations list` | List threads in a folder |
+| `mail conversations mark read [REF...]` | Mark threads as read |
+| `mail conversations mark unread [REF...]` | Mark threads as unread |
+| `mail conversations move [REF...]` | Move threads to a folder |
+| `mail conversations reply REF` | Reply to the newest message in a thread |
+| `mail conversations snooze [REF...]` | Take threads out of the inbox until later |
+| `mail conversations star [REF...]` | Star threads |
+| `mail conversations trash [REF...]` | Move threads to the trash |
+| `mail conversations unlabel [REF...]` | Detach a label from threads |
+| `mail conversations unsnooze [REF...]` | Bring snoozed threads back to the inbox now |
+| `mail conversations unstar [REF...]` | Remove the star from threads |
+| `mail drafts create` | Save a draft without sending it |
+| `mail drafts delete REF...` | Delete drafts |
+| `mail drafts list` | List drafts |
+| `mail drafts send REF` | Send a draft as it stands |
+| `mail drafts update REF` | Change a draft's recipients, subject, body or attachments |
+| `mail messages attachments download REF [ATTACHMENT_REF]` | Download and decrypt attachments |
+| `mail messages attachments list REF` | List a message's attachments |
+| `mail messages delete [REF...]` | Delete messages permanently |
+| `mail messages empty` | Delete everything in a folder, permanently |
+| `mail messages expire [REF...]` | Make messages delete themselves after a while |
+| `mail messages export [REF...]` | Write messages out as .eml or mbox files |
+| `mail messages forward REF` | Forward a message |
+| `mail messages get REF` | Show one message, decrypted |
+| `mail messages label [REF...]` | Attach a label to messages |
+| `mail messages list` | List messages in a folder |
+| `mail messages mark read [REF...]` | Mark messages as read |
+| `mail messages mark unread [REF...]` | Mark messages as unread |
+| `mail messages move [REF...]` | Move messages to a folder |
+| `mail messages reply REF` | Reply to a message |
+| `mail messages send` | Compose and send a message |
+| `mail messages star [REF...]` | Star messages |
+| `mail messages trash [REF...]` | Move messages to the trash |
+| `mail messages unlabel [REF...]` | Detach a label from messages |
+| `mail messages unschedule [REF...]` | Cancel a scheduled send, returning the message to drafts |
+| `mail messages unstar [REF...]` | Remove the star from messages |
+| `mail messages unsubscribe REF...` | Ask a mailing list to stop |
+| `mail messages watch` | Print each message as it arrives |
+| `mail settings addresses get REF` | Show one address, including its signature |
+| `mail settings addresses list` | List the addresses on the account |
+| `mail settings addresses update REF` | Set an address's display name or signature |
+| `mail settings autoreply disable` | Turn the auto-reply off, keeping its schedule |
+| `mail settings autoreply enable` | Turn the auto-reply on, keeping its schedule |
+| `mail settings autoreply get` | Show the auto-reply and its schedule |
+| `mail settings autoreply set` | Configure the auto-reply and turn it on |
+| `mail settings filters apply [REF...]` | Run filters over mail that is already in the mailbox |
+| `mail settings filters create` | Create a filter |
+| `mail settings filters delete REF...` | Delete filters |
+| `mail settings filters disable REF...` | Disable filters |
+| `mail settings filters enable REF...` | Enable filters |
+| `mail settings filters get REF` | Show what a filter matches and does |
+| `mail settings filters list` | List your filters |
+| `mail settings filters reorder REF...` | Set the order filters run in |
+| `mail settings filters update REF` | Change what a filter is called, matches, or does |
+| `mail settings folders create` | Create a folder |
+| `mail settings folders delete REF...` | Delete folders |
+| `mail settings folders list` | List your folders |
+| `mail settings folders update REF` | Rename or recolor a folder |
+| `mail settings get` | Show the mail settings now in effect |
+| `mail settings labels create` | Create a label |
+| `mail settings labels delete REF...` | Delete labels |
+| `mail settings labels list` | List your labels |
+| `mail settings labels update REF` | Rename or recolor a label |
+| `mail settings list` | List the mail settings that can be changed |
+| `mail settings senders allow EMAIL...` | Always let someone reach the inbox |
+| `mail settings senders block EMAIL...` | Send someone's mail straight to blocked |
+| `mail settings senders forget EMAIL...` | Drop a standing decision, letting the spam filter decide again |
+| `mail settings senders list` | List every standing decision about a sender |
+| `mail settings senders spam EMAIL...` | Send someone's mail straight to spam |
+| `mail settings set KEY VALUE` | Change one mail setting |
+
+### `pass`
+
+Vaults, logins and secrets
+
+| Command | What it does |
+| --- | --- |
+| `pass aliases contacts allow REF CONTACT_REF...` | Let a contact's mail reach you again |
+| `pass aliases contacts block REF CONTACT_REF...` | Stop a contact's mail reaching you |
+| `pass aliases contacts create REF EMAIL` | Make an address that writes to somebody as the alias |
+| `pass aliases contacts delete REF CONTACT_REF...` | Remove an address an alias can write to |
+| `pass aliases contacts list REF` | List the addresses an alias can write to |
+| `pass aliases create` | Create an alias |
+| `pass aliases disable REF` | Stop receiving mail sent to an alias |
+| `pass aliases enable REF` | Start receiving mail sent to an alias |
+| `pass aliases list` | List your aliases |
+| `pass aliases options` | List the suffixes and mailboxes an alias can use |
+| `pass breaches get REF` | Show the breaches one address has appeared in |
+| `pass breaches list` | List the addresses Proton watches, and how many breaches each is in |
+| `pass export` | Write every vault out as a Proton Pass archive |
+| `pass generate` | Make a password |
+| `pass import PATH` | Read a Proton Pass archive back in |
+| `pass invitations accept REF...` | Take a vault somebody offered you |
+| `pass invitations decline REF...` | Turn down a vault somebody offered you |
+| `pass invitations list` | List vaults other people have offered you |
+| `pass items create` | Create an item |
+| `pass items delete [REF...]` | Delete items permanently |
+| `pass items get REF` | Show one item, decrypted |
+| `pass items list` | List items across your vaults |
+| `pass items pin REF...` | Keep items at the top of the list |
+| `pass items revisions list REF` | Show what an item used to be |
+| `pass items totp REF` | Print the current two-factor code for an item |
+| `pass items trash [REF...]` | Move items to the trash |
+| `pass items unpin REF...` | Stop keeping items at the top |
+| `pass items update REF` | Change an item's fields |
+| `pass links create REF` | Make a link that shows one item |
+| `pass links list` | List the links you have made |
+| `pass links revoke REF...` | Stop a link working |
+| `pass settings domains list` | List the domains an alias can be made on |
+| `pass settings mailboxes create EMAIL` | Add an address for aliases to forward to |
+| `pass settings mailboxes delete REF` | Remove an address aliases forward to |
+| `pass settings mailboxes list` | List the addresses your aliases forward to |
+| `pass settings mailboxes resend REF` | Send the confirmation code again |
+| `pass settings mailboxes update REF` | Change a mailbox |
+| `pass settings mailboxes verify REF` | Confirm an address with the code Proton emailed it |
+| `pass trash empty` | Delete everything in the trash, permanently |
+| `pass trash list` | List what is in the trash |
+| `pass trash restore [REF...]` | Put items back where they came from |
+| `pass vaults create` | Create a vault |
+| `pass vaults delete REF...` | Delete vaults, and everything in them |
+| `pass vaults get REF` | Show one vault in full |
+| `pass vaults list` | List your vaults |
+| `pass vaults share add REF EMAIL` | Offer a vault to somebody |
+| `pass vaults share list REF` | List who has been offered a vault |
+| `pass vaults share remove REF EMAIL` | Withdraw an offer nobody has taken |
+| `pass vaults update REF` | Rename a vault, or change how it looks |
+
+## Account
+
+### `account`
+
+Your Proton account, its settings and your session
+
+| Command | What it does |
+| --- | --- |
+| `account get` | Show the account, its storage and this machine's session |
+| `account login` | Sign in and save the session for this profile |
+| `account logout` | Discard the saved session for this profile |
+| `account profiles delete REF...` | Remove saved sessions by profile name |
+| `account profiles list` | List the profiles with a saved session |
+| `account sessions list` | List every signed-in session |
+| `account sessions revoke [REF...]` | Invalidate sessions at Proton |
+| `account settings get` | Show the account settings now in effect |
+| `account settings list` | List the account settings that can be changed |
+| `account settings set KEY VALUE` | Change one account setting |
+
+### `api`
+
+Send a raw authenticated request to the Proton API
+
+| Command | What it does |
+| --- | --- |
+| `api METHOD ENDPOINT` | Send a raw authenticated request to the Proton API |
+
+## proton itself
+
+### `changelog`
+
+Print what each release changed
+
+| Command | What it does |
+| --- | --- |
+| `changelog [VERSION]` | Print what each release changed |
+
+### `completion`
+
+Generate a shell completion script
+
+| Command | What it does |
+| --- | --- |
+| `completion` | Generate a shell completion script |
+
+### `uninstall`
+
+Remove a curl/PowerShell-installed proton
+
+| Command | What it does |
+| --- | --- |
+| `uninstall` | Remove a curl/PowerShell-installed proton |
+
+### `update`
+
+Update proton to the latest release
+
+| Command | What it does |
+| --- | --- |
+| `update [VERSION]` | Update proton to the latest release |
+
+### `version`
+
+Print the version and build information
+
+| Command | What it does |
+| --- | --- |
+| `version` | Print the version and build information |"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="astro-4eogccng"><rect width="14" height="14" x="8" y="8" rx="2" ry="2" class="astro-4eogccng"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" class="astro-4eogccng"></path></svg><span class="astro-4eogccng">Copy page</span></button><div class="markdown-actions-separator astro-4eogccng"></div><div class="markdown-actions-dropdown astro-4eogccng"><button class="markdown-actions-trigger astro-4eogccng" type="button" aria-expanded="false" aria-haspopup="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="astro-4eogccng"><path d="m6 9 6 6 6-6" class="astro-4eogccng"></path></svg></button><div class="markdown-actions-menu astro-4eogccng" role="menu"><a href="https://chatgpt.com/?q=I'm%20looking%20at%20this%20documentation%3A%20https%3A%2F%2Fproton-cli.lerchster.dev%2Fcommands%2F.%0AHelp%20me%20understand%20how%20to%20use%20it.%20Be%20ready%20to%20explain%20concepts%2C%20give%20examples%2C%20or%20help%20debug%20based%20on%20it." target="_blank" rel="noopener noreferrer" role="menuitem" class="markdown-actions-item astro-4eogccng"><svg class="astro-4eogccng" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08-4.778 2.758a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5Z" fill="currentColor"></path></svg><span class="astro-4eogccng">Open in ChatGPT</span></a><a href="https://v0.dev/chat?q=I'm%20looking%20at%20this%20documentation%3A%20https%3A%2F%2Fproton-cli.lerchster.dev%2Fcommands%2F.%0AHelp%20me%20understand%20how%20to%20use%20it.%20Be%20ready%20to%20explain%20concepts%2C%20give%20examples%2C%20or%20help%20debug%20based%20on%20it." target="_blank" rel="noopener noreferrer" role="menuitem" class="markdown-actions-item astro-4eogccng"><svg class="astro-4eogccng" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 147 70" width="16" height="16"><path d="M56 50.203V14h14v46.156C70 65.593 65.593 70 60.156 70c-2.596 0-5.158-1-7-2.843L0 14h19.797L56 50.203ZM147 56h-14V23.953L100.953 56H133v14H96.687C85.814 70 77 61.186 77 50.312V14h14v32.156L123.156 14H91V0h36.312C138.186 0 147 8.814 147 19.688V56Z"></path></svg><span class="astro-4eogccng">Open in v0</span></a><a href="https://claude.ai/new?q=I'm%20looking%20at%20this%20documentation%3A%20https%3A%2F%2Fproton-cli.lerchster.dev%2Fcommands%2F.%0AHelp%20me%20understand%20how%20to%20use%20it.%20Be%20ready%20to%20explain%20concepts%2C%20give%20examples%2C%20or%20help%20debug%20based%20on%20it." target="_blank" rel="noopener noreferrer" role="menuitem" class="markdown-actions-item astro-4eogccng"><svg class="astro-4eogccng" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="m4.714 15.956 4.718-2.648.079-.23-.08-.128h-.23l-.79-.048-2.695-.073-2.337-.097-2.265-.122-.57-.121-.535-.704.055-.353.48-.321.685.06 1.518.104 2.277.157 1.651.098 2.447.255h.389l.054-.158-.133-.097-.103-.098-2.356-1.596-2.55-1.688-1.336-.972-.722-.491L2 6.223l-.158-1.008.655-.722.88.06.225.061.893.686 1.906 1.476 2.49 1.833.364.304.146-.104.018-.072-.164-.274-1.354-2.446-1.445-2.49-.644-1.032-.17-.619a2.972 2.972 0 0 1-.103-.729L6.287.133 6.7 0l.995.134.42.364.619 1.415L9.735 4.14l1.555 3.03.455.898.243.832.09.255h.159V9.01l.127-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.583.28.48.685-.067.444-.286 1.851-.558 2.903-.365 1.942h.213l.243-.242.983-1.306 1.652-2.064.728-.82.85-.904.547-.431h1.032l.759 1.129-.34 1.166-1.063 1.347-.88 1.142-1.263 1.7-.79 1.36.074.11.188-.02 2.853-.606 1.542-.28 1.84-.315.832.388.09.395-.327.807-1.967.486-2.307.462-3.436.813-.043.03.049.061 1.548.146.662.036h1.62l3.018.225.79.522.473.638-.08.485-1.213.62-1.64-.389-3.825-.91-1.31-.329h-.183v.11l1.093 1.068 2.003 1.81 2.508 2.33.127.578-.321.455-.34-.049-2.204-1.657-.85-.747-1.925-1.62h-.127v.17l.443.649 2.343 3.521.122 1.08-.17.353-.607.213-.668-.122-1.372-1.924-1.415-2.168-1.141-1.943-.14.08-.674 7.254-.316.37-.728.28-.607-.461-.322-.747.322-1.476.388-1.924.316-1.53.285-1.9.17-.632-.012-.042-.14.018-1.432 1.967-2.18 2.945-1.724 1.845-.413.164-.716-.37.066-.662.401-.589 2.386-3.036 1.439-1.882.929-1.086-.006-.158h-.055L4.138 18.56l-1.13.146-.485-.456.06-.746.231-.243 1.907-1.312Z" fill="currentColor"></path></svg><span class="astro-4eogccng">Open in Claude</span></a><a href="https://scira.ai/?q=I'm%20looking%20at%20this%20documentation%3A%20https%3A%2F%2Fproton-cli.lerchster.dev%2Fcommands%2F.%0AHelp%20me%20understand%20how%20to%20use%20it.%20Be%20ready%20to%20explain%20concepts%2C%20give%20examples%2C%20or%20help%20debug%20based%20on%20it." target="_blank" rel="noopener noreferrer" role="menuitem" class="markdown-actions-item astro-4eogccng"><svg class="astro-4eogccng" width="910" height="934" viewBox="0 0 910 934" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M647.664 197.775C569.13 189.049 525.5 145.419 516.774 66.8849C508.048 145.419 464.418 189.049 385.884 197.775C464.418 206.501 508.048 250.131 516.774 328.665C525.5 250.131 569.13 206.501 647.664 197.775Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"></path><path d="M516.774 304.217C510.299 275.491 498.208 252.087 480.335 234.214C462.462 216.341 439.058 204.251 410.333 197.775C439.059 191.3 462.462 179.209 480.335 161.336C498.208 143.463 510.299 120.06 516.774 91.334C523.25 120.059 535.34 143.463 553.213 161.336C571.086 179.209 594.49 191.3 623.216 197.775C594.49 204.251 571.086 216.341 553.213 234.214C535.34 252.087 523.25 275.491 516.774 304.217Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"></path><path d="M857.5 508.116C763.259 497.644 710.903 445.288 700.432 351.047C689.961 445.288 637.605 497.644 543.364 508.116C637.605 518.587 689.961 570.943 700.432 665.184C710.903 570.943 763.259 518.587 857.5 508.116Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"></path><path d="M700.432 615.957C691.848 589.05 678.575 566.357 660.383 548.165C642.191 529.973 619.499 516.7 592.593 508.116C619.499 499.533 642.191 486.258 660.383 468.066C678.575 449.874 691.848 427.181 700.432 400.274C709.015 427.181 722.289 449.874 740.481 468.066C758.673 486.258 781.365 499.533 808.271 508.116C781.365 516.7 758.673 529.973 740.481 548.165C722.289 566.357 709.015 589.05 700.432 615.957Z" stroke="currentColor" stroke-width="20" stroke-linejoin="round"></path><path d="M889.949 121.237C831.049 114.692 798.326 81.9698 791.782 23.0692C785.237 81.9698 752.515 114.692 693.614 121.237C752.515 127.781 785.237 160.504 791.782 219.404C798.326 160.504 831.049 127.781 889.949 121.237Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"></path><path d="M791.782 196.795C786.697 176.937 777.869 160.567 765.16 147.858C752.452 135.15 736.082 126.322 716.226 121.237C736.082 116.152 752.452 107.324 765.16 94.6152C777.869 81.9065 786.697 65.5368 791.782 45.6797C796.867 65.5367 805.695 81.9066 818.403 94.6152C831.112 107.324 847.481 116.152 867.338 121.237C847.481 126.322 831.112 135.15 818.403 147.858C805.694 160.567 796.867 176.937 791.782 196.795Z" fill="currentColor" stroke="currentColor" stroke-width="8" stroke-linejoin="round"></path><path d="M760.632 764.337C720.719 814.616 669.835 855.1 611.872 882.692C553.91 910.285 490.404 924.255 426.213 923.533C362.022 922.812 298.846 907.419 241.518 878.531C184.19 849.643 134.228 808.026 95.4548 756.863C56.6815 705.7 30.1238 646.346 17.8129 583.343C5.50207 520.339 7.76433 455.354 24.4266 393.359C41.089 331.364 71.7099 274.001 113.947 225.658C156.184 177.315 208.919 139.273 268.117 114.442" stroke="currentColor" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="astro-4eogccng">Open in Scira</span></a></div></div></div><script type="module">function e(){document.querySelectorAll(`.copy-page-action`).forEach(e=>{e.addEventListener(`click`,async()=>{let t=e,n=t.dataset.content;if(!n)return;await navigator.clipboard.writeText(n);let r=t.innerHTML;t.innerHTML=`
+            
+<svg
+ xmlns="http://www.w3.org/2000/svg"
+ width="15"
+ height="15"
+ viewBox="0 0 24 24"
+ fill="none"
+ stroke="currentColor"
+ stroke-width="2"
+ stroke-linecap="round"
+ stroke-linejoin="round"
+>
+ <polyline points="20 6 9 17 4 12"/>
+</svg>
+
+            <span>Copy page</span>
+            `,setTimeout(()=>{t.innerHTML=r},2e3)})}),document.querySelectorAll(`.markdown-actions-dropdown`).forEach(e=>{let t=e.querySelector(`.markdown-actions-trigger`),n=e.querySelector(`.markdown-actions-menu`);!t||!n||(t.addEventListener(`click`,e=>{e.stopPropagation();let r=n.classList.contains(`open`);n.classList.toggle(`open`),t.setAttribute(`aria-expanded`,String(!r))}),document.addEventListener(`click`,()=>{n.classList.remove(`open`),t.setAttribute(`aria-expanded`,`false`)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&(n.classList.remove(`open`),t.setAttribute(`aria-expanded`,`false`))}))})}e(),document.addEventListener(`astro:after-swap`,e);</script><div class="nav-buttons astro-rbtcva32"><a href="/references/" aria-label="Previous page" class="astro-rbtcva32"><svg aria-hidden="true" class="astro-rbtcva32 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg></a><a href="/commands/account/" aria-label="Next page" class="astro-rbtcva32"><svg aria-hidden="true" class="astro-rbtcva32 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg></a></div></div></div><p class="page-description astro-rbtcva32">Every command in the tree, generated from the tree itself by just docs. The pages beside this one explain each app; this is the index.</p></div></div></div><div class="content-panel astro-oil7k7jf"><div class="sl-container astro-oil7k7jf"><div class="sl-markdown-content"><p>Anywhere a command shows <code dir="auto">REF</code>, you can pass a full ID, the eight-character short ID a list printed, or something human: a subject, a name, a path, an email address. See <a href="/references/">References</a>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="apps">Apps</h2><a class="sl-anchor-link" href="#apps"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Apps”</span></a></div>
+<div class="sl-heading-wrapper level-h3"><h3 id="calendar"><code dir="auto">calendar</code></h3><a class="sl-anchor-link" href="#calendar"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “calendar”</span></a></div>
+<p>Calendars and events</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">calendar events create</code></td>
+<td>Create an event</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar events delete REF...</code></td>
+<td>Delete events</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar events export</code></td>
+<td>Write events out as an .ics file</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar events get REF</code></td>
+<td>Show one event, decrypted</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar events import PATH</code></td>
+<td>Read events in from an .ics file</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar events list</code></td>
+<td>List events in a date range</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar events respond REF</code></td>
+<td>Answer an invitation, telling the organizer</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar events update REF</code></td>
+<td>Change an event’s title, time, location, description or recurrence</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar invitations accept REF...</code></td>
+<td>Take a calendar somebody offered you</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar invitations decline REF...</code></td>
+<td>Turn down a calendar somebody offered you</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar invitations list</code></td>
+<td>List calendars other people have offered you</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar reminders list</code></td>
+<td>List the reminders due in a date range</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar reminders watch</code></td>
+<td>Print each reminder as it comes due</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars create</code></td>
+<td>Create a calendar, or subscribe to one published elsewhere</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars delete REF...</code></td>
+<td>Delete calendars, and every event in them</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars get REF</code></td>
+<td>Show one calendar, with the defaults it gives new events</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars list</code></td>
+<td>List your calendars</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars share add REF EMAIL</code></td>
+<td>Give somebody a calendar</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars share list REF</code></td>
+<td>List who has a calendar</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars share remove REF EMAIL</code></td>
+<td>Take somebody’s access to a calendar away</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings calendars update REF</code></td>
+<td>Rename or recolor a calendar, or change what it gives new events</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings get</code></td>
+<td>Show the calendar settings now in effect</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings list</code></td>
+<td>List the calendar settings that can be changed</td>
+</tr>
+<tr>
+<td><code dir="auto">calendar settings set KEY VALUE</code></td>
+<td>Change one calendar setting</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="contacts"><code dir="auto">contacts</code></h3><a class="sl-anchor-link" href="#contacts"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “contacts”</span></a></div>
+<p>Contacts, their groups and their pinned keys</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">contacts create</code></td>
+<td>Create a contact</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts delete REF...</code></td>
+<td>Delete contacts</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts export [REF...]</code></td>
+<td>Write contacts out as vCards</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts get REF</code></td>
+<td>Show one contact in full</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts groups add REF CONTACT_REF...</code></td>
+<td>Add contacts to a group</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts groups create</code></td>
+<td>Create a contact group</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts groups delete REF...</code></td>
+<td>Delete contact groups</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts groups get REF</code></td>
+<td>Show one group and the addresses in it</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts groups list</code></td>
+<td>List contact groups</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts groups remove REF CONTACT_REF...</code></td>
+<td>Remove contacts from a group</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts groups update REF</code></td>
+<td>Rename or recolor a contact group</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts import PATH</code></td>
+<td>Read contacts in from a .vcf file</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts keys list REF</code></td>
+<td>List the keys pinned to a contact</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts keys pin REF</code></td>
+<td>Pin a public key so mail to a contact is encrypted to it</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts keys unpin REF</code></td>
+<td>Remove the keys pinned to a contact</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts list</code></td>
+<td>List contacts</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts merge</code></td>
+<td>Fold duplicate contacts into one</td>
+</tr>
+<tr>
+<td><code dir="auto">contacts update REF</code></td>
+<td>Change a contact’s details</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="drive"><code dir="auto">drive</code></h3><a class="sl-anchor-link" href="#drive"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “drive”</span></a></div>
+<p>Files and folders in Drive</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">drive invitations accept REF...</code></td>
+<td>Accept invitations</td>
+</tr>
+<tr>
+<td><code dir="auto">drive invitations decline REF...</code></td>
+<td>Decline invitations</td>
+</tr>
+<tr>
+<td><code dir="auto">drive invitations list</code></td>
+<td>List invitations waiting for an answer</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items copy [PATH...]</code></td>
+<td>Copy files into another folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items create PATH</code></td>
+<td>Create a folder, and any missing folder above it</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items delete [PATH...]</code></td>
+<td>Delete files or folders permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items download PATH</code></td>
+<td>Download a file</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items get PATH</code></td>
+<td>Show a file or folder’s details</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items list [PATH]</code></td>
+<td>List what is in a folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items move [PATH...]</code></td>
+<td>Move files or folders into another folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items revisions delete PATH REVISION_REF</code></td>
+<td>Delete an earlier version permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items revisions download PATH REVISION_REF</code></td>
+<td>Download an earlier version of a file</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items revisions list PATH</code></td>
+<td>List a file’s earlier versions</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items revisions restore PATH REVISION_REF</code></td>
+<td>Restore a file to an earlier version</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items share add PATH EMAIL</code></td>
+<td>Invite someone to a file or folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items share get PATH</code></td>
+<td>Show how a file or folder is shared</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items share link PATH</code></td>
+<td>Create or update the public link for a file or folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items share remove PATH EMAIL</code></td>
+<td>Revoke someone’s access, or cancel their invitation</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items share resend PATH EMAIL</code></td>
+<td>Send an unanswered invitation again</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items share unlink PATH</code></td>
+<td>Remove the public links for a file or folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items share update PATH EMAIL</code></td>
+<td>Change what somebody may do with a file or folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items trash [PATH...]</code></td>
+<td>Move files or folders to the trash</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items update PATH</code></td>
+<td>Rename a file or folder</td>
+</tr>
+<tr>
+<td><code dir="auto">drive items upload SRC [DEST]</code></td>
+<td>Upload a file or directory</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos albums add REF PHOTO_REF...</code></td>
+<td>Put photos into an album</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos albums create</code></td>
+<td>Create an album</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos albums delete REF...</code></td>
+<td>Delete albums</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos albums list</code></td>
+<td>List albums</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos albums remove REF PHOTO_REF...</code></td>
+<td>Take photos out of an album</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos albums update REF</code></td>
+<td>Change an album’s cover</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos delete REF...</code></td>
+<td>Delete photos permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos download REF</code></td>
+<td>Download a photo</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos favorite REF...</code></td>
+<td>Mark photos as favourites</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos list</code></td>
+<td>List photos</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos trash REF...</code></td>
+<td>Move photos to the trash</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos unfavorite REF...</code></td>
+<td>Remove photos from favourites</td>
+</tr>
+<tr>
+<td><code dir="auto">drive photos upload SRC</code></td>
+<td>Upload a photo to the library</td>
+</tr>
+<tr>
+<td><code dir="auto">drive settings get</code></td>
+<td>Show the drive settings now in effect</td>
+</tr>
+<tr>
+<td><code dir="auto">drive settings list</code></td>
+<td>List the drive settings that can be changed</td>
+</tr>
+<tr>
+<td><code dir="auto">drive settings set KEY VALUE</code></td>
+<td>Change one drive setting</td>
+</tr>
+<tr>
+<td><code dir="auto">drive shared list</code></td>
+<td>List what other people have shared with you</td>
+</tr>
+<tr>
+<td><code dir="auto">drive sharing list</code></td>
+<td>List what you have shared</td>
+</tr>
+<tr>
+<td><code dir="auto">drive trash empty</code></td>
+<td>Delete everything in the trash, permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">drive trash list</code></td>
+<td>List what is in the trash</td>
+</tr>
+<tr>
+<td><code dir="auto">drive trash restore REF...</code></td>
+<td>Put items back where they came from</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="mail"><code dir="auto">mail</code></h3><a class="sl-anchor-link" href="#mail"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “mail”</span></a></div>
+<p>Read, write and organize mail</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">mail conversations attachments download REF [ATTACHMENT_REF]</code></td>
+<td>Download and decrypt attachments from a thread</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations attachments list REF</code></td>
+<td>List every attachment in a thread</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations delete [REF...]</code></td>
+<td>Delete threads permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations export REF</code></td>
+<td>Write a whole thread out as .eml files or one mbox</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations forward REF</code></td>
+<td>Forward the newest message in a thread</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations get REF</code></td>
+<td>Show a whole thread, decrypted</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations label [REF...]</code></td>
+<td>Attach a label to threads</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations list</code></td>
+<td>List threads in a folder</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations mark read [REF...]</code></td>
+<td>Mark threads as read</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations mark unread [REF...]</code></td>
+<td>Mark threads as unread</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations move [REF...]</code></td>
+<td>Move threads to a folder</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations reply REF</code></td>
+<td>Reply to the newest message in a thread</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations snooze [REF...]</code></td>
+<td>Take threads out of the inbox until later</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations star [REF...]</code></td>
+<td>Star threads</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations trash [REF...]</code></td>
+<td>Move threads to the trash</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations unlabel [REF...]</code></td>
+<td>Detach a label from threads</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations unsnooze [REF...]</code></td>
+<td>Bring snoozed threads back to the inbox now</td>
+</tr>
+<tr>
+<td><code dir="auto">mail conversations unstar [REF...]</code></td>
+<td>Remove the star from threads</td>
+</tr>
+<tr>
+<td><code dir="auto">mail drafts create</code></td>
+<td>Save a draft without sending it</td>
+</tr>
+<tr>
+<td><code dir="auto">mail drafts delete REF...</code></td>
+<td>Delete drafts</td>
+</tr>
+<tr>
+<td><code dir="auto">mail drafts list</code></td>
+<td>List drafts</td>
+</tr>
+<tr>
+<td><code dir="auto">mail drafts send REF</code></td>
+<td>Send a draft as it stands</td>
+</tr>
+<tr>
+<td><code dir="auto">mail drafts update REF</code></td>
+<td>Change a draft’s recipients, subject, body or attachments</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages attachments download REF [ATTACHMENT_REF]</code></td>
+<td>Download and decrypt attachments</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages attachments list REF</code></td>
+<td>List a message’s attachments</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages delete [REF...]</code></td>
+<td>Delete messages permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages empty</code></td>
+<td>Delete everything in a folder, permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages expire [REF...]</code></td>
+<td>Make messages delete themselves after a while</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages export [REF...]</code></td>
+<td>Write messages out as .eml or mbox files</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages forward REF</code></td>
+<td>Forward a message</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages get REF</code></td>
+<td>Show one message, decrypted</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages label [REF...]</code></td>
+<td>Attach a label to messages</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages list</code></td>
+<td>List messages in a folder</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages mark read [REF...]</code></td>
+<td>Mark messages as read</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages mark unread [REF...]</code></td>
+<td>Mark messages as unread</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages move [REF...]</code></td>
+<td>Move messages to a folder</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages reply REF</code></td>
+<td>Reply to a message</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages send</code></td>
+<td>Compose and send a message</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages star [REF...]</code></td>
+<td>Star messages</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages trash [REF...]</code></td>
+<td>Move messages to the trash</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages unlabel [REF...]</code></td>
+<td>Detach a label from messages</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages unschedule [REF...]</code></td>
+<td>Cancel a scheduled send, returning the message to drafts</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages unstar [REF...]</code></td>
+<td>Remove the star from messages</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages unsubscribe REF...</code></td>
+<td>Ask a mailing list to stop</td>
+</tr>
+<tr>
+<td><code dir="auto">mail messages watch</code></td>
+<td>Print each message as it arrives</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings addresses get REF</code></td>
+<td>Show one address, including its signature</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings addresses list</code></td>
+<td>List the addresses on the account</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings addresses update REF</code></td>
+<td>Set an address’s display name or signature</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings autoreply disable</code></td>
+<td>Turn the auto-reply off, keeping its schedule</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings autoreply enable</code></td>
+<td>Turn the auto-reply on, keeping its schedule</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings autoreply get</code></td>
+<td>Show the auto-reply and its schedule</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings autoreply set</code></td>
+<td>Configure the auto-reply and turn it on</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters apply [REF...]</code></td>
+<td>Run filters over mail that is already in the mailbox</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters create</code></td>
+<td>Create a filter</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters delete REF...</code></td>
+<td>Delete filters</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters disable REF...</code></td>
+<td>Disable filters</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters enable REF...</code></td>
+<td>Enable filters</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters get REF</code></td>
+<td>Show what a filter matches and does</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters list</code></td>
+<td>List your filters</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters reorder REF...</code></td>
+<td>Set the order filters run in</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings filters update REF</code></td>
+<td>Change what a filter is called, matches, or does</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings folders create</code></td>
+<td>Create a folder</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings folders delete REF...</code></td>
+<td>Delete folders</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings folders list</code></td>
+<td>List your folders</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings folders update REF</code></td>
+<td>Rename or recolor a folder</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings get</code></td>
+<td>Show the mail settings now in effect</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings labels create</code></td>
+<td>Create a label</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings labels delete REF...</code></td>
+<td>Delete labels</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings labels list</code></td>
+<td>List your labels</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings labels update REF</code></td>
+<td>Rename or recolor a label</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings list</code></td>
+<td>List the mail settings that can be changed</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings senders allow EMAIL...</code></td>
+<td>Always let someone reach the inbox</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings senders block EMAIL...</code></td>
+<td>Send someone’s mail straight to blocked</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings senders forget EMAIL...</code></td>
+<td>Drop a standing decision, letting the spam filter decide again</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings senders list</code></td>
+<td>List every standing decision about a sender</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings senders spam EMAIL...</code></td>
+<td>Send someone’s mail straight to spam</td>
+</tr>
+<tr>
+<td><code dir="auto">mail settings set KEY VALUE</code></td>
+<td>Change one mail setting</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="pass"><code dir="auto">pass</code></h3><a class="sl-anchor-link" href="#pass"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “pass”</span></a></div>
+<p>Vaults, logins and secrets</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">pass aliases contacts allow REF CONTACT_REF...</code></td>
+<td>Let a contact’s mail reach you again</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases contacts block REF CONTACT_REF...</code></td>
+<td>Stop a contact’s mail reaching you</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases contacts create REF EMAIL</code></td>
+<td>Make an address that writes to somebody as the alias</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases contacts delete REF CONTACT_REF...</code></td>
+<td>Remove an address an alias can write to</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases contacts list REF</code></td>
+<td>List the addresses an alias can write to</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases create</code></td>
+<td>Create an alias</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases disable REF</code></td>
+<td>Stop receiving mail sent to an alias</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases enable REF</code></td>
+<td>Start receiving mail sent to an alias</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases list</code></td>
+<td>List your aliases</td>
+</tr>
+<tr>
+<td><code dir="auto">pass aliases options</code></td>
+<td>List the suffixes and mailboxes an alias can use</td>
+</tr>
+<tr>
+<td><code dir="auto">pass breaches get REF</code></td>
+<td>Show the breaches one address has appeared in</td>
+</tr>
+<tr>
+<td><code dir="auto">pass breaches list</code></td>
+<td>List the addresses Proton watches, and how many breaches each is in</td>
+</tr>
+<tr>
+<td><code dir="auto">pass export</code></td>
+<td>Write every vault out as a Proton Pass archive</td>
+</tr>
+<tr>
+<td><code dir="auto">pass generate</code></td>
+<td>Make a password</td>
+</tr>
+<tr>
+<td><code dir="auto">pass import PATH</code></td>
+<td>Read a Proton Pass archive back in</td>
+</tr>
+<tr>
+<td><code dir="auto">pass invitations accept REF...</code></td>
+<td>Take a vault somebody offered you</td>
+</tr>
+<tr>
+<td><code dir="auto">pass invitations decline REF...</code></td>
+<td>Turn down a vault somebody offered you</td>
+</tr>
+<tr>
+<td><code dir="auto">pass invitations list</code></td>
+<td>List vaults other people have offered you</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items create</code></td>
+<td>Create an item</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items delete [REF...]</code></td>
+<td>Delete items permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items get REF</code></td>
+<td>Show one item, decrypted</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items list</code></td>
+<td>List items across your vaults</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items pin REF...</code></td>
+<td>Keep items at the top of the list</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items revisions list REF</code></td>
+<td>Show what an item used to be</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items totp REF</code></td>
+<td>Print the current two-factor code for an item</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items trash [REF...]</code></td>
+<td>Move items to the trash</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items unpin REF...</code></td>
+<td>Stop keeping items at the top</td>
+</tr>
+<tr>
+<td><code dir="auto">pass items update REF</code></td>
+<td>Change an item’s fields</td>
+</tr>
+<tr>
+<td><code dir="auto">pass links create REF</code></td>
+<td>Make a link that shows one item</td>
+</tr>
+<tr>
+<td><code dir="auto">pass links list</code></td>
+<td>List the links you have made</td>
+</tr>
+<tr>
+<td><code dir="auto">pass links revoke REF...</code></td>
+<td>Stop a link working</td>
+</tr>
+<tr>
+<td><code dir="auto">pass settings domains list</code></td>
+<td>List the domains an alias can be made on</td>
+</tr>
+<tr>
+<td><code dir="auto">pass settings mailboxes create EMAIL</code></td>
+<td>Add an address for aliases to forward to</td>
+</tr>
+<tr>
+<td><code dir="auto">pass settings mailboxes delete REF</code></td>
+<td>Remove an address aliases forward to</td>
+</tr>
+<tr>
+<td><code dir="auto">pass settings mailboxes list</code></td>
+<td>List the addresses your aliases forward to</td>
+</tr>
+<tr>
+<td><code dir="auto">pass settings mailboxes resend REF</code></td>
+<td>Send the confirmation code again</td>
+</tr>
+<tr>
+<td><code dir="auto">pass settings mailboxes update REF</code></td>
+<td>Change a mailbox</td>
+</tr>
+<tr>
+<td><code dir="auto">pass settings mailboxes verify REF</code></td>
+<td>Confirm an address with the code Proton emailed it</td>
+</tr>
+<tr>
+<td><code dir="auto">pass trash empty</code></td>
+<td>Delete everything in the trash, permanently</td>
+</tr>
+<tr>
+<td><code dir="auto">pass trash list</code></td>
+<td>List what is in the trash</td>
+</tr>
+<tr>
+<td><code dir="auto">pass trash restore [REF...]</code></td>
+<td>Put items back where they came from</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults create</code></td>
+<td>Create a vault</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults delete REF...</code></td>
+<td>Delete vaults, and everything in them</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults get REF</code></td>
+<td>Show one vault in full</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults list</code></td>
+<td>List your vaults</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults share add REF EMAIL</code></td>
+<td>Offer a vault to somebody</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults share list REF</code></td>
+<td>List who has been offered a vault</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults share remove REF EMAIL</code></td>
+<td>Withdraw an offer nobody has taken</td>
+</tr>
+<tr>
+<td><code dir="auto">pass vaults update REF</code></td>
+<td>Rename a vault, or change how it looks</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="account">Account</h2><a class="sl-anchor-link" href="#account"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Account”</span></a></div>
+<div class="sl-heading-wrapper level-h3"><h3 id="account-1"><code dir="auto">account</code></h3><a class="sl-anchor-link" href="#account-1"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “account”</span></a></div>
+<p>Your Proton account, its settings and your session</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">account get</code></td>
+<td>Show the account, its storage and this machine’s session</td>
+</tr>
+<tr>
+<td><code dir="auto">account login</code></td>
+<td>Sign in and save the session for this profile</td>
+</tr>
+<tr>
+<td><code dir="auto">account logout</code></td>
+<td>Discard the saved session for this profile</td>
+</tr>
+<tr>
+<td><code dir="auto">account profiles delete REF...</code></td>
+<td>Remove saved sessions by profile name</td>
+</tr>
+<tr>
+<td><code dir="auto">account profiles list</code></td>
+<td>List the profiles with a saved session</td>
+</tr>
+<tr>
+<td><code dir="auto">account sessions list</code></td>
+<td>List every signed-in session</td>
+</tr>
+<tr>
+<td><code dir="auto">account sessions revoke [REF...]</code></td>
+<td>Invalidate sessions at Proton</td>
+</tr>
+<tr>
+<td><code dir="auto">account settings get</code></td>
+<td>Show the account settings now in effect</td>
+</tr>
+<tr>
+<td><code dir="auto">account settings list</code></td>
+<td>List the account settings that can be changed</td>
+</tr>
+<tr>
+<td><code dir="auto">account settings set KEY VALUE</code></td>
+<td>Change one account setting</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="api"><code dir="auto">api</code></h3><a class="sl-anchor-link" href="#api"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “api”</span></a></div>
+<p>Send a raw authenticated request to the Proton API</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">api METHOD ENDPOINT</code></td>
+<td>Send a raw authenticated request to the Proton API</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="proton-itself">proton itself</h2><a class="sl-anchor-link" href="#proton-itself"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “proton itself”</span></a></div>
+<div class="sl-heading-wrapper level-h3"><h3 id="changelog"><code dir="auto">changelog</code></h3><a class="sl-anchor-link" href="#changelog"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “changelog”</span></a></div>
+<p>Print what each release changed</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">changelog [VERSION]</code></td>
+<td>Print what each release changed</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="completion"><code dir="auto">completion</code></h3><a class="sl-anchor-link" href="#completion"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “completion”</span></a></div>
+<p>Generate a shell completion script</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">completion</code></td>
+<td>Generate a shell completion script</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="uninstall"><code dir="auto">uninstall</code></h3><a class="sl-anchor-link" href="#uninstall"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “uninstall”</span></a></div>
+<p>Remove a curl/PowerShell-installed proton</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">uninstall</code></td>
+<td>Remove a curl/PowerShell-installed proton</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="update"><code dir="auto">update</code></h3><a class="sl-anchor-link" href="#update"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “update”</span></a></div>
+<p>Update proton to the latest release</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">update [VERSION]</code></td>
+<td>Update proton to the latest release</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="version"><code dir="auto">version</code></h3><a class="sl-anchor-link" href="#version"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “version”</span></a></div>
+<p>Print the version and build information</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">version</code></td>
+<td>Print the version and build information</td>
+</tr>
+</tbody>
+</table>
+</div><footer class="sl-flex astro-xhxjzfa7"><div class="meta sl-flex astro-xhxjzfa7"><a href="https://github.com/roman-16/proton-cli/edit/main/docs/src/content/docs/commands.md" class="sl-flex print:hidden astro-xk5gmzsg"><svg aria-hidden="true" class="astro-xk5gmzsg astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.2em;"><path d="M22 7.24a1 1 0 0 0-.29-.71l-4.24-4.24a1 1 0 0 0-1.1-.22 1 1 0 0 0-.32.22l-2.83 2.83L2.29 16.05a1 1 0 0 0-.29.71V21a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .76-.29l10.87-10.93L21.71 8c.1-.1.17-.2.22-.33a1 1 0 0 0 0-.24v-.14l.07-.05ZM6.83 20H4v-2.83l9.93-9.93 2.83 2.83L6.83 20ZM18.17 8.66l-2.83-2.83 1.42-1.41 2.82 2.82-1.41 1.42Z"/></svg>Edit page</a></div><div class="pagination-links print:hidden astro-bqr5mxv2"><a class="prev astro-bqr5mxv2" href="/references/" rel="prev"><svg aria-hidden="true" class="astro-bqr5mxv2 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg>References</a><a class="next astro-bqr5mxv2" href="/commands/account/" rel="next">Account<svg aria-hidden="true" class="astro-bqr5mxv2 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg></a></div></footer></div></div></main></div></div></div></div></body></html>
