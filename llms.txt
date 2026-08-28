@@ -1,0 +1,13 @@
+# proton-cli
+
+> Unofficial, end-to-end encrypted CLI for Proton Mail, Drive, Calendar, Pass and Contacts. One binary, one grammar: proton <app> <collection> <verb>.
+
+## Documentation Sets
+
+- [Abridged documentation](https://proton-cli.lerchster.dev/llms-small.txt): a compact version of the documentation for proton-cli, with non-essential content removed
+- [Complete documentation](https://proton-cli.lerchster.dev/llms-full.txt): the full documentation for proton-cli
+
+## Notes
+
+- The complete documentation includes all content from the official documentation
+- The content is automatically generated from the same source as the official documentation
