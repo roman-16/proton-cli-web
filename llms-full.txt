@@ -661,6 +661,12 @@ For a scheduled one-way copy, `proton drive items upload --recursive` in a cron 
 
 Not covered, and not planned. proton-cli mirrors what the Proton **web clients** let you do for Mail, Drive, Calendar, Pass and Contacts. Proton VPN has [its own CLI](https://protonvpn.com/support/linux-vpn-tool). See [Limits](/limitations/).
 
+## Can it import my Gmail, or add a Zoom link to an event?
+
+[Section titled “Can it import my Gmail, or add a Zoom link to an event?”](#can-it-import-my-gmail-or-add-a-zoom-link-to-an-event)
+
+No, and neither can any terminal program. Both hand you off to another company’s consent screen - Google’s, Zoom’s - and only a browser can complete one. Proton’s own importer works the same way. Set those up in the web client; what they produce is readable here like anything else.
+
 ## Does it support security keys?
 
 [Section titled “Does it support security keys?”](#does-it-support-security-keys)
@@ -676,6 +682,8 @@ Touch your security key.
 ```
 
 On Linux and macOS the key has to be one you plug into USB. On Windows the sign-in goes through Windows Hello, so a key built into the machine works too. A key held in a phone does not: that needs the Bluetooth handoff a browser does, which no terminal can.
+
+Registering a key is a browser’s job as well - WebAuthn enrolment has no non-browser form. Add it in Proton’s security settings once, and `login` uses it from then on.
 
 If the account also has an authenticator app, a code is asked for and pressing Enter reaches for the key instead. A touch needs you there, so unattended jobs still want `--totp` - or better, a session you signed in once and left in place.
 
@@ -1618,7 +1626,7 @@ proton mail messages export REF --output - | formail -X ""
 
 It takes the same filters as `trash` and `move`. `--format eml` writes one file per message named `<date> <subject>.eml`; `--format mbox` concatenates. `--no-attachments` skips downloads, which is much faster for a large archive.
 
-**Exported files are not encrypted**, and their DKIM signatures no longer verify. The web client’s export behaves the same way.
+**Exported files are not encrypted**, and their `DKIM-Signature` and `ARC-*` headers no longer verify, since the body they signed was the encrypted one. The web client’s export behaves the same way.
 
 Going the other way, `--eml` reads a file back into a draft or a send:
 
@@ -7685,35 +7693,17 @@ go build ./cmd/proton
 
 # What proton-cli can't do
 
-> proton-cli aims for parity with what the Proton web clients let you do. Some things it will never do, because Proton's platform doesn't allow it; others aren't built yet. This page is the honest list of both.
+> proton-cli aims for parity with what the Proton web clients let you do. This page is where it falls short of that, and why. A refusal that comes from Proton rather than from proton-cli belongs to Troubleshooting instead.
 
-## Platform constraints
+## Known gaps
 
-[Section titled “Platform constraints”](#platform-constraints)
+[Section titled “Known gaps”](#known-gaps)
 
-| What you can’t do                               | Why                                                      | Instead                                                                                            |
-| ----------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Sign in with a passkey held in a phone          | The handoff runs over Bluetooth from a browser           | Use a key you can plug in, or a TOTP code                                                          |
-| Get past a CAPTCHA with nobody there            | Proving a human is present is what the challenge is for  | Solve it, then repeat the command with [`--verified`](/troubleshooting/#nothing-here-can-be-asked) |
-| Pick any colour for a label                     | Proton allows only its 20 accent colours                 | `--color` prints the palette when refused                                                          |
-| Trust `list` immediately after a change         | Proton’s index is eventually consistent                  | `get` the ID the command printed ([why](/design-notes/#why-search-lags))                           |
-| Put a message file back into a mailbox          | Proton exposes no such endpoint, to any client           | `--eml` reads one into a draft or a send                                                           |
-| Answer one occurrence of a recurring invitation | Needs a personal copy of that occurrence                 | Answer the whole series                                                                            |
-| Verify an update offline                        | Checksums and binaries share an origin, and are unsigned | Not closed yet; needs a built-in public key                                                        |
+**An update can’t be verified offline.** `proton update` downloads the binary and the `checksums.txt` it is checked against from the same release, and neither is signed. Anything able to serve you one can serve you the other. Closing this needs a public key built into the binary, and there isn’t one yet - until then, an install from a package manager is verified by the package manager.
 
-**Three commands ask for your password again**, because Proton guards their endpoints behind an elevated session:
+**A recurring event needs a zone that can be named.** proton reads one from `TZ`, `/etc/localtime` or `/etc/timezone`, then falls back to your Proton calendar settings. Where none of those answers, a new event is stored as a plain UTC instant - and a recurring one then drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure.
 
-* `calendar settings calendars delete`
-* `mail messages expire`
-* `mail settings autoreply set`
-
-They prompt, or take `--password-file` / `--password-stdin`. The key password sealed into your session cannot stand in: it is a one-way derivation, and Proton re-authenticates against the password itself.
-
-Proton answers some unrelated refusals with the same code. So one of these may ask for your password and then be refused anyway, for a reason no password would have fixed.
-
-**A recurring event needs a zone that can be named.** proton reads it from `TZ`, `/etc/localtime` or `/etc/timezone`, then falls back to your Proton calendar settings. Where none of those answers, a new event is stored as a plain UTC instant - and a recurring one then drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure.
-
-**Exported mail is plaintext.** Export decrypts, so the files are readable by anything. The original `DKIM-Signature` and `ARC-*` headers no longer verify, since the body they signed was the encrypted one. The web client’s export behaves the same way.
+**A Drive filter walks the tree.** `--pattern` and the size and age filters are matched on your machine, folder by folder, because Drive’s index is built by the web client rather than by the server. Over a large tree that is a request per folder, so narrow it with `--scope`.
 
 ## Not built yet
 
@@ -7721,20 +7711,18 @@ Proton answers some unrelated refusals with the same code. So one of these may a
 
 Each has an equivalent in a web client, and each is unbuilt for a stated reason rather than an oversight.
 
-| What’s missing                            | Why                                                                                             |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Drive computers and shared bookmarks      | Neither exists until you use a desktop client or open somebody’s link, so neither can be tested |
-| Mail forwarding itself to another address | Needs an OpenPGP forwarding primitive the Go libraries don’t implement                          |
-| Mail forwarding to a non-Proton address   | Proton emails that address a link its owner must follow                                         |
-| Moving a Pass item between vaults         | Re-encrypting to another share loses access on failure rather than failing loudly               |
+| What’s missing                            | Why                                                                                                         |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Drive computers and shared bookmarks      | Neither exists until you use a desktop client or open somebody’s link, so neither can be tested             |
+| Mail forwarding to another Proton address | Needs an OpenPGP forwarding primitive the Go libraries don’t implement                                      |
+| Mail forwarding to a non-Proton address   | Proton emails the address a link its owner must follow, so a command can start the flow but never finish it |
+| Moving a Pass item between vaults         | Re-encrypting to another share loses access on failure rather than failing loudly                           |
 
 ## Out of scope
 
 [Section titled “Out of scope”](#out-of-scope)
 
 proton-cli mirrors the Proton web clients for Mail, Drive, Calendar, Pass and Contacts. Other Proton products - VPN, Wallet, Docs, Meet, Lumo, Authenticator - are not covered, and neither are endpoints that exist in the API but have no equivalent action in a web client.
-
-Some things a web client does are out of reach from a terminal and stay that way: creating a passkey needs WebAuthn, adding a Zoom or Google Meet link needs that provider’s OAuth, and importing from Gmail or IMAP needs the same. Drive’s search builds its index in the browser rather than on the server, so `drive items list --pattern --recursive` walks the tree instead.
 
 For anything the commands don’t reach, [`proton api`](/apps/api/) sends raw authenticated requests to any endpoint.
 
