@@ -1,6 +1,8 @@
 <SYSTEM>This is the abridged developer documentation for proton-cli</SYSTEM>
 
-# Getting started
+# Quickstart
+
+> Sign in once, then read your mail, move files in and out of Drive, check your calendar and pull a two-factor code, all from the shell. This is the five minutes from a fresh install to a useful command.
 
 ## Sign in [Section titled “Sign in”](#sign-in) 
 ```console
@@ -58,37 +60,20 @@ proton completion bash | sudo tee /etc/bash_completion.d/proton
 # fish
 proton completion fish > ~/.config/fish/completions/proton.fish
 ```
- ## More than one account [Section titled “More than one account”](#more-than-one-account) Each profile keeps its own session, so a personal and a work account never mix: 
-```console
-$ proton --profile work account login
-Email:     you@company.com
-Password:
-✓ Signed in as you@company.com (profile "work").
-
-
-$ proton --profile work mail messages list
+ ## Look before you leap [Section titled “Look before you leap”](#look-before-you-leap) Every command that changes something takes `--dry-run`, which resolves references, applies filters, and shows you the rows it would touch: 
+```bash
+proton mail messages trash --from newsletter@example.com --older-than 90d --dry-run
 ```
- `proton account profiles list` shows what is signed in here, and `export PROTON_PROFILE=work` makes one the default for a shell. Profiles, sessions, environment variables and the files on disk are all in [Configuration](/configuration/). ## Sign out [Section titled “Sign out”](#sign-out) 
+ Anything that removes permanently, or removes what a filter picked out rather than what you named, shows those rows and asks first. ## Sign out [Section titled “Sign out”](#sign-out) 
 ```bash
 proton account logout             # forget the session on this machine
 proton account logout --revoke    # and invalidate it at Proton
 ```
- Revoking also makes the credentials saved on this machine useless, even to someone who already copied them. See [Security](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md). ## When something goes wrong [Section titled “When something goes wrong”](#when-something-goes-wrong) Errors say what happened and what to try: 
-```console
-$ proton mail messages move 5bH2mQxK --into Work
-Error: "Work" is a label, not a folder - moving needs a folder.
-Try:   to attach the label instead, use `label --label Work`.
-       To see the folders, run `proton mail settings folders list`.
-```
- Before changing anything in bulk, ask what would happen: 
-```bash
-proton mail messages trash --from newsletter@example.com --older-than 90d --dry-run
-```
- ## Where next [Section titled “Where next”](#where-next) | Page | What’s in it | | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | | [The language](/language/) | The grammar, the verbs, the filters, dry runs | | [Mail](/apps/mail/) · [Drive](/apps/drive/) · [Calendar](/apps/calendar/) · [Pass](/apps/pass/) · [Contacts](/apps/contacts/) | One page per app, task by task | | [Scripting](/scripting/) | Pipelines, `jq`, cron and systemd | | [Command reference](/commands/) | Every command, argument and flag |
+ Revoking also makes the credentials saved on this machine useless, even to someone who already copied them. ## Where next [Section titled “Where next”](#where-next) | Page | What’s in it | | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | | [How commands read](/language/) | The grammar, the verbs, the filters, dry runs, naming a thing | | [Mail](/apps/mail/) · [Drive](/apps/drive/) · [Calendar](/apps/calendar/) · [Pass](/apps/pass/) · [Contacts](/apps/contacts/) | One page per app, task by task | | [Accounts and sessions](/apps/account/) | Two accounts side by side, unattended sign-in, revoking a device | | [Scripting](/scripting/) | Pipelines, `jq`, cron and systemd | | [Command reference](/commands/) | Every command, argument and flag | | [FAQ](/faq/) | Is this official? How does it differ from Bridge? Is my password safe? |
 
-# The language
+# How commands read
 
-> proton has one grammar. Learn it once and you can guess the rest.
+> proton-cli has one grammar: proton <app> <collection> <verb>. Learn it once and you can guess the rest of the two hundred commands, name the thing you want in whatever way you already know it, and see what a bulk change would touch before it happens.
 
 ```plaintext
 proton <app> <collection> <verb> [TARGET…] [--flags]
@@ -100,7 +85,52 @@ proton drive items move /report.pdf --into /Archive
 proton pass items get github.com
 proton calendar events create --title Standup --start 2026-04-16T09:00
 ```
- A **group** never does anything itself - `proton mail settings` prints help, `proton mail settings get` shows your settings. Every command that acts is named by a verb. ## Verbs [Section titled “Verbs”](#verbs) One word per idea, everywhere it appears. | Verb | Means | | --------------------------------------- | ---------------------------------------------- | | `list` · `get` | show a collection, or one thing in full | | `create` · `update` · `delete` | the usual three | | `trash` · `restore` · `empty` | remove reversibly, put back, clear out | | `move --into` · `copy --into` | put into another container | | `upload` · `download` | move bytes to or from your disk | | `export` · `import` | documents to or from disk | | `send` · `reply` · `forward` | mail going out | | `label` · `unlabel` · `star` · `unstar` | attach or detach | | `enable` · `disable` | turn a thing on or off | | `add` · `remove` | put a member into a container, or take one out | | `accept` · `decline` | answer an invitation | | `set` | write one setting | | `login` · `logout` | your session | To rename anything, use `update --name`. The [command reference](/commands/) has the full list. ## Saying which ones [Section titled “Saying which ones”](#saying-which-ones) Every command that can act on many things takes the same two ways of saying which: name them, or describe them. Both at once is a union. 
+ A **group** never does anything itself - `proton mail settings` prints help, `proton mail settings get` shows your settings. Every command that acts is named by a verb. ## Verbs [Section titled “Verbs”](#verbs) One word per idea, everywhere it appears. | Verb | Means | | --------------------------------------- | ---------------------------------------------- | | `list` · `get` | show a collection, or one thing in full | | `create` · `update` · `delete` | the usual three | | `trash` · `restore` · `empty` | remove reversibly, put back, clear out | | `move --into` · `copy --into` | put into another container | | `upload` · `download` | move bytes to or from your disk | | `export` · `import` | documents to or from disk | | `send` · `reply` · `forward` | mail going out | | `label` · `unlabel` · `star` · `unstar` | attach or detach | | `enable` · `disable` | turn a thing on or off | | `add` · `remove` | put a member into a container, or take one out | | `accept` · `decline` | answer an invitation | | `set` | write one setting | | `login` · `logout` | your session | To rename anything, use `update --name`. The [command reference](/commands/) has the full list. ## Naming the thing you want [Section titled “Naming the thing you want”](#naming-the-thing-you-want) Wherever a command’s usage shows `REF`, four things work. 
+```bash
+proton mail messages get 5bH2mQxKT9wLpN4v…    # the full ID
+proton mail messages get 5bH2mQxK             # the short ID a list printed
+proton mail messages get "Invoice #2291"      # the subject
+proton contacts get jane                      # a name or an address
+```
+ If nothing matches, the command exits `3`. If more than one thing matches, it prints the candidates and exits `4`: 
+```console
+$ proton contacts get jane
+Error: "jane" matches 2 contacts.
+Try:   narrow the term, or use one of:
+         7Kd91mQx  jane@example.com
+         3Ns8pT2v  jane.roe@work.example
+```
+ ### Short IDs [Section titled “Short IDs”](#short-ids) On a terminal, lists shorten Proton’s IDs to eight characters and remember what they showed you, so you can paste one straight back. They carry no ellipsis and never start with a dash, so they copy cleanly out of a table and a shell reads them as what they are. Pipes, redirects and `--output json` always emit **full** IDs, so no script ever sees a truncated value. `--full-ids` switches shortening off interactively too. A short ID only resolves on the machine that printed it - the lookup table lives in `~/.config/proton-cli/idcache/<profile>.json`. Copied one from elsewhere? Run the matching `list` here first, or use the full ID. ### Two IDs in one [Section titled “Two IDs in one”](#two-ids-in-one) A Pass item and a calendar event each need two IDs, written as one slash-separated token. Lists print them this way and you paste them back the same way. Short IDs work on both halves at once. 
+```bash
+proton pass items get SHARE_ID/ITEM_ID
+proton calendar events get CALENDAR_ID/EVENT_ID
+```
+ A **recurring** event is stored once and happens many times, so naming a single occurrence takes one more part: its own start, after an `@`. 
+```bash
+proton calendar events get 4f2a1b9c@2026-04-16T09:00   # one occurrence
+proton calendar events get 4f2a1b9c                    # the whole series
+```
+ Keep the `@` part and you act on that occurrence; drop it and you act on the series. `--future` widens one occurrence to it and every later one. ### Drive is addressed by path [Section titled “Drive is addressed by path”](#drive-is-addressed-by-path) Files and folders are named by their path: 
+```bash
+proton drive items get /Documents/report.pdf
+proton drive items move /Documents/report.pdf --into /Archive
+```
+ Something with no place in the tree - a trashed item, a photo, an album - has no path, so it is named by the `REF` its list showed: 
+```bash
+proton drive trash restore 7Kd91mQx
+proton drive photos download 3Ns8pT2v --output-dir ./photos
+```
+ ### Full IDs that start with a dash [Section titled “Full IDs that start with a dash”](#full-ids-that-start-with-a-dash) Proton’s IDs are base64, `-` is one of its characters, and so about one in sixty-four begins with one. Paste them like any other reference - the dash is part of the ID and is handled for you: 
+```bash
+proton pass items get -x76EpiVSJf2oHzHgyC2D_jF8O…==/_fb26gvMWjnM7US4_wpTNm_LqI…==
+proton contacts delete -bJxDLEMvt-Z6t4Yna7V8SYQ_F…==
+```
+ One rule comes with it: **put your flags before the ID**, because everything after such an ID is read as another argument. 
+```bash
+proton mail messages attachments download --output-dir ./files -bJxDLEMvt-…==   # yes
+proton mail messages attachments download -bJxDLEMvt-…== --output-dir ./files   # no
+```
+ Short IDs need none of this: the eight characters begin after any leading dashes, so flags can go on either side. ## Saying which ones [Section titled “Saying which ones”](#saying-which-ones) Every command that can act on many things takes the same two ways of saying which: name them, or describe them. Both at once is a union. 
 ```bash
 proton mail messages trash 5bH2mQxK 9xL4pQrT
 proton mail messages trash --from newsletter@example.com --older-than 90d
@@ -156,11 +186,11 @@ zC7bX1yE  Example News  November round-up    2025-11-08 06:00
 proton --help
 proton mail messages send --help
 ```
- Next: [naming the thing you want](/references/), and [what comes back](/output/).
+ Next: [what comes back](/output/), and the page for the app you want - [Mail](/apps/mail/), [Drive](/apps/drive/), [Calendar](/apps/calendar/), [Pass](/apps/pass/) or [Contacts](/apps/contacts/).
 
-# Output
+# Output, JSON and exit codes
 
-> Data goes to stdout. Progress bars, confirmations, footers, warnings, prompts and errors go to stderr. So a redirect gives you clean data and you still see what happened.
+> Data goes to stdout; progress bars, confirmations, footers, warnings, prompts and errors go to stderr. So a redirect gives you clean data and you still see what happened. Five response shapes, one JSON envelope per list, and exit codes that tell failures apart.
 
 ## The five shapes [Section titled “The five shapes”](#the-five-shapes) ### Collections [Section titled “Collections”](#collections) 
 ```console
@@ -256,61 +286,28 @@ proton account login --no-input     # fail instead of asking
 PROTON_NO_INPUT=1 proton account login
 ```
 
-# Naming things
+# Frequently asked questions
 
-> Wherever a command's usage shows REF, four things work.
+> Whether proton-cli is official, how it differs from Proton Mail Bridge and from Proton's own Drive and Pass CLIs, whether it is safe to give it your password, and what it does and doesn't cover. If your question is "why did this command fail", Troubleshooting is the page you want.
 
+## Is proton-cli made by Proton? [Section titled “Is proton-cli made by Proton?”](#is-proton-cli-made-by-proton) No. It is an independent, community-built project, not endorsed by, affiliated with, or supported by Proton AG. Proton is a trademark of Proton AG. It uses Proton’s own open-source cryptography - [go-srp](https://github.com/ProtonMail/go-srp) for login and [gopenpgp](https://github.com/ProtonMail/gopenpgp) for the key hierarchy - and talks to the same API as the Proton web apps, but it is not one of Proton’s products. ## Proton has its own Drive CLI and Pass CLI. Why use this one? [Section titled “Proton has its own Drive CLI and Pass CLI. Why use this one?”](#proton-has-its-own-drive-cli-and-pass-cli-why-use-this-one) Because those two cover one app each, and four of the five apps here have no official CLI at all. | | Mail | Drive | Calendar | Pass | Contacts | | ------------------ | -------------- | ----- | -------- | ---- | -------- | | **proton-cli** | ✓ | ✓ | ✓ | ✓ | ✓ | | Proton Drive CLI | | ✓ | | | | | Proton Pass CLI | | | | ✓ | | | Proton Mail Bridge | IMAP/SMTP only | | | | | Use Proton’s own tool when it covers what you need and you want first-party support. Use this one when you want Mail, Calendar or Contacts from a terminal, or one binary, one grammar and one output shape across all five instead of three tools with three ways of saying the same thing. They coexist fine. Nothing here changes anything another client relies on. ## How is it different from Proton Mail Bridge? [Section titled “How is it different from Proton Mail Bridge?”](#how-is-it-different-from-proton-mail-bridge) Bridge is a background service that speaks IMAP and SMTP to a desktop mail client on the same machine. proton-cli is a command you run. | | Proton Mail Bridge | proton-cli | | ----------------- | -------------------------------- | ------------------------------------- | | What it is | a local IMAP/SMTP server | a single binary you invoke | | Runs | continuously, in the background | when you run it, then exits | | You use it with | Thunderbird, Outlook, Apple Mail | your shell, a script, cron | | Covers | Mail | Mail, Drive, Calendar, Pass, Contacts | | Needs a paid plan | yes | no | | Headless server | possible, awkward | yes | If you want mail in a graphical client, use Bridge. If you want mail in a pipeline, use this. ## Is it safe to give it my Proton password? [Section titled “Is it safe to give it my Proton password?”](#is-it-safe-to-give-it-my-proton-password) Your password is never sent to Proton, and never leaves your machine. Login is [SRP](https://en.wikipedia.org/wiki/Secure_Remote_Password_protocol), a challenge-response exchange in which the server proves it knows your verifier while you prove you know your password, and neither ever transmits it. The key password derived from it stays local and unlocks your PGP keys in memory. What is written to disk is one file per profile, mode `0600`, containing your session tokens and your key password encrypted with a random key that lives on Proton’s servers rather than yours - so revoking the session from any Proton app makes a leaked copy of that file undecryptable. The honest caveat: **proton-cli is unaudited**, and it is a third-party program you are trusting with a credential. Read [Security and encryption](/how-it-works/) before you decide, and judge the source rather than this paragraph. ## Can Proton ban my account for using it? [Section titled “Can Proton ban my account for using it?”](#can-proton-ban-my-account-for-using-it) Proton’s Terms of Service govern how you may use your account, and automated access is your responsibility to keep within them. Ordinary interactive use looks like any other client to Proton. Hammering the API in a tight loop looks like abuse, because it is. Nobody here can speak for Proton. Sending thousands of messages, polling every second, or scripting anything a person would not plausibly do by hand is where accounts get flagged, and no tool protects you from that. ## Do I need a paid Proton plan? [Section titled “Do I need a paid Proton plan?”](#do-i-need-a-paid-proton-plan) No. Everything works on a free account, within the limits Proton puts on free accounts - the sending quota being the one you will meet first. Bridge, by contrast, is paid-only. ## Does it work on a headless server? [Section titled “Does it work on a headless server?”](#does-it-work-on-a-headless-server) Yes, with one wrinkle: Proton sometimes asks for a CAPTCHA at **login**, and a CAPTCHA needs a display. Sign in once on a machine with a desktop and copy the session file across; every command afterwards uses it and never logs in again. [How to do that](/troubleshooting/#signing-in-on-a-headless-machine). ## Can I use two Proton accounts at once? [Section titled “Can I use two Proton accounts at once?”](#can-i-use-two-proton-accounts-at-once) Yes. Each account gets a named profile with its own session file, and they never mix: 
 ```bash
-proton mail messages get 5bH2mQxKT9wLpN4v…    # the full ID
-proton mail messages get 5bH2mQxK             # the short ID a list printed
-proton mail messages get "Invoice #2291"      # the subject
-proton contacts get jane                      # a name or an address
+proton account login --profile work
+proton --profile work mail messages list
+export PROTON_PROFILE=work          # make it the default for this shell
 ```
- If nothing matches, the command exits `3`. If more than one thing matches, it prints the candidates and exits `4`: 
-```console
-$ proton contacts get jane
-Error: "jane" matches 2 contacts.
-Try:   narrow the term, or use one of:
-         7Kd91mQx  jane@example.com
-         3Ns8pT2v  jane.roe@work.example
-```
- ## Short IDs [Section titled “Short IDs”](#short-ids) On a terminal, lists shorten Proton’s IDs to eight characters and remember what they showed you, so you can paste one straight back. They carry no ellipsis and never start with a dash, so they copy cleanly out of a table and a shell reads them as what they are. Pipes, redirects and `--output json` always emit **full** IDs, so no script ever sees a truncated value. `--full-ids` switches shortening off interactively too. A short ID only resolves on the machine that printed it - the lookup table lives in `~/.config/proton-cli/idcache/<profile>.json`. Copied one from elsewhere? Run the matching `list` here first, or use the full ID. ## Two IDs in one [Section titled “Two IDs in one”](#two-ids-in-one) A Pass item and a calendar event each need two IDs, written as one slash-separated token. Lists print them this way and you paste them back the same way. Short IDs work on both halves at once. 
+ See [More than one account](/apps/account/#more-than-one-account). ## Does it sync folders like rclone or Dropbox? [Section titled “Does it sync folders like rclone or Dropbox?”](#does-it-sync-folders-like-rclone-or-dropbox) No, and it is not trying to. proton-cli runs an operation and exits - upload this, download that, list what is there. There is no watcher, no daemon and no conflict resolution. For a scheduled one-way copy, `proton drive items upload --recursive` in a cron job or systemd timer is the shape that fits. [Scripting](/scripting/) has working examples. ## What about VPN, Wallet, Docs, Meet, Lumo and Authenticator? [Section titled “What about VPN, Wallet, Docs, Meet, Lumo and Authenticator?”](#what-about-vpn-wallet-docs-meet-lumo-and-authenticator) Not covered, and not planned. proton-cli mirrors what the Proton **web clients** let you do for Mail, Drive, Calendar, Pass and Contacts. Proton VPN has [its own CLI](https://protonvpn.com/support/linux-vpn-tool). See [Limits](/limitations/). ## Does it support security keys or passkeys? [Section titled “Does it support security keys or passkeys?”](#does-it-support-security-keys-or-passkeys) No. FIDO2 and WebAuthn need a browser, so proton-cli cannot sign in with one. If your account uses a security key, add an authenticator app in Proton’s settings and sign in with a TOTP code instead. Ironically, it will happily *read* you a TOTP code for any other service: `proton pass items totp github.com`. ## Is my mail actually decrypted locally? [Section titled “Is my mail actually decrypted locally?”](#is-my-mail-actually-decrypted-locally) Yes. Content arrives encrypted, is decrypted on your machine with your own keys, and outgoing content is encrypted and signed before it leaves. No bridge, no proxy, no server in the middle. `proton mail messages get` prints a `Signature:` line reporting the verdict of the signature check against the sender’s key. What that also means: **anything you export is plaintext**. An `.eml` file on disk is readable by anything that can read a file. ## Which platforms does it run on? [Section titled “Which platforms does it run on?”](#which-platforms-does-it-run-on) Linux, macOS and Windows, on amd64 and arm64, as one static binary. Install it with Homebrew, winget, APT, AUR, Nix, npm, `go install`, a shell one-liner, or by downloading a checksummed binary. See [Install](/installation/). ## Is the source open, and is it audited? [Section titled “Is the source open, and is it audited?”](#is-the-source-open-and-is-it-audited) The source is [on GitHub](https://github.com/roman-16/proton-cli) under the MIT licence. It has **not** been audited. If you find a vulnerability, [report it privately](https://github.com/roman-16/proton-cli/security/advisories/new) rather than in a public issue. ## Something isn’t covered. Can I still reach it? [Section titled “Something isn’t covered. Can I still reach it?”](#something-isnt-covered-can-i-still-reach-it) Yes. `proton api` sends an authenticated request to any Proton endpoint using the session you already have: 
 ```bash
-proton pass items get SHARE_ID/ITEM_ID
-proton calendar events get CALENDAR_ID/EVENT_ID
+proton api GET /drive/volumes
+proton api POST /calendar/v1 --body '{"Name":"Work","Color":"#7272a7","Display":1,"AddressID":"..."}'
 ```
- A **recurring** event is stored once and happens many times, so naming a single occurrence takes one more part: its own start, after an `@`. 
-```bash
-proton calendar events get 4f2a1b9c@2026-04-16T09:00   # one occurrence
-proton calendar events get 4f2a1b9c                    # the whole series
-```
- Keep the `@` part and you act on that occurrence; drop it and you act on the series. `--future` widens one occurrence to it and every later one. ## Drive is addressed by path [Section titled “Drive is addressed by path”](#drive-is-addressed-by-path) Files and folders are named by their path: 
-```bash
-proton drive items get /Documents/report.pdf
-proton drive items move /Documents/report.pdf --into /Archive
-```
- Something with no place in the tree - a trashed item, a photo, an album - has no path, so it is named by the `REF` its list showed: 
-```bash
-proton drive trash restore 7Kd91mQx
-proton drive photos download 3Ns8pT2v --output-dir ./photos
-```
- ## Full IDs that start with a dash [Section titled “Full IDs that start with a dash”](#full-ids-that-start-with-a-dash) Proton’s IDs are base64, `-` is one of its characters, and so about one in sixty-four begins with one. Paste them like any other reference - the dash is part of the ID and is handled for you: 
-```bash
-proton pass items get -x76EpiVSJf2oHzHgyC2D_jF8O…==/_fb26gvMWjnM7US4_wpTNm_LqI…==
-proton contacts delete -bJxDLEMvt-Z6t4Yna7V8SYQ_F…==
-```
- One rule comes with it: **put your flags before the ID**, because everything after such an ID is read as another argument. 
-```bash
-proton mail messages attachments download --output-dir ./files -bJxDLEMvt-…==   # yes
-proton mail messages attachments download -bJxDLEMvt-…== --output-dir ./files   # no
-```
- Short IDs need none of this: the eight characters begin after any leading dashes, so flags can go on either side.
+ Encrypted fields come back encrypted - that command does no key handling. See [Raw API](/apps/api/).
 
-# Account
+# Your Proton account from the command line
 
-> Signing in and out, account settings, and the sessions Proton holds for you.
+> Sign in once and your password is never asked for again on that machine. This page covers signing in and out, unattended and two-password sign-in, running several Proton accounts side by side, the sessions Proton holds across your devices, and your account settings.
 
-Every command and flag is in the [`proton account` reference](/commands/account/). For profiles, environment variables and where things are stored, see [Configuration](/configuration/). ## Where you stand [Section titled “Where you stand”](#where-you-stand) 
+Every command and flag is in the [`proton account` reference](/commands/account/). ## Where you stand [Section titled “Where you stand”](#where-you-stand) 
 ```console
 $ proton account get
 Email:       you@proton.me
@@ -322,26 +319,88 @@ Session:     valid
 Unlocked:    yes
 ID:          Kd91mQxT…
 ```
- `Session: valid` and `Unlocked: yes` together mean this machine can act as the account right now. ## Signing in and out [Section titled “Signing in and out”](#signing-in-and-out) 
+ `Session: valid` and `Unlocked: yes` together mean this machine can act as the account right now. ## Signing in [Section titled “Signing in”](#signing-in) An account reaches proton one way: 
 ```bash
 proton account login
-proton account logout
+```
+ It asks for your email, password and two-factor code, attaches the account to a profile, and saves the session. Every later command acts as whichever profile it names. Signing in also **unlocks your keys**, so your password is needed once per machine and not again. Your password itself never leaves your machine: it derives the keys that decrypt your data locally. See [Security and encryption](/how-it-works/). Signing in again as the same account changes nothing, so an unattended job can run it ahead of its real work and recover on its own from a session that expired or was revoked: 
+```bash
+proton account login --user "$ACCOUNT" --password-file "$CRED"
+proton drive items upload backup.zst /backups
+```
+ A two-factor code is only asked for when the account actually has one enabled. **Security keys are not supported**: FIDO2 needs a browser. If your account uses one, add an authenticator app in Proton’s settings and sign in with that code. ### Two-password mode [Section titled “Two-password mode”](#two-password-mode) Proton can keep the password that proves who you are apart from the one that opens your data. If your account is in [two-password mode](https://proton.me/support/switch-two-password-mode), `login` asks for the second password once it has signed in, exactly where Proton’s own sign-in asks for it: 
+```console
+$ proton account login
+Email:            alice@proton.me
+Password:
+Second password:
+✓ Signed in as alice@proton.me (profile "default").
+```
+ It is the second one that seals into the session, so afterwards nothing is asked again. `proton account settings get` reports which mode the account is in. ### Handing over the password without a terminal [Section titled “Handing over the password without a terminal”](#handing-over-the-password-without-a-terminal) A password is read from a pipe or a file, [never from a flag value](/design-notes/#why-a-password-is-never-a-flag-value). 
+```bash
+# a pipe
+printf '%s' "$PW" | proton account login --user alice@proton.me --password-stdin
+
+
+# a file
+proton account login --user alice@proton.me --password-file /run/secrets/proton
+```
+ A second password is read the same way, through flags of its own. Standard input has one reader, so an account in two-password mode takes at most one of its two secrets from a pipe: 
+```bash
+proton account login --user alice@proton.me \
+    --password-file /run/secrets/proton \
+    --second-password-file /run/secrets/proton-second
+```
+ Three commands reach an endpoint Proton guards behind an elevated session, and ask for your password again at that moment - `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`: 
+```bash
+printf '%s' "$PW" | proton calendar settings calendars delete Work --password-stdin
+```
+ `--password-stdin` takes standard input for the password and nothing else, so it cannot be combined with a `-` argument that wants the same stream: 
+```console
+$ printf '%s' "$PW" | proton --password-stdin mail messages send --body - ...
+Error: --password-stdin and --body - both read standard input, which can only be read once.
+Try:   pass the password with --password-file instead
+```
+ ## Signing out [Section titled “Signing out”](#signing-out) 
+```bash
+proton account logout              # forget the session on this machine
 proton account logout --revoke     # also invalidate it at Proton
 proton account logout --all        # every profile on this machine
 ```
- `login` asks for whatever a flag has not already supplied, as long as it is running in a terminal. Without one, name the account with `--user` and hand the password over with `--password-file` or `--password-stdin` ([why not `--password`](/design-notes/#why-a-password-is-never-a-flag-value)). It also unlocks your keys, so your password is needed **once** per machine and not again. Signing in again as the same account changes nothing, so an unattended job can run it ahead of its real work and recover on its own from a session that expired. An account in [two-password mode](https://proton.me/support/switch-two-password-mode) is asked for its second password once it has signed in - that is the one its keys are locked with - or reads it from `--second-password-file` / `--second-password-stdin`. Standard input has one reader, so at most one of the two secrets can come down a pipe. Security keys are not supported: they need a browser. If your account uses one, add an authenticator app in Proton’s settings and sign in with that code. ## Profiles [Section titled “Profiles”](#profiles) A profile is a named session slot on this machine, so a personal and a work account never mix. 
+ Revoking is what makes a leaked copy of the session file worthless: the sealed key password cannot be opened without a live session. ## More than one account [Section titled “More than one account”](#more-than-one-account) A profile is a named session slot on this machine, so a personal and a work account never mix. 
 ```console
-$ proton --profile work account login
+$ proton account login --profile work
 ✓ Signed in as you@company.com (profile "work").
 
 
+$ proton --profile work mail messages list
+```
+ To see what is signed in here, answered from disk with no API call: 
+```console
 $ proton account profiles list
 PROFILE   EMAIL             UNLOCKED  SAVED             ACTIVE
 ────────  ────────────────  ────────  ────────────────  ──────
 default   you@proton.me     yes       2026-04-15 14:31  ✓
 work      you@company.com   yes       2026-04-15 15:02
 ```
- `profiles list` works offline. `export PROTON_PROFILE=work` makes one the default for a shell. ## Sessions [Section titled “Sessions”](#sessions) Every session Proton holds for your account, across all your devices - the “Sessions” section of Proton’s account settings. 
+ Or make a profile the default for a shell: 
+```bash
+export PROTON_PROFILE=work
+proton mail messages list
+```
+ A profile nobody signed in acts as nobody, and says so before it reaches the network: 
+```console
+$ proton --profile work mail messages list
+Error: Profile "work" is not signed in.
+Try:   proton account login --profile work
+```
+ Pointing a profile at a different account is a fine thing to want; it just has to be said out loud, since the name means that account everywhere else: 
+```console
+$ proton account login --profile work --user someone@else.com
+Error: Profile "work" is signed in as alice@company.com.
+Try:   proton account logout --profile work
+```
+ ## Sessions on your other devices [Section titled “Sessions on your other devices”](#sessions-on-your-other-devices) Every session Proton holds for your account, across all your devices - the “Sessions” section of Proton’s account settings. 
 ```console
 $ proton account sessions list
 ID        CLIENT     CREATED           CURRENT
@@ -355,7 +414,7 @@ ID        CLIENT     CREATED           CURRENT
 proton account sessions revoke 3Ns8pT2v
 proton account sessions revoke --others     # everything but this one
 ```
- **If you lose a device, revoke its session.** That also makes the credentials saved on it useless, even to someone who already copied the file. ## Settings [Section titled “Settings”](#settings) 
+ **If you lose a device, revoke its session.** That also makes the credentials saved on it useless, even to someone who already copied the file. ## Where the session lives [Section titled “Where the session lives”](#where-the-session-lives) `account login` writes `~/.config/proton-cli/sessions/<profile>.json` with mode `0600` and reuses it, so later commands don’t re-authenticate. It holds the session tokens and your key password, [encrypted with a key held on Proton’s side](/how-it-works/#how-credentials-are-stored-at-rest). Two things end a session: revoking it, and Proton expiring it. Either means signing in again. Copying that file to another machine is how a headless box gets a session it cannot obtain itself. Treat it as a secret while copying: it contains the refresh token. See [Troubleshooting](/troubleshooting/#signing-in-on-a-headless-machine). ## Settings [Section titled “Settings”](#settings) 
 ```bash
 proton account settings get     # the values now in effect
 proton account settings list    # the keys you can change, with their values
@@ -363,9 +422,11 @@ proton account settings set locale de_AT
 ```
  | Key | Values | | ----------------------------- | -------------------------------------------------- | | `locale` | any text, e.g. `de_AT` | | `date-format` | `locale`, `dd/mm/yyyy`, `mm/dd/yyyy`, `yyyy-mm-dd` | | `time-format` | `locale`, `24h`, `12h` | | `week-start` | `locale`, `monday` … `sunday` | | `crash-reports` · `telemetry` | `off`, `on` | Values can be given by name or by Proton’s own number, and mistakes are caught before anything is sent. `get` shows more than `set` can change. Proton Sentinel, two-factor state, whether the account is in two-password mode and recovery addresses are readable here but can only be changed at [account.proton.me](https://account.proton.me), along with your password, recovery secrets, billing and account deletion. Mail, Calendar and Drive each have settings of their own - `proton mail settings`, and so on. Pass and Contacts have none.
 
-# Raw API
+# The raw Proton API
 
-`proton api` sends an authenticated request to any Proton endpoint, using the session you already have. It is the escape hatch for anything the commands don’t cover. Every flag is in the [`proton api` reference](/commands/api/). 
+> The proton api command sends an authenticated request to any Proton endpoint, using the session you already have. It is the escape hatch for anything the commands don't cover.
+
+Every flag is in the [`proton api` reference](/commands/api/). 
 ```bash
 proton api GET /drive/volumes
 proton api GET /mail/v4/messages --query Page=0 --query PageSize=10
@@ -375,9 +436,9 @@ proton api GET /calendar/v1 --output json | jq -r '.Calendars[].ID'
 ```
  Responses come back as the API returned them, in Proton’s `PascalCase`, and **encrypted fields stay encrypted** - this command does no key handling. For decrypted content, use the commands for that app. ## Finding an endpoint [Section titled “Finding an endpoint”](#finding-an-endpoint) [`openapi.yaml`](https://github.com/roman-16/proton-cli/blob/main/openapi.yaml) documents roughly 740 endpoints - paths, methods, request and response schemas, and query parameters. It is generated from Proton’s own web client source, and a weekly job keeps it in step with upstream.
 
-# Calendar
+# Proton Calendar from the command line
 
-> Calendars and events, encrypted with your calendar key and signed with your address key.
+> Events, recurrence, reminders and invitations in Proton Calendar, plus .ics in and out. Everything is encrypted with your calendar key and signed with your address key.
 
 Every command and flag is in the [`proton calendar` reference](/commands/calendar/). This page is the things people actually do. ## See what’s on [Section titled “See what’s on”](#see-whats-on) 
 ```bash
@@ -482,9 +543,9 @@ proton calendar settings set primary-timezone Europe/Vienna
 ```
  | Key | Values | | ------------------------------------------------------------------------------------------ | ------------------------------------------ | | `view` | `day`, `week`, `month`, `year`, `planning` | | `week-numbers` · `auto-detect-timezone` · `show-secondary-timezone` · `auto-import-invite` | `off`, `on` | | `primary-timezone` · `secondary-timezone` | an IANA zone | | `invite-locale` | a language, e.g. `en_US` | | `default-calendar` | a calendar ID |
 
-# Contacts
+# Proton Contacts from the command line
 
-> Contacts, their groups and their pinned encryption keys. Cards are encrypted and signed with your user key.
+> Your Proton address book from the terminal: typed addresses and phones, the full vCard field set, groups, duplicate merging, and import and export. Cards are encrypted and signed with your user key.
 
 Every command and flag is in the [`proton contacts` reference](/commands/contacts/). This page is the things people actually do. `REF` is a contact ID, a name, or an email address. ## The address book [Section titled “The address book”](#the-address-book) 
 ```bash
@@ -531,9 +592,9 @@ proton contacts keys unpin jane
 ```
  `--email` picks which of the contact’s addresses the key applies to when there are several. `--scheme` is `pgp-mime` by default, or `pgp-inline`.
 
-# Drive
+# Proton Drive from the command line
 
-> Your Drive as paths. Files are encrypted before they leave your machine and decrypted after they arrive, block by block, with your keys.
+> Upload, download, share and organize Proton Drive as ordinary paths. Files are encrypted before they leave your machine and decrypted after they arrive, block by block, with your keys.
 
 Every command and flag is in the [`proton drive` reference](/commands/drive/). This page is the things people actually do. ## Look around [Section titled “Look around”](#look-around) 
 ```bash
@@ -623,9 +684,9 @@ proton drive settings set version-history 30d
 ```
  `version-history` is `off`, `7d`, `30d`, `180d`, `1y` or `10y` - how long previous versions are kept. Keeping more than the default is a paid feature.
 
-# Mail
+# Proton Mail from the command line
 
-> Read, write, send, search and organize mail. Bodies are decrypted on your machine and outgoing mail is encrypted and signed with your address key, exactly like the web client.
+> Read, send, search and organize Proton Mail from your terminal. Bodies are decrypted on your machine, and outgoing mail is encrypted and signed with your address key, exactly like the web client.
 
 Every command and flag is in the [`proton mail` reference](/commands/mail/). This page is the things people actually do. ## Read your mail [Section titled “Read your mail”](#read-your-mail) 
 ```bash
@@ -770,9 +831,9 @@ proton mail settings addresses update me@proton.me --signature - < signature.htm
 ```
  Every key has a fixed set of values, checked before anything is sent, and values can be given by name or by Proton’s own number. Signatures are stored as HTML: plain text is escaped and its newlines become line breaks, `--html` passes markup through.
 
-# Pass
+# Proton Pass from the command line
 
-> Vaults, logins, secrets and aliases. Items are decrypted on your machine with the vault and item keys.
+> Logins, notes, cards, SSH keys, identities, aliases and two-factor codes in Proton Pass. Items are decrypted on your machine with the vault and item keys.
 
 Every command and flag is in the [`proton pass` reference](/commands/pass/). This page is the things people actually do. An item takes two IDs to address, written as one token: `SHARE_ID/ITEM_ID`. A name or URL works instead. ## Find and read [Section titled “Find and read”](#find-and-read) 
 ```bash
@@ -888,7 +949,7 @@ proton pass breaches get jane@proton.me
 ```plaintext
 proton <app> <collection> <verb> [TARGET...] [--flags]
 ```
- Anywhere a command shows `REF`, you can pass a full ID, the eight-character short ID a list printed, or something human: a subject, a name, a path, an email address. See [References](/references/). ## Apps [Section titled “Apps”](#apps) * **[`proton calendar`](/commands/calendar/)** - calendars and events. 24 commands. * **[`proton contacts`](/commands/contacts/)** - contacts, their groups and their pinned keys. 18 commands. * **[`proton drive`](/commands/drive/)** - files and folders in Drive. 45 commands. * **[`proton mail`](/commands/mail/)** - read, write and organize mail. 77 commands. * **[`proton pass`](/commands/pass/)** - vaults, logins and secrets. 49 commands. ## Account [Section titled “Account”](#account) * **[`proton account`](/commands/account/)** - your Proton account, its settings and your session. 10 commands. * **[`proton api`](/commands/api/)** - send a raw authenticated request to the Proton API. 1 command. ## proton itself [Section titled “proton itself”](#proton-itself) * **[`proton` itself](/commands/self/)** - updating, uninstalling, completions and what a release changed. 5 commands. ## Flags that work on every command [Section titled “Flags that work on every command”](#flags-that-work-on-every-command) These are declared on the root, so they can be given to any command and mean the same thing on all of them. | Flag | Description | | ---------------------- | ---------------------------------------------------------------------------- | | `-n, --dry-run` | Preview mutations without applying them | | `--full-ids` | Show full IDs in interactive output (default: shortened to 8 chars on TTY) | | `--log-level string` | Logging verbosity: debug, info, warn, error (env: PROTON\_LOG\_LEVEL) | | `--no-color` | Disable colored output (env: NO\_COLOR) | | `--no-input` | Never prompt; a missing credential becomes an error (env: PROTON\_NO\_INPUT) | | `-o, --output string` | Output format: text, json, yaml (default `text`) | | `-p, --profile string` | Profile to act as (env: PROTON\_PROFILE; default: default) | | `-q, --quiet` | Suppress non-essential stderr output | | `-y, --yes` | Answer confirmation prompts with yes | See [Configuration](/configuration/) for what each one changes, and [Output](/output/) for the exit codes.
+ Anywhere a command shows `REF`, you can pass a full ID, the eight-character short ID a list printed, or something human: a subject, a name, a path, an email address. See [Naming the thing you want](/language/#naming-the-thing-you-want). ## Apps [Section titled “Apps”](#apps) * **[`proton calendar`](/commands/calendar/)** - calendars and events. 24 commands. * **[`proton contacts`](/commands/contacts/)** - contacts, their groups and their pinned keys. 18 commands. * **[`proton drive`](/commands/drive/)** - files and folders in Drive. 45 commands. * **[`proton mail`](/commands/mail/)** - read, write and organize mail. 77 commands. * **[`proton pass`](/commands/pass/)** - vaults, logins and secrets. 49 commands. ## Account [Section titled “Account”](#account) * **[`proton account`](/commands/account/)** - your Proton account, its settings and your session. 10 commands. * **[`proton api`](/commands/api/)** - send a raw authenticated request to the Proton API. 1 command. ## proton itself [Section titled “proton itself”](#proton-itself) * **[`proton` itself](/commands/self/)** - updating, uninstalling, completions and what a release changed. 5 commands. ## Flags that work on every command [Section titled “Flags that work on every command”](#flags-that-work-on-every-command) These are declared on the root, so they can be given to any command and mean the same thing on all of them. | Flag | Description | | ---------------------- | ---------------------------------------------------------------------------- | | `-n, --dry-run` | Preview mutations without applying them | | `--full-ids` | Show full IDs in interactive output (default: shortened to 8 chars on TTY) | | `--log-level string` | Logging verbosity: debug, info, warn, error (env: PROTON\_LOG\_LEVEL) | | `--no-color` | Disable colored output (env: NO\_COLOR) | | `--no-input` | Never prompt; a missing credential becomes an error (env: PROTON\_NO\_INPUT) | | `-o, --output string` | Output format: text, json, yaml (default `text`) | | `-p, --profile string` | Profile to act as (env: PROTON\_PROFILE; default: default) | | `-q, --quiet` | Suppress non-essential stderr output | | `-y, --yes` | Answer confirmation prompts with yes | See [Configuration](/configuration/) for what each one changes, and [Output](/output/) for the exit codes.
 
 # proton account
 
@@ -2918,82 +2979,11 @@ proton version --output json
 ```
  *** Every command also takes the [flags that work everywhere](/commands/#flags-that-work-on-every-command).
 
-# Configuration
+# Environment variables, files and global flags
 
-## Signing in [Section titled “Signing in”](#signing-in) An account reaches proton one way: 
-```bash
-proton account login
-```
- It asks for your email, password and two-factor code, attaches the account to a profile, and saves the session. Every later command acts as whichever profile it names. Your password never leaves your machine: it derives the keys that decrypt your data locally. See [How it works](/how-it-works/). ### Two-password mode [Section titled “Two-password mode”](#two-password-mode) Proton can keep the password that proves who you are apart from the one that opens your data. If your account is in [two-password mode](https://proton.me/support/switch-two-password-mode), `login` asks for the second password once it has signed in, exactly where Proton’s own sign-in asks for it: 
-```console
-$ proton account login
-Email:            alice@proton.me
-Password:
-Second password:
-✓ Signed in as alice@proton.me (profile "default").
-```
- It is the second one that seals into the session, so afterwards nothing is asked again. `proton account settings get` reports which mode the account is in. ### Handing over the password without a terminal [Section titled “Handing over the password without a terminal”](#handing-over-the-password-without-a-terminal) A password is read from a pipe or a file, [never from a flag value](/design-notes/#why-a-password-is-never-a-flag-value). 
-```bash
-# a pipe
-printf '%s' "$PW" | proton account login --user alice@proton.me --password-stdin
+> There is no config file to maintain. Everything proton-cli reads comes from a flag you pass, an environment variable, or the session it saved when you signed in - and this page is the complete list of all three.
 
-
-# a file
-proton account login --user alice@proton.me --password-file /run/secrets/proton
-```
- A second password is read the same way, through flags of its own. Standard input has one reader, so an account in two-password mode takes at most one of its two secrets from a pipe: 
-```bash
-proton account login --user alice@proton.me \
-    --password-file /run/secrets/proton \
-    --second-password-file /run/secrets/proton-second
-```
- `account login` performs the exchange that attaches an account to a profile. The others reach an endpoint Proton guards behind an elevated session, which it grants only for another one - today `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`: 
-```bash
-printf '%s' "$PW" | proton calendar settings calendars delete Work --password-stdin
-```
- `--password-stdin` takes standard input for the password and nothing else, so it cannot be combined with a `-` argument that wants the same stream: 
-```console
-$ printf '%s' "$PW" | proton --password-stdin mail messages send --body - ...
-Error: --password-stdin and --body - both read standard input, which can only be read once.
-Try:   pass the password with --password-file instead
-```
- Signing in again as the same account changes nothing, so an unattended job can run it ahead of its real work and recover on its own from a session that expired or was revoked: 
-```bash
-proton account login --user "$ACCOUNT" --password-file "$CRED"
-proton drive items upload backup.zst /backups
-```
- ## Sessions [Section titled “Sessions”](#sessions) `account login` saves the session to `~/.config/proton-cli/sessions/<profile>.json` (mode `0600`) and reuses it, so later commands don’t re-authenticate. Signing in also unlocks your keys and seals the key password into that file, encrypted with a key that lives on Proton’s side. **So your password is needed once per machine and not again** - reading and writing encrypted content afterwards asks for nothing. Two exceptions: * Proton guards a few destructive endpoints behind an elevated session, and asks for your password at the moment you hit one. It prompts, or reads `--password-file` / `--password-stdin`, and drops the elevation again immediately. The sealed key password cannot stand in: it is a one-way derivation, and Proton re-authenticates against the password itself. * A session revoked or expired elsewhere means signing in again. 
-```bash
-proton account logout             # forget the session here
-proton account logout --revoke    # and invalidate it at Proton
-```
- Revoking is what makes a leaked copy of the file worthless: the sealed key password cannot be opened without the session. See [Security](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md). ## Profiles: more than one account [Section titled “Profiles: more than one account”](#profiles-more-than-one-account) A profile is a name with an account behind it. Each keeps its own session file, so a personal and a work account never mix. 
-```bash
-proton account login --profile work
-proton --profile work mail messages list
-```
- To see what is signed in here - answered from disk, with no API call: 
-```bash
-proton account profiles list
-```
- Or make a profile the default for the shell: 
-```bash
-export PROTON_PROFILE=work
-proton mail messages list
-```
- A profile nobody signed in acts as nobody, and says so before it reaches the network: 
-```console
-$ proton --profile work mail messages list
-Error: Profile "work" is not signed in.
-Try:   proton account login --profile work
-```
- Pointing a profile at a different account is a fine thing to want; it just has to be said out loud, since the name means that account everywhere else: 
-```console
-$ proton account login --profile work --user someone@else.com
-Error: Profile "work" is signed in as alice@company.com.
-Try:   proton account logout --profile work
-```
- ## Environment variables [Section titled “Environment variables”](#environment-variables) Eight, and none of them can name an account. | Variable | Description | | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | | `PROTON_PROFILE` | Active profile (default: `default`) | | `PROTON_API_URL` | API base URL (default: `https://mail.proton.me/api`) | | `NO_COLOR` | Set to any value, even empty, to turn colored output off ([no-color.org](https://no-color.org)) | | `COLORTERM` | `truecolor` or `24bit` if your terminal takes 24-bit color and does not advertise it; only affects how exactly a color swatch is drawn ([why](/design-notes/#why-colour-is-asked-for-by-name)) | | `PROTON_NO_INPUT` | Set to any value, even empty, to never prompt; a missing credential becomes an error | | `PROTON_LOG_LEVEL` | `debug`, `info`, `warn` or `error` | | `PROTON_NO_UPDATE_CHECK` | Set to any value, even empty, to never look for a new release ([what that is](/installation/#updating)) | | `PROTON_HV_HELPER` | An executable to open a CAPTCHA with, instead of the embedded one ([why](/human-verification/#bringing-your-own-helper)) | ## Files on disk [Section titled “Files on disk”](#files-on-disk) | Path | Contents | | ---------------------------------------------- | -------------------------------------------------------------------------- | | `~/.config/proton-cli/sessions/<profile>.json` | Session tokens and the encrypted key password (mode `0600`) | | `~/.config/proton-cli/idcache/<profile>.json` | Short-ID lookup table (see [Naming things](/references/)) | | `~/.config/proton-cli/update-check.json` | When proton last looked for a new release ([why](/installation/#updating)) | Those paths are the Linux ones. macOS uses `~/Library/Application Support/proton-cli/` and Windows uses `%APPDATA%\proton-cli\`. Nothing else is written; there is no config file to maintain. ## Global flags [Section titled “Global flags”](#global-flags) | Flag | Effect | | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | | `-p`, `--profile NAME` | Which profile to act as | | `-o`, `--output text\|json\|yaml` | Output format (default `text`) | | `-n`, `--dry-run` | Preview a mutation without applying it | | `-y`, `--yes` | Answer confirmation prompts with yes; needed by a script that removes things ([why](/language/#when-it-asks-first)) | | `-q`, `--quiet` | Suppress the non-essential stderr output | | `--full-ids` | Don’t shorten IDs in interactive output | | `--no-color` | Turn colored output off (env: `NO_COLOR`) | | `--log-level debug\|info\|warn\|error` | Logging verbosity (env: `PROTON_LOG_LEVEL`) | | `--no-input` | Never prompt; a missing credential becomes an error (env: `PROTON_NO_INPUT`) | The five you type most have a single-letter form, and they cluster - so `-qn` is a quiet dry run ([why only five](/design-notes/#why-one-flag-name-means-one-thing)). `--api-url URL` points the CLI at a different API host. It works but is hidden from `--help`, because it is for developing proton rather than for using it.
+For signing in, profiles and sessions, see [Your Proton account](/apps/account/). ## Environment variables [Section titled “Environment variables”](#environment-variables) Eight, and none of them can name an account. | Variable | Description | | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | | `PROTON_PROFILE` | Active profile (default: `default`) | | `PROTON_API_URL` | API base URL (default: `https://mail.proton.me/api`) | | `NO_COLOR` | Set to any value, even empty, to turn colored output off ([no-color.org](https://no-color.org)) | | `COLORTERM` | `truecolor` or `24bit` if your terminal takes 24-bit color and does not advertise it; only affects how exactly a color swatch is drawn ([why](/design-notes/#why-colour-is-asked-for-by-name)) | | `PROTON_NO_INPUT` | Set to any value, even empty, to never prompt; a missing credential becomes an error | | `PROTON_LOG_LEVEL` | `debug`, `info`, `warn` or `error` | | `PROTON_NO_UPDATE_CHECK` | Set to any value, even empty, to never look for a new release ([what that is](/installation/#updating)) | | `PROTON_HV_HELPER` | An executable to open a CAPTCHA with, instead of the embedded one ([why](/troubleshooting/#bringing-your-own-captcha-helper)) | ## Files on disk [Section titled “Files on disk”](#files-on-disk) | Path | Contents | | ---------------------------------------------- | -------------------------------------------------------------------------- | | `~/.config/proton-cli/sessions/<profile>.json` | Session tokens and the encrypted key password (mode `0600`) | | `~/.config/proton-cli/idcache/<profile>.json` | Short-ID lookup table (see [Short IDs](/language/#short-ids)) | | `~/.config/proton-cli/update-check.json` | When proton last looked for a new release ([why](/installation/#updating)) | Those paths are the Linux ones. macOS uses `~/Library/Application Support/proton-cli/` and Windows uses `%APPDATA%\proton-cli\`. Nothing else is written. ## Global flags [Section titled “Global flags”](#global-flags) | Flag | Effect | | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | | `-p`, `--profile NAME` | Which profile to act as | | `-o`, `--output text\|json\|yaml` | Output format (default `text`) | | `-n`, `--dry-run` | Preview a mutation without applying it | | `-y`, `--yes` | Answer confirmation prompts with yes; needed by a script that removes things ([why](/language/#when-it-asks-first)) | | `-q`, `--quiet` | Suppress the non-essential stderr output | | `--full-ids` | Don’t shorten IDs in interactive output | | `--no-color` | Turn colored output off (env: `NO_COLOR`) | | `--log-level debug\|info\|warn\|error` | Logging verbosity (env: `PROTON_LOG_LEVEL`) | | `--no-input` | Never prompt; a missing credential becomes an error (env: `PROTON_NO_INPUT`) | The five you type most have a single-letter form, and they cluster - so `-qn` is a quiet dry run ([why only five](/design-notes/#why-one-flag-name-means-one-thing)). `--api-url URL` points the CLI at a different API host. It works but is hidden from `--help`, because it is for developing proton rather than for using it.
 
 # Design notes
 
@@ -3007,11 +2997,11 @@ proton mail messages move REF --into archive         # a destination
 ```
  Five flags have a single-letter form, and they are the five typed most: `-p`, `-o`, `-n`, `-q`, `-y`. The whole shorthand namespace belongs to the root, so no subcommand can take a letter and `-p` is the profile everywhere. ## Why a password is never a flag value [Section titled “Why a password is never a flag value”](#why-a-password-is-never-a-flag-value) `argv` is readable by every user on the machine through `ps`, and it survives in shell history and in unit files. So a password is read from a pipe or a file - `--password-stdin` or `--password-file` - and never from `--password`. `--password-file` is usually the one to reach for, since systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all hand you a path already. ## Why the reference is generated [Section titled “Why the reference is generated”](#why-the-reference-is-generated) Prose drifts and a command tree does not. Everything in the [command reference](/commands/) - every argument, every flag, every example - is read out of the running program, so a command that exists is a command that is documented, under its current name and with its current flags. The examples are parsed against the real tree, so one cannot name a command that was renamed. The guides beside it are written by hand, in files of their own. A page that is half generated cannot be regenerated. ## Why search lags [Section titled “Why search lags”](#why-search-lags) `list` reads Proton’s server-side index, which is eventually consistent: a message you just sent may not appear for a few seconds, and one you just deleted may still show up. The web client behaves the same way. To confirm a change, run `get` on the ID the command printed rather than searching for the subject again.
 
-# How it works
+# Security and encryption
 
-> proton talks to the same API as the Proton web apps, with the same authentication and the same encryption. Nothing proxies your data, and no server other than Proton's sees it.
+> Your password never reaches Proton, your keys never leave your machine, and every byte is decrypted after it arrives and encrypted before it leaves. This page is the whole model: how login works, what unlocks what, what is written to disk, and what an attacker who copied that file would get.
 
-## Logging in [Section titled “Logging in”](#logging-in) 1. **Session** - an unauthenticated session is created via `POST /auth/v4/sessions`. 2. **SRP** - login runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Remote_Password_protocol) through Proton’s own [go-srp](https://github.com/ProtonMail/go-srp), so your password is never sent to the server, not even hashed. Two-factor codes are handled in the same exchange. 3. **Key password** - your password, stretched with the salt Proton holds for your primary key, is what unlocks your PGP keys. It stays on your machine. An account in [two-password mode](https://proton.me/support/switch-two-password-mode) stretches its **second** password instead: that mode’s whole point is that the secret which proves who you are is not the one that opens your data, and Proton’s account settings say which mode you are in. 4. **Session file** - tokens plus the key password (encrypted with a random client key held server-side) are written to `~/.config/proton-cli/sessions/<profile>.json` with mode `0600`, so later commands don’t re-authenticate. [Security](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md) documents this storage model in full. 5. **Refresh** - expired access tokens are refreshed automatically. Proton may occasionally require human verification during step 2. See [Human verification](/human-verification/). ## The key hierarchy [Section titled “The key hierarchy”](#the-key-hierarchy) Proton’s encryption is a tree, and proton walks the same one as the web client, using [gopenpgp](https://github.com/ProtonMail/gopenpgp): 
+proton talks to the same API as the Proton web apps, with the same authentication and the same encryption. Nothing proxies your data, and no server other than Proton’s sees it. ## Logging in [Section titled “Logging in”](#logging-in) 1. **Session** - an unauthenticated session is created via `POST /auth/v4/sessions`. 2. **SRP** - login runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Remote_Password_protocol) through Proton’s own [go-srp](https://github.com/ProtonMail/go-srp), so your password is never sent to the server, not even hashed. Two-factor codes are handled in the same exchange. 3. **Key password** - your password, stretched with the salt Proton holds for your primary key, is what unlocks your PGP keys. It stays on your machine. An account in [two-password mode](https://proton.me/support/switch-two-password-mode) stretches its **second** password instead: that mode’s whole point is that the secret which proves who you are is not the one that opens your data, and Proton’s account settings say which mode you are in. 4. **Session file** - tokens plus the key password are written to `~/.config/proton-cli/sessions/<profile>.json` with mode `0600`, so later commands don’t re-authenticate. What exactly is in there is [below](#how-credentials-are-stored-at-rest). 5. **Refresh** - expired access tokens are refreshed automatically. Proton may occasionally require human verification during step 2. See [Troubleshooting](/troubleshooting/#proton-asks-for-a-captcha). ## The key hierarchy [Section titled “The key hierarchy”](#the-key-hierarchy) Proton’s encryption is a tree, and proton walks the same one as the web client, using [gopenpgp](https://github.com/ProtonMail/gopenpgp): 
 ```plaintext
 key password
   └── user key
@@ -3021,21 +3011,11 @@ key password
         ├── contact encryption  (contact cards)
         └── pass vault keys     (vault and item keys)
 ```
- Unlocking happens lazily, and alongside everything else: a command that only lists metadata never touches your keys, and one that decrypts asks for them at the same time as the content they will open, so the keys cost no round trip of their own. Below the user key, only the branch a command actually reads is unwrapped - a calendar’s keys, a vault’s, a file’s. ## What is encrypted with what [Section titled “What is encrypted with what”](#what-is-encrypted-with-what) | Content | Encrypted with | Signed with | | --------------------------- | ----------------------- | ----------------------- | | Mail bodies and attachments | Session key per message | Address key | | Calendar events | Calendar key | Address key | | Drive file contents | Node key, per block | Address key | | Drive file and folder names | Parent node key | Address key | | Contact cards | User key | User key | | Pass items | AES-256-GCM item key | symmetric, no signature | | Pass vaults | AES-256-GCM vault key | symmetric, no signature | Reading works the other way around: content arrives encrypted, gets decrypted locally, and signatures are verified against the sender’s key. `mail messages get` reports the verdict on a `Signature:` line. ## What leaves your machine [Section titled “What leaves your machine”](#what-leaves-your-machine) * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens. * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event. * The SRP proof during login, which does not reveal your password. What never leaves: your password, your second password if you have one, your key password, and your private keys. ## Where the API definitions come from [Section titled “Where the API definitions come from”](#where-the-api-definitions-come-from) The endpoint shapes are generated from Proton’s own open-source [web client](https://github.com/ProtonMail/WebClients) into [`openapi.yaml`](https://github.com/roman-16/proton-cli/blob/main/openapi.yaml), covering roughly 740 endpoints. A weekly workflow regenerates it, so the CLI tracks upstream changes rather than guessing. ## Elevated operations [Section titled “Elevated operations”](#elevated-operations) Proton guards its most destructive endpoints behind an elevated session scope. A request that needs one and hasn’t got it comes back refused, and the client is expected to prove a human is present: re-run SRP against a scope-granting endpoint, retry the request, then drop the scope again. proton handles that in the transport layer, the way the web clients do, rather than in each command. So no command has to know which operations are guarded - it runs, the server asks, your password is requested once, the request is retried, and the elevation is dropped immediately afterwards. Both halves of SRP are verified, on the initial sign-in and on every elevation: the server has to prove it knows your verifier just as you prove you know your password. ## Two-factor authentication [Section titled “Two-factor authentication”](#two-factor-authentication) A TOTP code is asked for only when the account actually has one enabled, so a code is never wasted on a guess. Security keys (FIDO2/WebAuthn) need a browser, so proton cannot sign in with one.
+ Unlocking happens lazily, and alongside everything else: a command that only lists metadata never touches your keys, and one that decrypts asks for them at the same time as the content they will open, so the keys cost no round trip of their own. Below the user key, only the branch a command actually reads is unwrapped - a calendar’s keys, a vault’s, a file’s. ## What is encrypted with what [Section titled “What is encrypted with what”](#what-is-encrypted-with-what) | Content | Encrypted with | Signed with | | --------------------------- | ----------------------- | ----------------------- | | Mail bodies and attachments | Session key per message | Address key | | Calendar events | Calendar key | Address key | | Drive file contents | Node key, per block | Address key | | Drive file and folder names | Parent node key | Address key | | Contact cards | User key | User key | | Pass items | AES-256-GCM item key | symmetric, no signature | | Pass vaults | AES-256-GCM vault key | symmetric, no signature | Reading works the other way around: content arrives encrypted, gets decrypted locally, and signatures are verified against the sender’s key. `mail messages get` reports the verdict on a `Signature:` line. ## What leaves your machine [Section titled “What leaves your machine”](#what-leaves-your-machine) * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens. * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event. * The SRP proof during login, which does not reveal your password. What never leaves: your password, your second password if you have one, your key password, and your private keys. **Anything you export is plaintext.** `mail messages export` and `contacts export` decrypt on the way out, so the files they write are readable by anything. Put them where you would be comfortable putting the mail itself. ## How credentials are stored at rest [Section titled “How credentials are stored at rest”](#how-credentials-are-stored-at-rest) One file per profile, at `~/.config/proton-cli/sessions/<profile>.json`, mode `0600`. It contains: * the session **auth tokens** (UID, access, refresh), and * the **salted key password** that unlocks your PGP keys, stored **encrypted** with a random 256-bit AES-GCM *client key*. That client key is **not** stored on your machine. It is held by Proton’s servers and fetched over an authenticated request (`/auth/v4/sessions/local/key`) when a command needs to unlock your keys. Two consequences: * The key password is never written to disk in cleartext, so it cannot be lifted from a backup, a synced home directory, a disk image, or with `grep`. * **Revoking the session** - from any Proton app, or with `proton account logout --revoke` - makes the on-disk blob undecryptable. Without a live session the client key cannot be fetched, so a leaked copy can no longer be turned back into your key password. The caveat that matters: the file still contains the session **refresh token**, so it is not safe to share. Encryption at rest limits the damage of a leaked copy, and revoking neutralises it. Neither is a substitute for protecting the file. macOS keeps it under `~/Library/Application Support/proton-cli/`, Windows under `%APPDATA%\proton-cli\`. ## Elevated operations [Section titled “Elevated operations”](#elevated-operations) Proton guards its most destructive endpoints behind an elevated session scope. A request that needs one and hasn’t got it comes back refused, and the client is expected to prove a human is present: re-run SRP against a scope-granting endpoint, retry the request, then drop the scope again. proton handles that in the transport layer, the way the web clients do, rather than in each command. So no command has to know which operations are guarded - it runs, the server asks, your password is requested once, the request is retried, and the elevation is dropped immediately afterwards. Both halves of SRP are verified, on the initial sign-in and on every elevation: the server has to prove it knows your verifier just as you prove you know your password. ## Two-factor authentication [Section titled “Two-factor authentication”](#two-factor-authentication) A TOTP code is asked for only when the account actually has one enabled, so a code is never wasted on a guess. Security keys (FIDO2/WebAuthn) need a browser, so proton cannot sign in with one. Add an authenticator app in Proton’s settings instead. ## Reducing your risk [Section titled “Reducing your risk”](#reducing-your-risk) proton-cli is **unaudited**. To limit what that costs you: * Run it as your normal user, never as root. * Verify release checksums against the [releases page](https://github.com/roman-16/proton-cli/releases) before installing a downloaded binary. * Keep it up to date: `proton update`, or your package manager. * Revoke the session on any machine you lose control of - `proton account sessions revoke`, or Proton’s own session settings. * Keep automated use plausible. Proton’s abuse detection reacts to volume and rate, and an account flagged for that is an account-safety problem, not a bug here. Found a vulnerability? [`SECURITY.md`](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md) has the private reporting channels. Please don’t open a public issue. ## Where the API definitions come from [Section titled “Where the API definitions come from”](#where-the-api-definitions-come-from) The endpoint shapes are generated from Proton’s own open-source [web client](https://github.com/ProtonMail/WebClients) into [`openapi.yaml`](https://github.com/roman-16/proton-cli/blob/main/openapi.yaml), covering roughly 740 endpoints. A weekly workflow regenerates it, so the CLI tracks upstream changes rather than guessing.
 
-# Human verification
+# Install on Linux, macOS and Windows
 
-> Proton's anti-abuse system sometimes asks for a CAPTCHA at login, usually on a fresh install, from a new network, or after several failed attempts.
-
-## What happens [Section titled “What happens”](#what-happens) proton opens a small window with Proton’s CAPTCHA in it. Solve it, and the command you ran retries automatically. There is nothing extra to install. ## Requirements [Section titled “Requirements”](#requirements) | Platform | Needs | | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | | Linux desktop | `libwebkit2gtk-4.1`, `libgtk-3`, and `glib-networking` (`apt install libwebkit2gtk-4.1-0 libgtk-3-0 glib-networking`, or your distro’s equivalent). A desktop that can already run a browser has all three. | | macOS | nothing, system WebKit is used | | Windows | nothing, WebView2 ships with Edge | ## When the window opens empty [Section titled “When the window opens empty”](#when-the-window-opens-empty) A window that says **“TLS support is not available”** and nothing else means the webview came up but cannot fetch anything: https needs a TLS backend, and GIO loads one as a module rather than having it built in. Install `glib-networking` (above). If it is installed and the window still says this, the module is somewhere GIO is not looking - `GIO_EXTRA_MODULES` names extra directories to search, and a process started with a stripped environment will not have inherited it. ## When it can’t run [Section titled “When it can’t run”](#when-it-cant-run) Two situations have no window to draw in: * **Headless machines** - servers, containers, CI, anything without a display. * **`go install` builds** - they don’t embed the helper. Use a [release binary](/installation/), or build a helper and point `PROTON_HV_HELPER` at it (below). Either way, sign in somewhere with a display and reuse the session: 1. Run any command on a desktop machine with the same account, solving the CAPTCHA once. 2. Copy `~/.config/proton-cli/sessions/<profile>.json` to the headless machine, preserving mode `0600`. 3. Commands there use the existing session and skip login entirely. Treat that file as a secret while copying it: it contains the session refresh token. See [Security](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md). ## Bringing your own helper [Section titled “Bringing your own helper”](#bringing-your-own-helper) `PROTON_HV_HELPER` names an executable to open the CAPTCHA with, instead of the one proton carries: 
-```bash
-PROTON_HV_HELPER=/path/to/proton-hv proton account login
-```
- It is read before the embedded copy, so it works in a build that has none. Two uses: * **A build with no helper in it** - anything from `go install` - gains one. `scripts/build-hv-helpers.sh` builds it from this repo. * **A packaged proton** can ship the helper as a real file and give it the graphics environment a webview needs, rather than putting that environment on the CLI itself, where every editor and pager proton opens would inherit it. The helper takes a URL and prints the solved token. A path that isn’t there, isn’t a file, or isn’t executable is reported as such rather than as verification being unavailable.
-
-# Installation
-
-> proton is a single self-contained binary. Pick the line that matches your system.
+> proton-cli is one self-contained binary, on Homebrew, winget, APT, AUR, Nix, npm, Go and as a signed download. Pick the line that matches your system.
 
 The command is `proton`. Every install also puts `proton-cli` beside it as a second name, so a line written either way runs. | Platform | Install | | ---------------- | ------------------------------------------------------------------------------------------------ | | **Linux, macOS** | `curl -fsSL https://raw.githubusercontent.com/roman-16/proton-cli/main/scripts/install.sh \| sh` | | **Windows** | `irm https://raw.githubusercontent.com/roman-16/proton-cli/main/scripts/install.ps1 \| iex` | | **Homebrew** | `brew install --cask roman-16/tap/proton-cli` | | **winget** | `winget install Roman-16.ProtonCLI` | | **Arch** | `yay -S proton-cli-bin` | | **Fedora, RHEL** | `sudo dnf install ./proton-cli_*.rpm` | | **Alpine** | `sudo apk add --allow-untrusted ./proton-cli_*.apk` | | **Nix** | `environment.systemPackages = [ pkgs.proton-cli ];` | | **npm** | `npm install -g @roman-16/proton-cli` | | **Go** | `go install github.com/roman-16/proton-cli/cmd/proton@latest` | The install scripts drop the binary in `~/.local/bin` (Linux, macOS) or `%LOCALAPPDATA%\Programs\proton-cli` (Windows). Both take a version and a directory: 
 ```bash
@@ -3111,17 +3091,17 @@ go build ./cmd/proton
 ```
  That plain build has no CAPTCHA helper. For a release-shaped binary, see [Contributing](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md).
 
-# Limitations
+# What proton-cli can't do
 
-> proton-cli aims for parity with what the Proton web clients let you do. Some things it will never do, because Proton's platform doesn't allow it; others aren't built yet.
+> proton-cli aims for parity with what the Proton web clients let you do. Some things it will never do, because Proton's platform doesn't allow it; others aren't built yet. This page is the honest list of both.
 
-## Platform constraints [Section titled “Platform constraints”](#platform-constraints) | What you can’t do | Why | Instead | | ----------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------ | | Sign in with a security key | FIDO2 speaks WebAuthn, which needs a browser | Add a TOTP authenticator to the account | | Sign in on a headless machine | Proton may ask for a CAPTCHA, which needs a display | [Human verification](/human-verification/) | | Pick any colour for a label | Proton allows only its 20 accent colours | `--color` prints the palette when refused | | Trust `list` immediately after a change | Proton’s index is eventually consistent | `get` the ID the command printed ([why](/design-notes/#why-search-lags)) | | Put a message file back into a mailbox | Proton exposes no such endpoint, to any client | `--eml` reads one into a draft or a send | | Answer one occurrence of a recurring invitation | Needs a personal copy of that occurrence | Answer the whole series | | Verify an update offline | Checksums and binaries share an origin, and are unsigned | Not closed yet; needs a built-in public key | **Three commands ask for your password again**, because Proton guards their endpoints behind an elevated session: * `calendar settings calendars delete` * `mail messages expire` * `mail settings autoreply set` They prompt, or take `--password-file` / `--password-stdin`. The key password sealed into your session cannot stand in: it is a one-way derivation, and Proton re-authenticates against the password itself. Proton answers some unrelated refusals with the same code. So one of these may ask for your password and then be refused anyway, for a reason no password would have fixed. **A recurring event needs a zone that can be named.** proton reads it from `TZ`, `/etc/localtime` or `/etc/timezone`, then falls back to your Proton calendar settings. Where none of those answers, a new event is stored as a plain UTC instant - and a recurring one then drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure. **Exported mail is plaintext.** Export decrypts, so the files are readable by anything. The original `DKIM-Signature` and `ARC-*` headers no longer verify, since the body they signed was the encrypted one. The web client’s export behaves the same way. ## Not built yet [Section titled “Not built yet”](#not-built-yet) Each has an equivalent in a web client, and each is unbuilt for a stated reason rather than an oversight. | What’s missing | Why | | ----------------------------------------- | ----------------------------------------------------------------------------------------------- | | Drive computers and shared bookmarks | Neither exists until you use a desktop client or open somebody’s link, so neither can be tested | | Mail forwarding itself to another address | Needs an OpenPGP forwarding primitive the Go libraries don’t implement | | Mail forwarding to a non-Proton address | Proton emails that address a link its owner must follow | | Moving a Pass item between vaults | Re-encrypting to another share loses access on failure rather than failing loudly | ## Out of scope [Section titled “Out of scope”](#out-of-scope) proton-cli mirrors the Proton web clients for Mail, Drive, Calendar, Pass and Contacts. Other Proton products - VPN, Wallet, Docs, Meet, Lumo, Authenticator - are not covered, and neither are endpoints that exist in the API but have no equivalent action in a web client. Some things a web client does are out of reach from a terminal and stay that way: creating a passkey needs WebAuthn, adding a Zoom or Google Meet link needs that provider’s OAuth, and importing from Gmail or IMAP needs the same. Drive’s search builds its index in the browser rather than on the server, so `drive items list --pattern --recursive` walks the tree instead. For anything the commands don’t reach, [`proton api`](/apps/api/) sends raw authenticated requests to any endpoint.
+## Platform constraints [Section titled “Platform constraints”](#platform-constraints) | What you can’t do | Why | Instead | | ----------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------- | | Sign in with a security key | FIDO2 speaks WebAuthn, which needs a browser | Add a TOTP authenticator to the account | | Sign in on a headless machine | Proton may ask for a CAPTCHA, which needs a display | [Copy a session across](/troubleshooting/#signing-in-on-a-headless-machine) | | Pick any colour for a label | Proton allows only its 20 accent colours | `--color` prints the palette when refused | | Trust `list` immediately after a change | Proton’s index is eventually consistent | `get` the ID the command printed ([why](/design-notes/#why-search-lags)) | | Put a message file back into a mailbox | Proton exposes no such endpoint, to any client | `--eml` reads one into a draft or a send | | Answer one occurrence of a recurring invitation | Needs a personal copy of that occurrence | Answer the whole series | | Verify an update offline | Checksums and binaries share an origin, and are unsigned | Not closed yet; needs a built-in public key | **Three commands ask for your password again**, because Proton guards their endpoints behind an elevated session: * `calendar settings calendars delete` * `mail messages expire` * `mail settings autoreply set` They prompt, or take `--password-file` / `--password-stdin`. The key password sealed into your session cannot stand in: it is a one-way derivation, and Proton re-authenticates against the password itself. Proton answers some unrelated refusals with the same code. So one of these may ask for your password and then be refused anyway, for a reason no password would have fixed. **A recurring event needs a zone that can be named.** proton reads it from `TZ`, `/etc/localtime` or `/etc/timezone`, then falls back to your Proton calendar settings. Where none of those answers, a new event is stored as a plain UTC instant - and a recurring one then drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure. **Exported mail is plaintext.** Export decrypts, so the files are readable by anything. The original `DKIM-Signature` and `ARC-*` headers no longer verify, since the body they signed was the encrypted one. The web client’s export behaves the same way. ## Not built yet [Section titled “Not built yet”](#not-built-yet) Each has an equivalent in a web client, and each is unbuilt for a stated reason rather than an oversight. | What’s missing | Why | | ----------------------------------------- | ----------------------------------------------------------------------------------------------- | | Drive computers and shared bookmarks | Neither exists until you use a desktop client or open somebody’s link, so neither can be tested | | Mail forwarding itself to another address | Needs an OpenPGP forwarding primitive the Go libraries don’t implement | | Mail forwarding to a non-Proton address | Proton emails that address a link its owner must follow | | Moving a Pass item between vaults | Re-encrypting to another share loses access on failure rather than failing loudly | ## Out of scope [Section titled “Out of scope”](#out-of-scope) proton-cli mirrors the Proton web clients for Mail, Drive, Calendar, Pass and Contacts. Other Proton products - VPN, Wallet, Docs, Meet, Lumo, Authenticator - are not covered, and neither are endpoints that exist in the API but have no equivalent action in a web client. Some things a web client does are out of reach from a terminal and stay that way: creating a passkey needs WebAuthn, adding a Zoom or Google Meet link needs that provider’s OAuth, and importing from Gmail or IMAP needs the same. Drive’s search builds its index in the browser rather than on the server, so `drive items list --pattern --recursive` walks the tree instead. For anything the commands don’t reach, [`proton api`](/apps/api/) sends raw authenticated requests to any endpoint.
 
-# Scripting
+# Scripting and automation
 
-> Data goes to stdout, everything else to stderr, and exit codes say what went wrong. See Output for the details.
+> Pipelines, jq, cron and systemd. Data goes to stdout, everything else to stderr, and exit codes say what went wrong, so proton-cli composes with the rest of your shell instead of fighting it.
 
-## Capturing new IDs [Section titled “Capturing new IDs”](#capturing-new-ids) Commands that create something print the new ID to stdout, so a plain assignment works: 
+See [Output](/output/) for the response shapes in full. ## Capturing new IDs [Section titled “Capturing new IDs”](#capturing-new-ids) Commands that create something print the new ID to stdout, so a plain assignment works: 
 ```bash
 LABEL=$(proton mail settings labels create --name Work --color purple)
 VAULT=$(proton pass vaults create --name Automation)
@@ -3344,4 +3324,36 @@ alias() {
 }
 alias newsletter-xyz
 ```
- ## Automation notes [Section titled “Automation notes”](#automation-notes) * **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one. An account in [two-password mode](/configuration/#two-password-mode) needs `--second-password-file` beside it, from a second such path. * **2FA**: `--totp` is only consulted during a fresh login. For unattended jobs, sign in once interactively so the session file exists, then let the job reuse it. * **Elevation**: Proton asks for the password again before `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own. * **CAPTCHA**: a login on a headless machine can hit human verification, which needs a desktop. Log in on a desktop first and copy the session, or run the job somewhere with a display. See [Human verification](/human-verification/). * **`--quiet`** silences the `✓` lines and progress bars, useful in cron. * **Bad moments upstream**: a 502 from Proton’s edge or a connection that fails is waited out and asked again - for anything that only reads, and for signing in. Nothing that changes something is ever sent twice. A failure that outlasts the waiting exits 5, so a job can tell “Proton is having trouble, come back later” from “the password is wrong” (exit 2). * **Rate limits**: bulk commands page through Proton’s API and respect its caps (150 messages per page). Long-running loops should sleep between iterations. * **Search lag**: Proton’s index is eventually consistent, so a just-sent message may not appear in `list` for a few seconds. Act on the ID that the command printed instead of searching again.
+ ## Automation notes [Section titled “Automation notes”](#automation-notes) * **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one. An account in [two-password mode](/apps/account/#two-password-mode) needs `--second-password-file` beside it, from a second such path. * **2FA**: `--totp` is only consulted during a fresh login. For unattended jobs, sign in once interactively so the session file exists, then let the job reuse it. * **Elevation**: Proton asks for the password again before `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own. * **CAPTCHA**: a login on a headless machine can hit human verification, which needs a desktop. Log in on a desktop first and copy the session, or run the job somewhere with a display. See [Troubleshooting](/troubleshooting/#signing-in-on-a-headless-machine). * **`--quiet`** silences the `✓` lines and progress bars, useful in cron. * **Bad moments upstream**: a 502 from Proton’s edge or a connection that fails is waited out and asked again - for anything that only reads, and for signing in. Nothing that changes something is ever sent twice. A failure that outlasts the waiting exits 5, so a job can tell “Proton is having trouble, come back later” from “the password is wrong” (exit 2). * **Rate limits**: bulk commands page through Proton’s API and respect its caps (150 messages per page). Long-running loops should sleep between iterations. * **Search lag**: Proton’s index is eventually consistent, so a just-sent message may not appear in `list` for a few seconds. Act on the ID that the command printed instead of searching again.
+
+# Troubleshooting
+
+> What to do when a command fails: CAPTCHAs at login, signing in on a machine with no display, a session that expired, Proton asking for your password again, a change that doesn't show up yet, and rate limits.
+
+## What the exit code is telling you [Section titled “What the exit code is telling you”](#what-the-exit-code-is-telling-you) Errors say what happened and what to try, so read the message first. The code is what a script reads. | Code | Means | Do | | ----- | ------------------------------ | ------------------------------------------------ | | `1` | Something you passed was wrong | Fix the command; nothing was sent | | `2` | Authentication failed | Sign in again, or fix the password | | `3` | Not found | Check the reference, or run the matching `list` | | `4` | Ambiguous, or a conflict | Narrow the term, or use the ID it printed | | `5` | Network or server problem | Wait and retry; this is not your command’s fault | | `130` | Cancelled with `Ctrl+C` | Nothing to do | The difference between `2` and `5` matters most to a scheduled job: `2` means fix the credential, `5` means come back later. A rate limit is `5`. ## Proton asks for a CAPTCHA [Section titled “Proton asks for a CAPTCHA”](#proton-asks-for-a-captcha) Proton’s anti-abuse system sometimes asks for human verification at login - usually on a fresh install, from a new network, or after several failed attempts. proton opens a small window with Proton’s CAPTCHA in it. Solve it, and the command you ran retries automatically. There is nothing extra to install. | Platform | Needs | | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | | Linux desktop | `libwebkit2gtk-4.1`, `libgtk-3` and `glib-networking` (`apt install libwebkit2gtk-4.1-0 libgtk-3-0 glib-networking`, or your distro’s equivalent). A desktop that can already run a browser has all three. | | macOS | nothing, system WebKit is used | | Windows | nothing, WebView2 ships with Edge | ### The window opens empty [Section titled “The window opens empty”](#the-window-opens-empty) A window that says **“TLS support is not available”** and nothing else means the webview came up but cannot fetch anything: https needs a TLS backend, and GIO loads one as a module rather than having it built in. Install `glib-networking` (above). If it is installed and the window still says this, the module is somewhere GIO is not looking - `GIO_EXTRA_MODULES` names extra directories to search, and a process started with a stripped environment will not have inherited it. ### There is no window to draw in [Section titled “There is no window to draw in”](#there-is-no-window-to-draw-in) Two situations have none: * **Headless machines** - servers, containers, CI, anything without a display. See below. * **`go install` builds** - they don’t embed the helper. Use a [release binary](/installation/), or [bring your own helper](#bringing-your-own-captcha-helper). ## Signing in on a headless machine [Section titled “Signing in on a headless machine”](#signing-in-on-a-headless-machine) Only **login** can hit a CAPTCHA. Everything after it uses the saved session, so the fix is to obtain the session somewhere with a display and carry it over: 1. Run any command on a desktop machine with the same account, solving the CAPTCHA once. 2. Copy `~/.config/proton-cli/sessions/<profile>.json` to the headless machine, preserving mode `0600`. 3. Commands there use the existing session and skip login entirely. Treat that file as a secret while copying it: it contains the session refresh token. See [Security and encryption](/how-it-works/). macOS keeps it under `~/Library/Application Support/proton-cli/`, Windows under `%APPDATA%\proton-cli\`. ### Bringing your own CAPTCHA helper [Section titled “Bringing your own CAPTCHA helper”](#bringing-your-own-captcha-helper) `PROTON_HV_HELPER` names an executable to open the CAPTCHA with, instead of the one proton carries: 
+```bash
+PROTON_HV_HELPER=/path/to/proton-hv proton account login
+```
+ It is read before the embedded copy, so it works in a build that has none. Two uses: * **A build with no helper in it** - anything from `go install` - gains one. `scripts/build-hv-helpers.sh` builds it from this repository. * **A packaged proton** can ship the helper as a real file and give it the graphics environment a webview needs, rather than putting that environment on the CLI itself, where every editor and pager proton opens would inherit it. The helper takes a URL and prints the solved token. A path that isn’t there, isn’t a file, or isn’t executable is reported as such rather than as verification being unavailable. ## “Profile is not signed in” [Section titled ““Profile is not signed in””](#profile-is-not-signed-in) 
+```console
+$ proton --profile work mail messages list
+Error: Profile "work" is not signed in.
+Try:   proton account login --profile work
+```
+ Either nothing was ever signed in under that name, or the session was revoked or expired. Signing in again as the same account is harmless and idempotent, which is why an unattended job can simply run it first: 
+```bash
+proton account login --user "$ACCOUNT" --password-file "$CRED"
+```
+ ## It asks for my password again [Section titled “It asks for my password again”](#it-asks-for-my-password-again) Three commands reach endpoints Proton guards behind an elevated session, and Proton re-authenticates against the password itself rather than accepting your session: * `calendar settings calendars delete` * `mail messages expire` * `mail settings autoreply set` They prompt, or take `--password-file` / `--password-stdin`. The key password sealed into your session cannot stand in: it is a one-way derivation. Proton answers some unrelated refusals with the same code, so one of these may ask for your password and then be refused anyway, for a reason no password would have fixed. ## A change I just made doesn’t show up [Section titled “A change I just made doesn’t show up”](#a-change-i-just-made-doesnt-show-up) `list` reads Proton’s server-side index, which is eventually consistent. A message you just sent may not appear for a few seconds, and one you just deleted may still be listed. The web client behaves the same way. To confirm a change, run `get` on the ID the command printed rather than searching for the subject again. ([Why](/design-notes/#why-search-lags).) ## Everything started failing at once [Section titled “Everything started failing at once”](#everything-started-failing-at-once) Bulk commands page through Proton’s API and respect its caps, but an account has limits above that - the sending quota on free accounts being the one most people meet. A run that suddenly fails with exit `5` after working fine is almost always a rate limit, not a bug. Wait it out. A loop that acts on many things should sleep between iterations rather than going as fast as the API allows. A 502 from Proton’s edge, or a connection that drops, is waited out and retried automatically - for anything that only reads, and for signing in. Nothing that changes something is ever sent twice. ## “Work is a label, not a folder” [Section titled ““Work is a label, not a folder””](#work-is-a-label-not-a-folder) 
+```console
+$ proton mail messages move 5bH2mQxK --into Work
+Error: "Work" is a label, not a folder - moving needs a folder.
+Try:   to attach the label instead, use `label --label Work`.
+       To see the folders, run `proton mail settings folders list`.
+```
+ A message lives in exactly one folder and carries any number of labels. `move` changes the first, `label` adds to the second. ## A short ID doesn’t resolve [Section titled “A short ID doesn’t resolve”](#a-short-id-doesnt-resolve) Short IDs are remembered per machine, in `~/.config/proton-cli/idcache/<profile>.json`. One copied from another machine’s output means nothing here. Run the matching `list` first, or use the full ID. ([More](/language/#short-ids).) ## A command hangs instead of failing [Section titled “A command hangs instead of failing”](#a-command-hangs-instead-of-failing) It doesn’t - but a prompt on a terminal looks like a hang if you weren’t expecting one. Only `account login` and the three elevated commands above ever ask a question, and only when standard input is a terminal. To make a missing credential an error instead: 
+```bash
+proton account login --no-input
+PROTON_NO_INPUT=1 proton account login
+```
+ ## Colours look wrong [Section titled “Colours look wrong”](#colours-look-wrong) proton asks your terminal for a colour by name and your terminal decides what it looks like. The exception is the `■` beside a label, folder, calendar or group: that hex is the value stored on Proton’s side, and drawing it faithfully needs 24-bit colour. If your terminal takes it but does not advertise it, set `COLORTERM=truecolor`. `--no-color` or `NO_COLOR` turns colour off entirely. ([Why it works this way](/design-notes/#why-colour-is-asked-for-by-name).) ## Still stuck [Section titled “Still stuck”](#still-stuck) Run the command again with `--log-level debug` and open an [issue](https://github.com/roman-16/proton-cli/issues) with what it printed. Redact the IDs and addresses you would rather not publish - none of them are needed to reproduce a bug. Please don’t report a **security** issue in a public issue. [`SECURITY.md`](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md) has the private channels.

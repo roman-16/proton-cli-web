@@ -1,6 +1,6 @@
 # proton-cli
 
-> Unofficial, end-to-end encrypted CLI for Proton Mail, Drive, Calendar, Pass and Contacts. One binary, one grammar: proton <app> <collection> <verb>.
+> Your CLI for Proton Mail, Drive, Calendar, Pass and Contacts. One binary, end-to-end encrypted. One grammar: proton <app> <collection> <verb>.
 
 ## Documentation Sets
 
