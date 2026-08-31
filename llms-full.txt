@@ -631,7 +631,7 @@ No. Everything works on a free account, within the limits Proton puts on free ac
 
 [Section titled “Does it work on a headless server?”](#does-it-work-on-a-headless-server)
 
-Yes, with one wrinkle: Proton sometimes asks for a CAPTCHA at **login**, and a CAPTCHA needs a display. Sign in once on a machine with a desktop and copy the session file across; every command afterwards uses it and never logs in again. [How to do that](/troubleshooting/#signing-in-on-a-headless-machine).
+Yes, and it signs in for itself. Proton sometimes asks for a CAPTCHA at **login**; proton prints the verification page and waits while you solve it on whatever device is to hand, then carries on. Nothing to install. [What that looks like](/troubleshooting/#proton-asks-for-a-captcha).
 
 ## Can I use two Proton accounts at once?
 
@@ -932,8 +932,6 @@ proton account sessions revoke --others     # everything but this one
 `account login` writes `~/.config/proton-cli/sessions/<profile>.json` with mode `0600` and reuses it, so later commands don’t re-authenticate. It holds the session tokens and your key password, [encrypted with a key held on Proton’s side](/how-it-works/#how-credentials-are-stored-at-rest).
 
 Two things end a session: revoking it, and Proton expiring it. Either means signing in again.
-
-Copying that file to another machine is how a headless box gets a session it cannot obtain itself. Treat it as a secret while copying: it contains the refresh token. See [Troubleshooting](/troubleshooting/#signing-in-on-a-headless-machine).
 
 ## Settings
 
@@ -2014,17 +2012,18 @@ Anywhere a command shows `REF`, you can pass a full ID, the eight-character shor
 
 These are declared on the root, so they can be given to any command and mean the same thing on all of them.
 
-| Flag                   | Description                                                                  |
-| ---------------------- | ---------------------------------------------------------------------------- |
-| `-n, --dry-run`        | Preview mutations without applying them                                      |
-| `--full-ids`           | Show full IDs in interactive output (default: shortened to 8 chars on TTY)   |
-| `--log-level string`   | Logging verbosity: debug, info, warn, error (env: PROTON\_LOG\_LEVEL)        |
-| `--no-color`           | Disable colored output (env: NO\_COLOR)                                      |
-| `--no-input`           | Never prompt; a missing credential becomes an error (env: PROTON\_NO\_INPUT) |
-| `-o, --output string`  | Output format: text, json, yaml (default `text`)                             |
-| `-p, --profile string` | Profile to act as (env: PROTON\_PROFILE; default: default)                   |
-| `-q, --quiet`          | Suppress non-essential stderr output                                         |
-| `-y, --yes`            | Answer confirmation prompts with yes                                         |
+| Flag                   | Description                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| `-n, --dry-run`        | Preview mutations without applying them                                                |
+| `--full-ids`           | Show full IDs in interactive output (default: shortened to 8 chars on TTY)             |
+| `--log-level string`   | Logging verbosity: debug, info, warn, error (env: PROTON\_LOG\_LEVEL)                  |
+| `--no-color`           | Disable colored output (env: NO\_COLOR)                                                |
+| `--no-input`           | Never prompt; a missing credential becomes an error (env: PROTON\_NO\_INPUT)           |
+| `-o, --output string`  | Output format: text, json, yaml (default `text`)                                       |
+| `-p, --profile string` | Profile to act as (env: PROTON\_PROFILE; default: default)                             |
+| `-q, --quiet`          | Suppress non-essential stderr output                                                   |
+| `--verified string`    | A human verification already solved, as the refusal printed it (env: PROTON\_VERIFIED) |
+| `-y, --yes`            | Answer confirmation prompts with yes                                                   |
 
 See [Configuration](/configuration/) for what each one changes, and [Output](/output/) for the exit codes.
 
@@ -2062,6 +2061,8 @@ Signing in also unlocks your keys, so your password is needed once per machine a
 An account with a security key is asked to touch it. With an authenticator app enabled as well, an empty answer to the code prompt reaches for the key instead - so –totp is what an unattended job uses, a key being something only a person can answer.
 
 An account in two-password mode is asked for its second password once it has signed in, because that is the secret its keys are locked with rather than the one that proves who it is. A one-password account is never asked for it.
+
+Proton may ask you to prove you are human. The page it wants is printed, and can be solved on any device - so a machine with no display signs in like any other. A run that cannot be asked anything says which page to solve and which token to repeat the command with.
 
 Signing in again as the same account changes nothing, so an unattended job can run it first and recover from a session that expired.
 
@@ -7312,7 +7313,7 @@ Eight, and none of them can name an account.
 | `PROTON_NO_INPUT`        | Set to any value, even empty, to never prompt; a missing credential becomes an error                                                                                                           |
 | `PROTON_LOG_LEVEL`       | `debug`, `info`, `warn` or `error`                                                                                                                                                             |
 | `PROTON_NO_UPDATE_CHECK` | Set to any value, even empty, to never look for a new release ([what that is](/installation/#updating))                                                                                        |
-| `PROTON_HV_HELPER`       | An executable to open a CAPTCHA with, instead of the embedded one ([why](/troubleshooting/#bringing-your-own-captcha-helper))                                                                  |
+| `PROTON_VERIFIED`        | A human verification already solved, as the refusal printed it ([when you need it](/troubleshooting/#nothing-here-can-be-asked))                                                               |
 
 ## Files on disk
 
@@ -7341,6 +7342,7 @@ Those paths are the Linux ones. macOS uses `~/Library/Application Support/proton
 | `--no-color`                           | Turn colored output off (env: `NO_COLOR`)                                                                           |
 | `--log-level debug\|info\|warn\|error` | Logging verbosity (env: `PROTON_LOG_LEVEL`)                                                                         |
 | `--no-input`                           | Never prompt; a missing credential becomes an error (env: `PROTON_NO_INPUT`)                                        |
+| `--verified TOKEN`                     | A human verification already solved, as the refusal printed it (env: `PROTON_VERIFIED`)                             |
 
 The five you type most have a single-letter form, and they cluster - so `-qn` is a quiet dry run ([why only five](/design-notes/#why-one-flag-name-means-one-thing)).
 
@@ -7428,7 +7430,7 @@ proton talks to the same API as the Proton web apps, with the same authenticatio
 4. **Session file** - tokens plus the key password are written to `~/.config/proton-cli/sessions/<profile>.json` with mode `0600`, so later commands don’t re-authenticate. What exactly is in there is [below](#how-credentials-are-stored-at-rest).
 5. **Refresh** - expired access tokens are refreshed automatically.
 
-Proton may occasionally require human verification during step 2. See [Troubleshooting](/troubleshooting/#proton-asks-for-a-captcha).
+Proton may occasionally require human verification during step 2. Its page is solved in a browser, on whatever device is to hand, and the challenge token then stands as the proof on the retry - so nothing is rendered here and no machine is too bare to sign in. See [Troubleshooting](/troubleshooting/#proton-asks-for-a-captcha).
 
 ## The key hierarchy
 
@@ -7561,10 +7563,6 @@ curl -fsSL …/install.sh | sh -s -- --install-dir /usr/local/bin --version 2.5.
 & ([scriptblock]::Create((irm …/install.ps1))) -InstallDir "C:\tools\proton-cli"
 ```
 
-Note
-
-`go install` builds don’t embed the CAPTCHA helper that release binaries carry. If Proton asks for human verification at login, use a release binary instead. See [Troubleshooting](/troubleshooting/#proton-asks-for-a-captcha).
-
 ## Debian, Ubuntu, Linux Mint
 
 [Section titled “Debian, Ubuntu, Linux Mint”](#debian-ubuntu-linux-mint)
@@ -7685,8 +7683,6 @@ cd proton-cli
 go build ./cmd/proton
 ```
 
-That plain build has no CAPTCHA helper. For a release-shaped binary, see [Contributing](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md).
-
 # What proton-cli can't do
 
 > proton-cli aims for parity with what the Proton web clients let you do. Some things it will never do, because Proton's platform doesn't allow it; others aren't built yet. This page is the honest list of both.
@@ -7695,15 +7691,15 @@ That plain build has no CAPTCHA helper. For a release-shaped binary, see [Contri
 
 [Section titled “Platform constraints”](#platform-constraints)
 
-| What you can’t do                               | Why                                                      | Instead                                                                     |
-| ----------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Sign in with a passkey held in a phone          | The handoff runs over Bluetooth from a browser           | Use a key you can plug in, or a TOTP code                                   |
-| Sign in on a headless machine                   | Proton may ask for a CAPTCHA, which needs a display      | [Copy a session across](/troubleshooting/#signing-in-on-a-headless-machine) |
-| Pick any colour for a label                     | Proton allows only its 20 accent colours                 | `--color` prints the palette when refused                                   |
-| Trust `list` immediately after a change         | Proton’s index is eventually consistent                  | `get` the ID the command printed ([why](/design-notes/#why-search-lags))    |
-| Put a message file back into a mailbox          | Proton exposes no such endpoint, to any client           | `--eml` reads one into a draft or a send                                    |
-| Answer one occurrence of a recurring invitation | Needs a personal copy of that occurrence                 | Answer the whole series                                                     |
-| Verify an update offline                        | Checksums and binaries share an origin, and are unsigned | Not closed yet; needs a built-in public key                                 |
+| What you can’t do                               | Why                                                      | Instead                                                                                            |
+| ----------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Sign in with a passkey held in a phone          | The handoff runs over Bluetooth from a browser           | Use a key you can plug in, or a TOTP code                                                          |
+| Get past a CAPTCHA with nobody there            | Proving a human is present is what the challenge is for  | Solve it, then repeat the command with [`--verified`](/troubleshooting/#nothing-here-can-be-asked) |
+| Pick any colour for a label                     | Proton allows only its 20 accent colours                 | `--color` prints the palette when refused                                                          |
+| Trust `list` immediately after a change         | Proton’s index is eventually consistent                  | `get` the ID the command printed ([why](/design-notes/#why-search-lags))                           |
+| Put a message file back into a mailbox          | Proton exposes no such endpoint, to any client           | `--eml` reads one into a draft or a send                                                           |
+| Answer one occurrence of a recurring invitation | Needs a personal copy of that occurrence                 | Answer the whole series                                                                            |
+| Verify an update offline                        | Checksums and binaries share an origin, and are unsigned | Not closed yet; needs a built-in public key                                                        |
 
 **Three commands ask for your password again**, because Proton guards their endpoints behind an elevated session:
 
@@ -8074,7 +8070,7 @@ alias newsletter-xyz
 * **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one. An account in [two-password mode](/apps/account/#two-password-mode) needs `--second-password-file` beside it, from a second such path.
 * **2FA**: `--totp` is only consulted during a fresh login, and a security key can never answer for one - it wants a finger on it. For unattended jobs, sign in once interactively so the session file exists, then let the job reuse it.
 * **Elevation**: Proton asks for the password again before `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own.
-* **CAPTCHA**: a login on a headless machine can hit human verification, which needs a desktop. Log in on a desktop first and copy the session, or run the job somewhere with a display. See [Troubleshooting](/troubleshooting/#signing-in-on-a-headless-machine).
+* **CAPTCHA**: Proton can ask a job to prove a human is there, and only a human can answer. The job exits 2 with the verification page and a token; solve the page, then repeat the command with `--verified TOKEN` or `PROTON_VERIFIED`. The proof outlives the run that asked for it, the challenge does not, so this is two runs and never one. See [Troubleshooting](/troubleshooting/#nothing-here-can-be-asked).
 * **`--quiet`** silences the `✓` lines and progress bars, useful in cron.
 * **Bad moments upstream**: a 502 from Proton’s edge or a connection that fails is waited out and asked again - for anything that only reads, and for signing in. Nothing that changes something is ever sent twice. A failure that outlasts the waiting exits 5, so a job can tell “Proton is having trouble, come back later” from “the password is wrong” (exit 2).
 * **Rate limits**: bulk commands page through Proton’s API and respect its caps (150 messages per page). Long-running loops should sleep between iterations.
@@ -8082,7 +8078,7 @@ alias newsletter-xyz
 
 # Troubleshooting
 
-> What to do when a command fails: CAPTCHAs at login, signing in on a machine with no display, a session that expired, Proton asking for your password again, a change that doesn't show up yet, and rate limits.
+> What to do when a command fails: CAPTCHAs at login, a session that expired, Proton asking for your password again, a change that doesn't show up yet, and rate limits.
 
 ## What the exit code is telling you
 
@@ -8107,30 +8103,59 @@ The difference between `2` and `5` matters most to a scheduled job: `2` means fi
 
 Proton’s anti-abuse system sometimes asks for human verification at login - usually on a fresh install, from a new network, or after several failed attempts.
 
-proton opens a small window with Proton’s CAPTCHA in it. Solve it, and the command you ran retries automatically. There is nothing extra to install.
+proton prints Proton’s verification page and waits:
 
-| Platform      | Needs                                                                                                                                                                                                      |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Linux desktop | `libwebkit2gtk-4.1`, `libgtk-3` and `glib-networking` (`apt install libwebkit2gtk-4.1-0 libgtk-3-0 glib-networking`, or your distro’s equivalent). A desktop that can already run a browser has all three. |
-| macOS         | nothing, system WebKit is used                                                                                                                                                                             |
-| Windows       | nothing, WebView2 ships with Edge                                                                                                                                                                          |
+```console
+$ proton account login
+Email:             you@proton.me
+Password:
+Proton wants to confirm you are human. Solve the CAPTCHA on this page -
+you can open it on any device:
 
-### The window opens empty
 
-[Section titled “The window opens empty”](#the-window-opens-empty)
+  https://verify.proton.me/?methods=captcha&token=eWLVJEM5Op3H5LcsY1cGyUxO
 
-A window that says **“TLS support is not available”** and nothing else means the webview came up but cannot fetch anything: https needs a TLS backend, and GIO loads one as a module rather than having it built in.
 
-Install `glib-networking` (above). If it is installed and the window still says this, the module is somewhere GIO is not looking - `GIO_EXTRA_MODULES` names extra directories to search, and a process started with a stripped environment will not have inherited it.
+Press Enter once it says you are verified.
+✓ Signed in as you@proton.me (profile "default").
+```
 
-### There is no window to draw in
+Open it wherever you like - this machine, your phone, a laptop across the room - solve it, then press Enter and the command carries on. Where proton can hand the address to a browser it does, but the address is printed either way, so a server with no display verifies exactly like a desktop. There is nothing to install.
 
-[Section titled “There is no window to draw in”](#there-is-no-window-to-draw-in)
+### A CAPTCHA can’t be solved ahead of time
 
-Two situations have none:
+[Section titled “A CAPTCHA can’t be solved ahead of time”](#a-captcha-cant-be-solved-ahead-of-time)
 
-* **Headless machines** - servers, containers, CI, anything without a display. See below.
-* **`go install` builds** - they don’t embed the helper. Use a [release binary](/installation/), or [bring your own helper](#bringing-your-own-captcha-helper).
+The challenge belongs to the run that asked for it: every run gets its own, and solving one does not lower the gate for the next. So the command has to be waiting when you solve it.
+
+What *does* outlive the run is the proof. Once you have solved a challenge, its token works in a later run - which is what makes the two-step below possible.
+
+### Nothing here can be asked
+
+[Section titled “Nothing here can be asked”](#nothing-here-can-be-asked)
+
+With `--no-input`, `PROTON_NO_INPUT`, or standard input that isn’t a terminal, proton can’t wait. It exits with both halves you need:
+
+```console
+$ PROTON_NO_INPUT=1 proton account login --user you@proton.me --password-file ~/.proton
+Error: Proton wants to confirm you are human, and this run cannot wait while you do.
+Try:   solve https://verify.proton.me/?methods=captcha&token=eWLVJEM5Op3H5LcsY1cGyUxO
+       then run the same command again with --verified eWLVJEM5Op3H5LcsY1cGyUxO
+```
+
+Solve the page, then repeat the command with `--verified` (or `PROTON_VERIFIED`). This is how a scheduled job or a script gets through one: it surfaces the link to a person and tries again.
+
+### Email or SMS verification
+
+[Section titled “Email or SMS verification”](#email-or-sms-verification)
+
+Proton occasionally offers only a code by email or SMS. Its page checks the code and reports the result to nobody, so no command-line client can finish one:
+
+```console
+Error: Proton wants to confirm you are human by email or sms, and that cannot be done
+       from a terminal.
+Try:   sign in to your account in a browser once, then try again
+```
 
 ## A security key that nothing finds
 
@@ -8148,38 +8173,7 @@ services.udev.packages = [ pkgs.libfido2 ];
 
 Unplug the key and plug it in again afterwards: the rules apply when the device appears.
 
-**“This build cannot reach a security key on this machine.”** A Windows build installed with `go install`. Windows hands out assertions through its own API, which the released binaries are built to reach and a `go install` build is not - the same difference that leaves it without the CAPTCHA helper. Install from a [release](/installation/), or sign in with `--totp`.
-
-## Signing in on a headless machine
-
-[Section titled “Signing in on a headless machine”](#signing-in-on-a-headless-machine)
-
-Only **login** can hit a CAPTCHA. Everything after it uses the saved session, so the fix is to obtain the session somewhere with a display and carry it over:
-
-1. Run any command on a desktop machine with the same account, solving the CAPTCHA once.
-2. Copy `~/.config/proton-cli/sessions/<profile>.json` to the headless machine, preserving mode `0600`.
-3. Commands there use the existing session and skip login entirely.
-
-Treat that file as a secret while copying it: it contains the session refresh token. See [Security and encryption](/how-it-works/).
-
-macOS keeps it under `~/Library/Application Support/proton-cli/`, Windows under `%APPDATA%\proton-cli\`.
-
-### Bringing your own CAPTCHA helper
-
-[Section titled “Bringing your own CAPTCHA helper”](#bringing-your-own-captcha-helper)
-
-`PROTON_HV_HELPER` names an executable to open the CAPTCHA with, instead of the one proton carries:
-
-```bash
-PROTON_HV_HELPER=/path/to/proton-hv proton account login
-```
-
-It is read before the embedded copy, so it works in a build that has none. Two uses:
-
-* **A build with no helper in it** - anything from `go install` - gains one. `scripts/build-hv-helpers.sh` builds it from this repository.
-* **A packaged proton** can ship the helper as a real file and give it the graphics environment a webview needs, rather than putting that environment on the CLI itself, where every editor and pager proton opens would inherit it.
-
-The helper takes a URL and prints the solved token. A path that isn’t there, isn’t a file, or isn’t executable is reported as such rather than as verification being unavailable.
+**“This build cannot reach a security key on this machine.”** A Windows build installed with `go install`. Windows hands out assertions through its own API, which the released binaries are built to reach and a `go install` build is not. Install from a [release](/installation/), or sign in with `--totp`.
 
 ## “Profile is not signed in”
 

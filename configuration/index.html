@@ -126,8 +126,8 @@
 <td>Set to any value, even empty, to never look for a new release (<a href="/installation/#updating">what that is</a>)</td>
 </tr>
 <tr>
-<td><code dir="auto">PROTON_HV_HELPER</code></td>
-<td>An executable to open a CAPTCHA with, instead of the embedded one (<a href="/troubleshooting/#bringing-your-own-captcha-helper">why</a>)</td>
+<td><code dir="auto">PROTON_VERIFIED</code></td>
+<td>A human verification already solved, as the refusal printed it (<a href="/troubleshooting/#nothing-here-can-be-asked">when you need it</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -199,6 +199,10 @@
 <tr>
 <td><code dir="auto">--no-input</code></td>
 <td>Never prompt; a missing credential becomes an error (env: <code dir="auto">PROTON_NO_INPUT</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--verified TOKEN</code></td>
+<td>A human verification already solved, as the refusal printed it (env: <code dir="auto">PROTON_VERIFIED</code>)</td>
 </tr>
 </tbody>
 </table>
