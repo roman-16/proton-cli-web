@@ -608,6 +608,8 @@ proton account logout --all        # every profile on this machine
 
 It also unlocks your keys, so your password is needed **once** per machine and not again. Signing in again as the same account changes nothing, so an unattended job can run it ahead of its real work and recover on its own from a session that expired.
 
+An account in [two-password mode](https://proton.me/support/switch-two-password-mode) is asked for its second password once it has signed in - that is the one its keys are locked with - or reads it from `--second-password-file` / `--second-password-stdin`. Standard input has one reader, so at most one of the two secrets can come down a pipe.
+
 Security keys are not supported: they need a browser. If your account uses one, add an authenticator app in Proton’s settings and sign in with that code.
 
 ## Profiles
@@ -672,7 +674,7 @@ proton account settings set locale de_AT
 
 Values can be given by name or by Proton’s own number, and mistakes are caught before anything is sent.
 
-`get` shows more than `set` can change. Proton Sentinel, two-factor state and recovery addresses are readable here but can only be changed at [account.proton.me](https://account.proton.me), along with your password, recovery secrets, billing and account deletion.
+`get` shows more than `set` can change. Proton Sentinel, two-factor state, whether the account is in two-password mode and recovery addresses are readable here but can only be changed at [account.proton.me](https://account.proton.me), along with your password, recovery secrets, billing and account deletion.
 
 Mail, Calendar and Drive each have settings of their own - `proton mail settings`, and so on. Pass and Contacts have none.
 
@@ -1776,6 +1778,8 @@ Sign in and save the session for this profile.
 
 Signing in also unlocks your keys, so your password is needed once per machine and not again. Anything a flag has not set is asked for, as long as this is a terminal.
 
+An account in two-password mode is asked for its second password once it has signed in, because that is the secret its keys are locked with rather than the one that proves who it is. A one-password account is never asked for it.
+
 Signing in again as the same account changes nothing, so an unattended job can run it first and recover from a session that expired.
 
 ```plaintext
@@ -1787,14 +1791,17 @@ proton account login
 proton account login --profile work
 proton account login --user me@proton.me --password-file /run/secrets/proton
 proton account login --user me@proton.me --password-stdin --totp 123456
+proton account login --user me@proton.me --password-file /run/secrets/proton --second-password-file /run/secrets/proton-second
 ```
 
-| Flag                     | Description                           |
-| ------------------------ | ------------------------------------- |
-| `--password-file string` | Read the account password from a file |
-| `--password-stdin`       | Read the account password from stdin  |
-| `--totp string`          | Two-factor code                       |
-| `--user string`          | Proton account email to sign in as    |
+| Flag                            | Description                                              |
+| ------------------------------- | -------------------------------------------------------- |
+| `--password-file string`        | Read the account password from a file                    |
+| `--password-stdin`              | Read the account password from stdin                     |
+| `--second-password-file string` | Read the second password (two-password mode) from a file |
+| `--second-password-stdin`       | Read the second password (two-password mode) from stdin  |
+| `--totp string`                 | Two-factor code                                          |
+| `--user string`                 | Proton account email to sign in as                       |
 
 ## `logout`
 
@@ -7017,6 +7024,22 @@ It asks for your email, password and two-factor code, attaches the account to a 
 
 Your password never leaves your machine: it derives the keys that decrypt your data locally. See [How it works](/how-it-works/).
 
+### Two-password mode
+
+[Section titled “Two-password mode”](#two-password-mode)
+
+Proton can keep the password that proves who you are apart from the one that opens your data. If your account is in [two-password mode](https://proton.me/support/switch-two-password-mode), `login` asks for the second password once it has signed in, exactly where Proton’s own sign-in asks for it:
+
+```console
+$ proton account login
+Email:            alice@proton.me
+Password:
+Second password:
+✓ Signed in as alice@proton.me (profile "default").
+```
+
+It is the second one that seals into the session, so afterwards nothing is asked again. `proton account settings get` reports which mode the account is in.
+
 ### Handing over the password without a terminal
 
 [Section titled “Handing over the password without a terminal”](#handing-over-the-password-without-a-terminal)
@@ -7030,6 +7053,14 @@ printf '%s' "$PW" | proton account login --user alice@proton.me --password-stdin
 
 # a file
 proton account login --user alice@proton.me --password-file /run/secrets/proton
+```
+
+A second password is read the same way, through flags of its own. Standard input has one reader, so an account in two-password mode takes at most one of its two secrets from a pipe:
+
+```bash
+proton account login --user alice@proton.me \
+    --password-file /run/secrets/proton \
+    --second-password-file /run/secrets/proton-second
 ```
 
 `account login` performs the exchange that attaches an account to a profile. The others reach an endpoint Proton guards behind an elevated session, which it grants only for another one - today `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`:
@@ -7238,7 +7269,7 @@ To confirm a change, run `get` on the ID the command printed rather than searchi
 
 1. **Session** - an unauthenticated session is created via `POST /auth/v4/sessions`.
 2. **SRP** - login runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Remote_Password_protocol) through Proton’s own [go-srp](https://github.com/ProtonMail/go-srp), so your password is never sent to the server, not even hashed. Two-factor codes are handled in the same exchange.
-3. **Key password** - the salted password derived during login is what unlocks your PGP keys. It stays on your machine.
+3. **Key password** - your password, stretched with the salt Proton holds for your primary key, is what unlocks your PGP keys. It stays on your machine. An account in [two-password mode](https://proton.me/support/switch-two-password-mode) stretches its **second** password instead: that mode’s whole point is that the secret which proves who you are is not the one that opens your data, and Proton’s account settings say which mode you are in.
 4. **Session file** - tokens plus the key password (encrypted with a random client key held server-side) are written to `~/.config/proton-cli/sessions/<profile>.json` with mode `0600`, so later commands don’t re-authenticate. [Security](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md) documents this storage model in full.
 5. **Refresh** - expired access tokens are refreshed automatically.
 
@@ -7286,7 +7317,7 @@ Reading works the other way around: content arrives encrypted, gets decrypted lo
 * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event.
 * The SRP proof during login, which does not reveal your password.
 
-What never leaves: your password, your key password, and your private keys.
+What never leaves: your password, your second password if you have one, your key password, and your private keys.
 
 ## Where the API definitions come from
 
@@ -7911,7 +7942,7 @@ alias newsletter-xyz
 
 [Section titled “Automation notes”](#automation-notes)
 
-* **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one.
+* **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one. An account in [two-password mode](/configuration/#two-password-mode) needs `--second-password-file` beside it, from a second such path.
 * **2FA**: `--totp` is only consulted during a fresh login. For unattended jobs, sign in once interactively so the session file exists, then let the job reuse it.
 * **Elevation**: Proton asks for the password again before `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own.
 * **CAPTCHA**: a login on a headless machine can hit human verification, which needs a desktop. Log in on a desktop first and copy the session, or run the job somewhere with a display. See [Human verification](/human-verification/).
