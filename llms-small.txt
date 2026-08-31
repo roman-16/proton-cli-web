@@ -274,7 +274,7 @@ Try:   narrow the term, or use one of:
          7Kd91mQx  jane@example.com
          3Ns8pT2v  jane.roe@work.example
 ```
- ## Short IDs [Section titled “Short IDs”](#short-ids) On a terminal, lists shorten Proton’s IDs to eight characters and remember what they showed you, so you can paste one straight back. They carry no ellipsis, so they copy cleanly out of a table. Pipes, redirects and `--output json` always emit **full** IDs, so no script ever sees a truncated value. `--full-ids` switches shortening off interactively too. A short ID only resolves on the machine that printed it - the lookup table lives in `~/.config/proton-cli/idcache/<profile>.json`. Copied one from elsewhere? Run the matching `list` here first, or use the full ID. ## Two IDs in one [Section titled “Two IDs in one”](#two-ids-in-one) A Pass item and a calendar event each need two IDs, written as one slash-separated token. Lists print them this way and you paste them back the same way. Short IDs work on both halves at once. 
+ ## Short IDs [Section titled “Short IDs”](#short-ids) On a terminal, lists shorten Proton’s IDs to eight characters and remember what they showed you, so you can paste one straight back. They carry no ellipsis and never start with a dash, so they copy cleanly out of a table and a shell reads them as what they are. Pipes, redirects and `--output json` always emit **full** IDs, so no script ever sees a truncated value. `--full-ids` switches shortening off interactively too. A short ID only resolves on the machine that printed it - the lookup table lives in `~/.config/proton-cli/idcache/<profile>.json`. Copied one from elsewhere? Run the matching `list` here first, or use the full ID. ## Two IDs in one [Section titled “Two IDs in one”](#two-ids-in-one) A Pass item and a calendar event each need two IDs, written as one slash-separated token. Lists print them this way and you paste them back the same way. Short IDs work on both halves at once. 
 ```bash
 proton pass items get SHARE_ID/ITEM_ID
 proton calendar events get CALENDAR_ID/EVENT_ID
@@ -294,12 +294,17 @@ proton drive items move /Documents/report.pdf --into /Archive
 proton drive trash restore 7Kd91mQx
 proton drive photos download 3Ns8pT2v --output-dir ./photos
 ```
- ## IDs that start with a dash [Section titled “IDs that start with a dash”](#ids-that-start-with-a-dash) They just work. Paste them like any other reference: 
+ ## Full IDs that start with a dash [Section titled “Full IDs that start with a dash”](#full-ids-that-start-with-a-dash) Proton’s IDs are base64, `-` is one of its characters, and so about one in sixty-four begins with one. Paste them like any other reference - the dash is part of the ID and is handled for you: 
 ```bash
-proton pass items get -x76EpiV/_fb26gvM
-proton drive photos download -Qt-s7R_
+proton pass items get -x76EpiVSJf2oHzHgyC2D_jF8O…==/_fb26gvMWjnM7US4_wpTNm_LqI…==
+proton contacts delete -bJxDLEMvt-Z6t4Yna7V8SYQ_F…==
 ```
- If you ever hit an odd parse error, put `--` before the ID and your flags before that.
+ One rule comes with it: **put your flags before the ID**, because everything after such an ID is read as another argument. 
+```bash
+proton mail messages attachments download --output-dir ./files -bJxDLEMvt-…==   # yes
+proton mail messages attachments download -bJxDLEMvt-…== --output-dir ./files   # no
+```
+ Short IDs need none of this: the eight characters begin after any leading dashes, so flags can go on either side.
 
 # Account
 
