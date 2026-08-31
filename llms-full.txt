@@ -661,13 +661,25 @@ For a scheduled one-way copy, `proton drive items upload --recursive` in a cron 
 
 Not covered, and not planned. proton-cli mirrors what the Proton **web clients** let you do for Mail, Drive, Calendar, Pass and Contacts. Proton VPN has [its own CLI](https://protonvpn.com/support/linux-vpn-tool). See [Limits](/limitations/).
 
-## Does it support security keys or passkeys?
+## Does it support security keys?
 
-[Section titled “Does it support security keys or passkeys?”](#does-it-support-security-keys-or-passkeys)
+[Section titled “Does it support security keys?”](#does-it-support-security-keys)
 
-No. FIDO2 and WebAuthn need a browser, so proton-cli cannot sign in with one. If your account uses a security key, add an authenticator app in Proton’s settings and sign in with a TOTP code instead.
+Yes. `proton account login` asks you to touch the key you registered with Proton, and signs in with it:
 
-Ironically, it will happily *read* you a TOTP code for any other service: `proton pass items totp github.com`.
+```console
+$ proton account login
+Email:             you@proton.me
+Password:
+Touch your security key.
+✓ Signed in as you@proton.me (profile "default").
+```
+
+On Linux and macOS the key has to be one you plug into USB. On Windows the sign-in goes through Windows Hello, so a key built into the machine works too. A key held in a phone does not: that needs the Bluetooth handoff a browser does, which no terminal can.
+
+If the account also has an authenticator app, a code is asked for and pressing Enter reaches for the key instead. A touch needs you there, so unattended jobs still want `--totp` - or better, a session you signed in once and left in place.
+
+It will also happily *read* you a TOTP code for any other service: `proton pass items totp github.com`.
 
 ## Is my mail actually decrypted locally?
 
@@ -747,7 +759,37 @@ proton account login --user "$ACCOUNT" --password-file "$CRED"
 proton drive items upload backup.zst /backups
 ```
 
-A two-factor code is only asked for when the account actually has one enabled. **Security keys are not supported**: FIDO2 needs a browser. If your account uses one, add an authenticator app in Proton’s settings and sign in with that code.
+A second factor is only asked for when the account actually has one enabled.
+
+### Security keys
+
+[Section titled “Security keys”](#security-keys)
+
+An account that signs in with a security key is asked to touch it:
+
+```console
+$ proton account login
+Email:             alice@proton.me
+Password:
+Touch your security key.
+✓ Signed in as alice@proton.me (profile "default").
+```
+
+With an authenticator app enabled as well, the code prompt is the choice: type a code, or press Enter to use the key.
+
+```console
+$ proton account login
+Email:             alice@proton.me
+Password:
+This account also has a security key. Press Enter to use it instead of a code.
+Two-factor code:
+Touch your security key.
+✓ Signed in as alice@proton.me (profile "default").
+```
+
+The key has to be one you plug in - on Windows, where the sign-in goes through Windows Hello, one built into the machine counts. A passkey living in a phone does not, because reaching it needs the Bluetooth handoff only a browser performs; sign in with a code instead.
+
+**On Linux, a key needs udev rules** to be readable by anyone but root. Every distribution ships them with `libfido2` or its own FIDO package, and `login` says so if it finds a key it cannot open.
 
 ### Two-password mode
 
@@ -2016,6 +2058,8 @@ proton account get --output json
 Sign in and save the session for this profile.
 
 Signing in also unlocks your keys, so your password is needed once per machine and not again. Anything a flag has not set is asked for, as long as this is a terminal.
+
+An account with a security key is asked to touch it. With an authenticator app enabled as well, an empty answer to the code prompt reaches for the key instead - so –totp is what an unattended job uses, a key being something only a person can answer.
 
 An account in two-password mode is asked for its second password once it has signed in, because that is the secret its keys are locked with rather than the one that proves who it is. A one-password account is never asked for it.
 
@@ -7653,7 +7697,7 @@ That plain build has no CAPTCHA helper. For a release-shaped binary, see [Contri
 
 | What you can’t do                               | Why                                                      | Instead                                                                     |
 | ----------------------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Sign in with a security key                     | FIDO2 speaks WebAuthn, which needs a browser             | Add a TOTP authenticator to the account                                     |
+| Sign in with a passkey held in a phone          | The handoff runs over Bluetooth from a browser           | Use a key you can plug in, or a TOTP code                                   |
 | Sign in on a headless machine                   | Proton may ask for a CAPTCHA, which needs a display      | [Copy a session across](/troubleshooting/#signing-in-on-a-headless-machine) |
 | Pick any colour for a label                     | Proton allows only its 20 accent colours                 | `--color` prints the palette when refused                                   |
 | Trust `list` immediately after a change         | Proton’s index is eventually consistent                  | `get` the ID the command printed ([why](/design-notes/#why-search-lags))    |
@@ -8028,7 +8072,7 @@ alias newsletter-xyz
 [Section titled “Automation notes”](#automation-notes)
 
 * **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one. An account in [two-password mode](/apps/account/#two-password-mode) needs `--second-password-file` beside it, from a second such path.
-* **2FA**: `--totp` is only consulted during a fresh login. For unattended jobs, sign in once interactively so the session file exists, then let the job reuse it.
+* **2FA**: `--totp` is only consulted during a fresh login, and a security key can never answer for one - it wants a finger on it. For unattended jobs, sign in once interactively so the session file exists, then let the job reuse it.
 * **Elevation**: Proton asks for the password again before `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own.
 * **CAPTCHA**: a login on a headless machine can hit human verification, which needs a desktop. Log in on a desktop first and copy the session, or run the job somewhere with a display. See [Troubleshooting](/troubleshooting/#signing-in-on-a-headless-machine).
 * **`--quiet`** silences the `✓` lines and progress bars, useful in cron.
@@ -8087,6 +8131,24 @@ Two situations have none:
 
 * **Headless machines** - servers, containers, CI, anything without a display. See below.
 * **`go install` builds** - they don’t embed the helper. Use a [release binary](/installation/), or [bring your own helper](#bringing-your-own-captcha-helper).
+
+## A security key that nothing finds
+
+[Section titled “A security key that nothing finds”](#a-security-key-that-nothing-finds)
+
+`login` reports a key it cannot see and a key it cannot open as two different things, because they have different fixes.
+
+**“No security key is connected to this machine.”** Nothing answered on USB. Plug the key in - the one you registered with Proton - and run the command again. A passkey held in a phone cannot answer here at all: reaching it needs a browser’s Bluetooth handoff, so use a code instead.
+
+**“A security key is connected but proton cannot open it.”** On Linux, `/dev/hidraw*` belongs to root until a udev rule says otherwise, and no sign-in should need to be root. Every distribution ships the rules with its FIDO packages - `libfido2` on most, `yubikey-personalization` alongside it for YubiKeys. On NixOS:
+
+```nix
+services.udev.packages = [ pkgs.libfido2 ];
+```
+
+Unplug the key and plug it in again afterwards: the rules apply when the device appears.
+
+**“This build cannot reach a security key on this machine.”** A Windows build installed with `go install`. Windows hands out assertions through its own API, which the released binaries are built to reach and a `go install` build is not - the same difference that leaves it without the CAPTCHA helper. Install from a [release](/installation/), or sign in with `--totp`.
 
 ## Signing in on a headless machine
 
