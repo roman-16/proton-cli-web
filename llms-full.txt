@@ -815,6 +815,22 @@ Second password:
 
 It is the second one that seals into the session, so afterwards nothing is asked again. `proton account settings get` reports which mode the account is in.
 
+### A Pass extra password
+
+[Section titled “A Pass extra password”](#a-pass-extra-password)
+
+Pass can be protected with [a password of its own](https://proton.me/support/pass-extra-password). `login` does not ask for it, because only Pass needs it: the first `proton pass` command asks, and Proton then lets the session reach Pass for as long as it lives.
+
+An unattended run has nobody to ask, so it hands the password over here instead:
+
+```bash
+proton account login --user alice@proton.me \
+    --password-file /run/secrets/proton \
+    --extra-password-file /run/secrets/proton-pass
+```
+
+On an account with no extra password the flag is reported as unnecessary and the sign-in carries on. See [Pass](/apps/pass/#an-extra-password) for what it changes there.
+
 ### Handing over the password without a terminal
 
 [Section titled “Handing over the password without a terminal”](#handing-over-the-password-without-a-terminal)
@@ -830,7 +846,7 @@ printf '%s' "$PW" | proton account login --user alice@proton.me --password-stdin
 proton account login --user alice@proton.me --password-file /run/secrets/proton
 ```
 
-A second password is read the same way, through flags of its own. Standard input has one reader, so an account in two-password mode takes at most one of its two secrets from a pipe:
+The second and extra passwords are read the same way, through flags of their own. Standard input has one reader, so an account with more than one secret takes at most one of them from a pipe:
 
 ```bash
 proton account login --user alice@proton.me \
@@ -1967,6 +1983,33 @@ Importing **adds** items. Nothing in an export says which existing item it was, 
 
 Aliases are the exception. An alias address belongs to the account Proton gave it to, so each one is named and skipped while everything else lands.
 
+## An extra password
+
+[Section titled “An extra password”](#an-extra-password)
+
+Pass can be protected with [an extra password](https://proton.me/support/pass-extra-password) of its own, on top of your Proton account password. Proton then refuses every Pass request from a session that has not answered it, so the first `pass` command asks:
+
+```console
+$ proton pass items list
+Extra password:
+ID           TYPE   NAME        USERNAME  MODIFIED
+…
+```
+
+One answer covers the session, not the command: Proton grants it for as long as the session lives, so nothing asks again on this machine until you sign out or the session expires. Nothing else in proton is affected - Mail, Drive, Calendar and Contacts never ask for it.
+
+For a run with nobody to ask, hand it to the sign-in instead:
+
+```bash
+proton account login --user me@proton.me \
+  --password-file /run/secrets/proton \
+  --extra-password-file /run/secrets/proton-pass
+```
+
+A `pass` command that needs it and finds nobody to ask says so and names that flag. Like every other secret it is read from a file, from stdin with `--extra-password-stdin`, or from a prompt - never from a flag value ([why](/design-notes/#why-a-password-is-never-a-flag-value)).
+
+Proton counts wrong answers and ends the session after a few, so a wrong one is worth reading rather than retrying blindly. Turning the extra password on or off is not something proton does - see [what proton-cli can’t do](/limitations/).
+
 ## History and breaches
 
 [Section titled “History and breaches”](#history-and-breaches)
@@ -2070,6 +2113,8 @@ An account with a security key is asked to touch it. With an authenticator app e
 
 An account in two-password mode is asked for its second password once it has signed in, because that is the secret its keys are locked with rather than the one that proves who it is. A one-password account is never asked for it.
 
+Pass can be protected with an extra password of its own. It is not asked for here - the first `pass` command asks, and Proton then lets the session reach Pass for as long as it lives. –extra-password-file hands it over now instead, which is what a run with nobody to ask needs.
+
 Proton may ask you to prove you are human. The page it wants is printed, and can be solved on any device - so a machine with no display signs in like any other. A run that cannot be asked anything says which page to solve and which token to repeat the command with.
 
 Signing in again as the same account changes nothing, so an unattended job can run it first and recover from a session that expired.
@@ -2084,10 +2129,13 @@ proton account login --profile work
 proton account login --user me@proton.me --password-file /run/secrets/proton
 proton account login --user me@proton.me --password-stdin --totp 123456
 proton account login --user me@proton.me --password-file /run/secrets/proton --second-password-file /run/secrets/proton-second
+proton account login --user me@proton.me --password-file /run/secrets/proton --extra-password-file /run/secrets/proton-pass
 ```
 
 | Flag                            | Description                                              |
 | ------------------------------- | -------------------------------------------------------- |
+| `--extra-password-file string`  | Read the Pass extra password from a file                 |
+| `--extra-password-stdin`        | Read the Pass extra password from stdin                  |
 | `--password-file string`        | Read the account password from a file                    |
 | `--password-stdin`              | Read the account password from stdin                     |
 | `--second-password-file string` | Read the second password (two-password mode) from a file |
@@ -7711,12 +7759,13 @@ go build ./cmd/proton
 
 Each has an equivalent in a web client, and each is unbuilt for a stated reason rather than an oversight.
 
-| What’s missing                            | Why                                                                                                         |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Drive computers and shared bookmarks      | Neither exists until you use a desktop client or open somebody’s link, so neither can be tested             |
-| Mail forwarding to another Proton address | Needs an OpenPGP forwarding primitive the Go libraries don’t implement                                      |
-| Mail forwarding to a non-Proton address   | Proton emails the address a link its owner must follow, so a command can start the flow but never finish it |
-| Moving a Pass item between vaults         | Re-encrypting to another share loses access on failure rather than failing loudly                           |
+| What’s missing                                                             | Why                                                                                                                                                                                                                                                                                                                                                                                                          |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Drive computers and shared bookmarks                                       | Neither exists until you use a desktop client or open somebody’s link, so neither can be tested                                                                                                                                                                                                                                                                                                              |
+| Mail forwarding to another Proton address                                  | Needs an OpenPGP forwarding primitive the Go libraries don’t implement                                                                                                                                                                                                                                                                                                                                       |
+| Mail forwarding to a non-Proton address                                    | Proton emails the address a link its owner must follow, so a command can start the flow but never finish it                                                                                                                                                                                                                                                                                                  |
+| Moving a Pass item between vaults                                          | Re-encrypting to another share loses access on failure rather than failing loudly                                                                                                                                                                                                                                                                                                                            |
+| Turning the Pass [extra password](/apps/pass/#an-extra-password) on or off | It is a credential, and proton changes none of them - the account password, two-factor and the recovery phrase are absent for the same reason. Setting one from a file cannot ask you to type it twice the way Proton’s own clients do, and a typo would leave every item in Pass unreachable; removing one signs every device out of every app. Answering an extra password, so the commands work, is built |
 
 ## Out of scope
 
@@ -8055,7 +8104,7 @@ alias newsletter-xyz
 
 [Section titled “Automation notes”](#automation-notes)
 
-* **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one. An account in [two-password mode](/apps/account/#two-password-mode) needs `--second-password-file` beside it, from a second such path.
+* **Credentials**: an account is attached to a profile by `account login`. Hand the password over with `--password-file`, from a path only your user can read - systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all give you one. An account in [two-password mode](/apps/account/#two-password-mode) needs `--second-password-file` beside it, from a second such path, and a Pass protected with [an extra password](/apps/pass/#an-extra-password) needs `--extra-password-file` from a third.
 * **2FA**: `--totp` is only consulted during a fresh login, and a security key can never answer for one - it wants a finger on it. For unattended jobs, sign in once interactively so the session file exists, then let the job reuse it.
 * **Elevation**: Proton asks for the password again before `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own.
 * **CAPTCHA**: Proton can ask a job to prove a human is there, and only a human can answer. The job exits 2 with the verification page and a token; solve the page, then repeat the command with `--verified TOKEN` or `PROTON_VERIFIED`. The proof outlives the run that asked for it, the challenge does not, so this is two runs and never one. See [Troubleshooting](/troubleshooting/#nothing-here-can-be-asked).
@@ -8192,6 +8241,26 @@ Three commands reach endpoints Proton guards behind an elevated session, and Pro
 They prompt, or take `--password-file` / `--password-stdin`. The key password sealed into your session cannot stand in: it is a one-way derivation.
 
 Proton answers some unrelated refusals with the same code, so one of these may ask for your password and then be refused anyway, for a reason no password would have fixed.
+
+## Pass asks for an extra password
+
+[Section titled “Pass asks for an extra password”](#pass-asks-for-an-extra-password)
+
+```console
+$ proton pass items list
+Extra password:
+```
+
+Your Pass is protected with [an extra password](https://proton.me/support/pass-extra-password), and this session has not answered it yet. Type it once and the session can reach Pass for as long as it lives; nothing else in proton is affected.
+
+With nobody to ask, the command says so instead and exits 2. Hand the password to the sign-in:
+
+```bash
+proton account login --user "$ACCOUNT" --password-file "$CRED" \
+  --extra-password-file /run/secrets/proton-pass
+```
+
+**“That is not this account’s Pass extra password.”** Proton counts wrong answers and ends the session after a few of them, at which point every command exits 2 until you sign in again. It is not your Proton account password, and it is not the second password of a two-password account.
 
 ## A change I just made doesn’t show up
 
