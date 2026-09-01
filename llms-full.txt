@@ -7531,6 +7531,9 @@ Reading works the other way around: content arrives encrypted, gets decrypted lo
 * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens.
 * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event.
 * The SRP proof during login, which does not reveal your password.
+* Once a day, on an install no package manager owns, a request to GitHub asking which release is newest. It carries nothing about you or your account, and `PROTON_NO_UPDATE_CHECK` ends it ([what that is](/installation/#updating)).
+
+There is no telemetry, and there is nothing to turn off. proton-cli never reports a command you ran, a feature you used, or the fact that you ran it at all. What is known about how the tool is used comes from counters the distribution channels publish themselves, and is [on the site](https://proton-cli.lerchster.dev/stats/) in full.
 
 What never leaves: your password, your second password if you have one, your key password, and your private keys.
 
