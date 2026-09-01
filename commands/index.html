@@ -117,6 +117,14 @@
 </thead>
 <tbody>
 <tr>
+<td><code dir="auto">--config string</code></td>
+<td>Settings file to read (env: PROTON_CONFIG; default: config.yaml in the config directory)</td>
+</tr>
+<tr>
+<td><code dir="auto">--confirm string</code></td>
+<td>Which commands stop for a yes: default, deletions, mutations, reads, all (env: PROTON_CONFIRM)</td>
+</tr>
+<tr>
 <td><code dir="auto">-n, --dry-run</code></td>
 <td>Preview mutations without applying them</td>
 </tr>
@@ -138,7 +146,7 @@
 </tr>
 <tr>
 <td><code dir="auto">-o, --output string</code></td>
-<td>Output format: text, json, yaml (default <code dir="auto">text</code>)</td>
+<td>Output format: text, json, yaml (default “text”)</td>
 </tr>
 <tr>
 <td><code dir="auto">-p, --profile string</code></td>
