@@ -997,6 +997,8 @@ proton api GET /calendar/v1 --output json | jq -r '.Calendars[].ID'
 
 Responses come back as the API returned them, in Proton’s `PascalCase`, and **encrypted fields stay encrypted** - this command does no key handling. For decrypted content, use the commands for that app.
 
+Stdout carries that response and nothing else. A body that is not JSON - a proxy’s error page standing in for the API’s answer - goes to stderr instead and the command exits 5, so a `jq` downstream is never handed something it cannot parse.
+
 ## Finding an endpoint
 
 [Section titled “Finding an endpoint”](#finding-an-endpoint)
@@ -5665,8 +5667,8 @@ proton mail settings autoreply set
 ```
 
 ```bash
-proton mail settings autoreply set --message 'Away until Monday.'
-proton mail settings autoreply set --message 'On holiday.' --start 2026-07-01 --end 2026-07-14
+proton mail settings autoreply set --repeat permanent --message 'Away until Monday.'
+proton mail settings autoreply set --message 'On holiday.' --start 2026-07-01T09:00 --end 2026-07-14T17:00
 ```
 
 | Flag                     | Description                                                                          |
