@@ -1,0 +1,1191 @@
+<!DOCTYPE html><html lang="en" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-vdxcvpsm"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>proton mail conversations | proton-cli</title><link rel="canonical" href="https://proton-cli.lerchster.dev/mail/conversations/"/><link rel="sitemap" href="/sitemap-index.xml"/><link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v7.2.9"/><meta name="generator" content="Starlight v0.41.9"/><meta property="og:title" content="proton mail conversations"/><meta property="og:type" content="article"/><meta property="og:url" content="https://proton-cli.lerchster.dev/mail/conversations/"/><meta property="og:locale" content="en"/><meta property="og:description" content="Whole threads."/><meta property="og:site_name" content="proton-cli"/><meta name="twitter:card" content="summary_large_image"/><meta name="description" content="Whole threads."/><meta content="https://proton-cli.lerchster.dev/og.png" property="og:image"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="proton-cli, your CLI for Proton Mail, Drive, Calendar, Pass and Contacts" property="og:image:alt"/><meta content="https://proton-cli.lerchster.dev/og.png" name="twitter:image"/><style>@font-face{font-family:"Geist Sans-1605d0bc6e3335b0";src:url("/_astro/fonts/92af118ed0c26955.woff2") format("woff2");font-display:swap;font-weight:400;font-style:normal;}@font-face{font-family:"Geist Sans-1605d0bc6e3335b0 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:106.1012%;ascent-override:86.7097%;descent-override:20.7349%;line-gap-override:9.425%;}:root{--font-geist:"Geist Sans-1605d0bc6e3335b0","Geist Sans-1605d0bc6e3335b0 fallback: Arial",sans-serif;}</style><link rel="preload" href="/_astro/fonts/92af118ed0c26955.woff2" as="font" type="font/woff2" crossorigin><style>@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6";src:url("/_astro/fonts/76d4f92291c9a94a.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:normal;}@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6";src:url("/_astro/fonts/2ee0f95313df2fb5.woff2") format("woff2");font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-weight:400;font-style:italic;}@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:normal;size-adjust:134.5893%;ascent-override:74.6716%;descent-override:21.9185%;line-gap-override:0%;}@font-face{font-family:"Geist Mono-692aa39bb8ac8bd6 fallback: Arial";src:local("Arial");font-display:swap;font-weight:400;font-style:italic;size-adjust:134.5893%;ascent-override:74.6716%;descent-override:21.9185%;line-gap-override:0%;}:root{--font-geist-mono:"Geist Mono-692aa39bb8ac8bd6","Geist Mono-692aa39bb8ac8bd6 fallback: Arial",sans-serif;}</style><link rel="preload" href="/_astro/fonts/76d4f92291c9a94a.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/_astro/fonts/2ee0f95313df2fb5.woff2" as="font" type="font/woff2" crossorigin><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg><svg aria-hidden="true" class="dark astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg><svg aria-hidden="true" class="auto astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg></template><link rel="stylesheet" href="/_astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="/_astro/api-reference.yotDR6GO.css"><link rel="stylesheet" href="/_astro/middleware.DbrE1syk.css"><style>@layer starlight.components{starlight-tabs:where(.astro-hbt4ddzs){display:block}.tablist-wrapper:where(.astro-hbt4ddzs){overflow-x:auto}:where(.astro-hbt4ddzs)[role=tablist]{border-bottom:2px solid var(--sl-color-gray-5);padding:0;list-style:none;display:flex}.tab:where(.astro-hbt4ddzs){display:flex}.tab:where(.astro-hbt4ddzs)>:where(.astro-hbt4ddzs)[role=tab]{--sl-tab-color-border:var(--sl-color-gray-5);line-height:var(--sl-line-height-headings);box-shadow:0 2px 0 var(--sl-tab-color-border);color:var(--sl-color-gray-3);outline-offset:var(--sl-outline-offset-inside);overflow-wrap:initial;align-items:center;gap:.5rem;padding:.275rem 1.25rem;text-decoration:none;display:flex}.tab:where(.astro-hbt4ddzs) :where(.astro-hbt4ddzs)[role=tab][aria-selected=true]{--sl-tab-color-border:var(--sl-color-text-accent);color:var(--sl-color-white);font-weight:600}.tablist-wrapper:where(.astro-hbt4ddzs)~[role=tabpanel]{margin-top:1rem}}.apps:where(.astro-jknjr6z3){grid-template-columns:repeat(auto-fit,minmax(min(100%,26rem),1fr));gap:1.5rem;display:grid}.app:where(.astro-jknjr6z3){background:var(--background);border:1px solid var(--border);border-radius:calc(var(--radius) + 4px);flex-direction:column;margin:0;padding:1.5rem;display:flex}.name:where(.astro-jknjr6z3){color:var(--foreground);font-size:var(--sl-text-xl);align-items:center;gap:.625rem;font-weight:600;text-decoration:none;display:flex}.name:where(.astro-jknjr6z3):hover{color:var(--sl-color-text-accent)}.dot:where(.astro-jknjr6z3){background:var(--app);border-radius:999px;block-size:.75rem;inline-size:.75rem}.summary:where(.astro-jknjr6z3){color:var(--sl-color-gray-3);font-size:var(--sl-text-sm);min-block-size:3.2em;margin-block:.5rem 1rem;line-height:1.6}.app:where(.astro-jknjr6z3) .expressive-code{flex:1}.app:where(.astro-jknjr6z3) .frame,.app:where(.astro-jknjr6z3) pre{block-size:100%}.app:where(.astro-jknjr6z3) pre{margin-block-end:0}.install:where(.astro-swawiaf7){text-align:start;max-width:46rem;margin-inline:auto}.demo:where(.astro-lcdefpme){margin-block:4rem}.demo:where(.astro-lcdefpme) img:where(.astro-lcdefpme){block-size:auto;inline-size:100%}[data-theme=light] .only-dark:where(.astro-lcdefpme),[data-theme=dark] .only-light:where(.astro-lcdefpme){display:none}.traits:where(.astro-lcdefpme){grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:2.5rem;margin-block:5rem;display:grid}.trait:where(.astro-lcdefpme),.questions:where(.astro-lcdefpme) li:where(.astro-lcdefpme){margin:0}.trait:where(.astro-lcdefpme) h2:where(.astro-lcdefpme){font-size:var(--sl-text-lg);letter-spacing:-.01em;border:0;margin:0 0 .625rem;padding:0;font-weight:600}.trait:where(.astro-lcdefpme) h2:where(.astro-lcdefpme):before{background:var(--sl-color-text-accent);content:"";block-size:1.25rem;inline-size:2px;margin-block-end:.875rem;display:block}.trait:where(.astro-lcdefpme) p:where(.astro-lcdefpme){color:var(--sl-color-gray-2);font-size:var(--sl-text-base);margin:0;line-height:1.6}.what:where(.astro-lcdefpme){margin-block-start:5rem}.what:where(.astro-lcdefpme) h2:where(.astro-lcdefpme){font-size:var(--sl-text-3xl);letter-spacing:-.02em;border:0;margin:0;padding:0;font-weight:700}.lead:where(.astro-lcdefpme){color:var(--sl-color-gray-3);margin-block:.75rem 2rem}.questions:where(.astro-lcdefpme){grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr));gap:.75rem;margin:0;padding:0;list-style:none;display:grid}.questions:where(.astro-lcdefpme) a:where(.astro-lcdefpme){background:var(--background);border:1px solid var(--border);border-radius:var(--radius);color:var(--foreground);font-size:var(--sl-text-sm);padding:.875rem 1rem;text-decoration:none;display:block}.questions:where(.astro-lcdefpme) a:where(.astro-lcdefpme):hover{border-color:var(--sl-color-text-accent);color:var(--sl-color-text-accent)}
+</style><script type="module" src="/_astro/page.Dwipeu-R.js"></script></head><body class="astro-vdxcvpsm"><a class="sl-skip-link astro-vxeigawq" href="#_top">Skip to content</a><div class="page sl-flex astro-gqpr5s5a"><header class="header astro-gqpr5s5a"><div class="header astro-nczgtkxc"><div class="title-wrapper sl-flex astro-nczgtkxc"><div class="astro-dozfb6yi"><a href="/" class="site-title sl-flex astro-clw6ags5"><img class="astro-clw6ags5" alt src="/_astro/logo.7whCswyQ.svg" width="256" height="256"><span class="astro-clw6ags5" translate="no">proton-cli</span></a><nav class="nav-bar astro-w7u5orl3"><a href="/install/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3">Docs</a><a href="/about/commands/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3">Commands</a><a href="/about/faq/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3">FAQ</a><a href="/stats/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3">Stats</a></nav><black-menu-button class="print:hidden astro-ce7grlvi"><button class="sl-flex md:sl-hidden astro-ce7grlvi" aria-expanded="false" aria-controls="starlight__sidebar"><div class="hamburger astro-ce7grlvi"><span class="bar bar-1 astro-ce7grlvi"></span><span class="bar bar-2 astro-ce7grlvi"></span></div><span class="label astro-ce7grlvi">Menu</span><span class="sr-only astro-ce7grlvi">Menu</span></button></black-menu-button><div class="mobile-nav astro-wtdqvjqh"><div class="mobile-nav-content astro-wtdqvjqh"><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Menu</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/install/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh">Docs</a><a href="/about/commands/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh">Commands</a><a href="/about/faq/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh">FAQ</a><a href="/stats/" class="astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh astro-w7u5orl3 astro-wtdqvjqh">Stats</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Start here</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/install/" class="astro-wtdqvjqh" data-active="false">Install</a><a href="/first-commands/" class="astro-wtdqvjqh" data-active="false">First commands</a><a href="/commands/" class="astro-wtdqvjqh" data-active="false">How a command is built</a><a href="/proton/" class="astro-wtdqvjqh" data-active="false">Managing proton itself</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Mail</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/mail/" class="astro-wtdqvjqh" data-active="false">Guide</a><a href="/mail/messages/" class="astro-wtdqvjqh" data-active="false">proton mail messages</a><a href="/mail/conversations/" class="astro-wtdqvjqh" data-active="true">proton mail conversations</a><a href="/mail/drafts/" class="astro-wtdqvjqh" data-active="false">proton mail drafts</a><a href="/mail/settings/" class="astro-wtdqvjqh" data-active="false">proton mail settings</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Drive</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/drive/" class="astro-wtdqvjqh" data-active="false">Guide</a><a href="/drive/items/" class="astro-wtdqvjqh" data-active="false">proton drive items</a><a href="/drive/trash/" class="astro-wtdqvjqh" data-active="false">proton drive trash</a><a href="/drive/photos/" class="astro-wtdqvjqh" data-active="false">proton drive photos</a><a href="/drive/sharing/" class="astro-wtdqvjqh" data-active="false">proton drive sharing</a><a href="/drive/shared/" class="astro-wtdqvjqh" data-active="false">proton drive shared</a><a href="/drive/invitations/" class="astro-wtdqvjqh" data-active="false">proton drive invitations</a><a href="/drive/settings/" class="astro-wtdqvjqh" data-active="false">proton drive settings</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Calendar</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/calendar/" class="astro-wtdqvjqh" data-active="false">Guide</a><a href="/calendar/events/" class="astro-wtdqvjqh" data-active="false">proton calendar events</a><a href="/calendar/reminders/" class="astro-wtdqvjqh" data-active="false">proton calendar reminders</a><a href="/calendar/invitations/" class="astro-wtdqvjqh" data-active="false">proton calendar invitations</a><a href="/calendar/settings/" class="astro-wtdqvjqh" data-active="false">proton calendar settings</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Pass</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/pass/" class="astro-wtdqvjqh" data-active="false">Guide</a><a href="/pass/items/" class="astro-wtdqvjqh" data-active="false">proton pass items</a><a href="/pass/vaults/" class="astro-wtdqvjqh" data-active="false">proton pass vaults</a><a href="/pass/aliases/" class="astro-wtdqvjqh" data-active="false">proton pass aliases</a><a href="/pass/links/" class="astro-wtdqvjqh" data-active="false">proton pass links</a><a href="/pass/sharing/" class="astro-wtdqvjqh" data-active="false">proton pass sharing</a><a href="/pass/shared/" class="astro-wtdqvjqh" data-active="false">proton pass shared</a><a href="/pass/invitations/" class="astro-wtdqvjqh" data-active="false">proton pass invitations</a><a href="/pass/trash/" class="astro-wtdqvjqh" data-active="false">proton pass trash</a><a href="/pass/breaches/" class="astro-wtdqvjqh" data-active="false">proton pass breaches</a><a href="/pass/settings/" class="astro-wtdqvjqh" data-active="false">proton pass settings</a><a href="/pass/pass/" class="astro-wtdqvjqh" data-active="false">import, export, generate</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Contacts</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/contacts/" class="astro-wtdqvjqh" data-active="false">Guide</a><a href="/contacts/contacts/" class="astro-wtdqvjqh" data-active="false">proton contacts</a><a href="/contacts/groups/" class="astro-wtdqvjqh" data-active="false">proton contacts groups</a><a href="/contacts/keys/" class="astro-wtdqvjqh" data-active="false">proton contacts keys</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Account</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/account/" class="astro-wtdqvjqh" data-active="false">Guide</a><a href="/account/account/" class="astro-wtdqvjqh" data-active="false">proton account</a><a href="/account/sessions/" class="astro-wtdqvjqh" data-active="false">proton account sessions</a><a href="/account/profiles/" class="astro-wtdqvjqh" data-active="false">proton account profiles</a><a href="/account/settings/" class="astro-wtdqvjqh" data-active="false">proton account settings</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Raw API</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/api/" class="astro-wtdqvjqh" data-active="false">Guide</a><a href="/api/api/" class="astro-wtdqvjqh" data-active="false">proton api</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">Everyday use</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/using/naming/" class="astro-wtdqvjqh" data-active="false">Naming what to act on</a><a href="/using/filters/" class="astro-wtdqvjqh" data-active="false">Filters and bulk changes</a><a href="/using/confirmations/" class="astro-wtdqvjqh" data-active="false">Dry runs and confirmations</a><a href="/using/output/" class="astro-wtdqvjqh" data-active="false">Output and exit codes</a><a href="/using/scripting/" class="astro-wtdqvjqh" data-active="false">Scripting</a><a href="/using/settings/" class="astro-wtdqvjqh" data-active="false">Settings, files and environment</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">When something goes wrong</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/help/troubleshooting/" class="astro-wtdqvjqh" data-active="false">Troubleshooting</a><a href="/help/limits/" class="astro-wtdqvjqh" data-active="false">What it can&#39;t do</a></div></div><div class="mobile-nav-section astro-wtdqvjqh"><div class="mobile-nav-label astro-wtdqvjqh">About</div><div class="mobile-nav-links astro-wtdqvjqh"><a href="/about/faq/" class="astro-wtdqvjqh" data-active="false">FAQ</a><a href="/about/security/" class="astro-wtdqvjqh" data-active="false">Security and encryption</a><a href="/about/why/" class="astro-wtdqvjqh" data-active="false">Why it works this way</a><a href="/about/commands/" class="astro-wtdqvjqh" data-active="false">All commands</a><a href="/changelog/" class="astro-wtdqvjqh" data-active="false">Changelog</a><a href="/api-reference/" class="astro-wtdqvjqh" data-active="false">Proton API reference</a></div></div></div></div><script type="module">var e=class extends HTMLElement{btn=this.querySelector(`button`);constructor(){super(),this.btn.addEventListener(`click`,()=>this.toggleExpanded());let e=this.closest(`nav`);e&&e.addEventListener(`keyup`,e=>this.closeOnEscape(e)),matchMedia(`(min-width: 50em)`).addEventListener(`change`,()=>this.setExpanded(!1))}setExpanded(e){this.btn.setAttribute(`aria-expanded`,String(e)),document.body.toggleAttribute(`data-mobile-menu-expanded`,e),document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}toggleExpanded(){this.setExpanded(this.btn.getAttribute(`aria-expanded`)!==`true`)}closeOnEscape(e){e.code===`Escape`&&(this.setExpanded(!1),this.btn.focus())}};customElements.define(`black-menu-button`,e);</script></div></div><div class="sl-flex print:hidden astro-nczgtkxc"><site-search class="astro-nczgtkxc astro-r5ar4xm7" data-translations="{&quot;placeholder&quot;:&quot;Search&quot;}"><button data-open-modal disabled aria-label="Search" aria-keyshortcuts="Control+K" class="astro-r5ar4xm7"><svg aria-hidden="true" class="astro-r5ar4xm7 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg><span class="sl-hidden md:sl-block astro-r5ar4xm7" aria-hidden="true">Search</span><kbd class="sl-hidden md:sl-flex astro-r5ar4xm7" style="display: none;"><kbd class="astro-r5ar4xm7">Ctrl</kbd><kbd class="astro-r5ar4xm7">K</kbd></kbd></button><dialog style="padding:0" aria-label="Search" class="astro-r5ar4xm7"><div class="dialog-frame sl-flex astro-r5ar4xm7"><button data-close-modal class="sl-flex md:sl-hidden astro-r5ar4xm7">Cancel</button><div class="search-container astro-r5ar4xm7"><div id="starlight__search" class="astro-r5ar4xm7"></div></div></div></dialog></site-search><script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="/_astro/Search.astro_astro_type_script_index_0_lang.dp5CkdHx.js"></script></div><div class="sl-hidden md:sl-flex print:hidden right-group astro-nczgtkxc"><div class="sl-flex social-icons astro-nczgtkxc"><a href="https://github.com/roman-16/proton-cli" rel="me" class="sl-flex astro-cg55etiy"><span class="sr-only astro-cg55etiy">GitHub</span><svg aria-hidden="true" class="astro-cg55etiy astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a></div><starlight-theme-black-select class="astro-4t64jrq6"><button aria-label="Select theme" aria-live="polite" class="sl-flex button astro-4t64jrq6" title="Select theme" data-variant="ghost"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4.5 astro-4t64jrq6"><path stroke="none" d="M0 0h24v24H0z" fill="none" class="astro-4t64jrq6"></path><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" class="astro-4t64jrq6"></path><path d="M12 3l0 18" class="astro-4t64jrq6"></path><path d="M12 9l4.65 -4.65" class="astro-4t64jrq6"></path><path d="M12 14.3l7.37 -7.37" class="astro-4t64jrq6"></path><path d="M12 19.6l8.85 -8.85" class="astro-4t64jrq6"></path></svg><span class="sr-only astro-4t64jrq6">Toggle theme</span></button></starlight-theme-black-select><script>
+  // eslint-disable-next-line no-undef
+  StarlightThemeProvider.updatePickers()
+</script><script type="module">var e=`starlight-theme`;function t(e){return e===`auto`||e===`dark`||e===`light`?e:`auto`}function n(){return t(typeof localStorage<`u`&&localStorage.getItem(e))}function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}function i(){return matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`}function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)}),customElements.define(`starlight-theme-black-select`,class extends HTMLElement{constructor(){super(),a(n());let e=this.querySelector(`button`);e?.addEventListener(`click`,()=>{let n=t(document.documentElement.dataset.theme),r=n===`dark`?`light`:n===`light`?`dark`:`auto`;a(r),e?.setAttribute(`aria-label`,`${r} theme`)})}});</script><script type="module">var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script></div></div></header><nav class="sidebar print:hidden astro-gqpr5s5a" aria-label="Main"><div id="starlight__sidebar" class="sidebar-pane astro-gqpr5s5a"><div class="sidebar-content sl-flex astro-gqpr5s5a"><sl-sidebar-state-persist data-hash="1atmbo1" class="astro-f5yvicm7"><script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script><ul class="top-level astro-epfkn2hl"><li class="container-sidebar-entry  first astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Start here</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/install/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Install</a></li><li class="astro-epfkn2hl"><a href="/first-commands/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>First commands</a></li><li class="astro-epfkn2hl"><a href="/commands/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>How a command is built</a></li><li class="astro-epfkn2hl"><a href="/proton/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Managing proton itself</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Mail</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/mail/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Guide</a></li><li class="astro-epfkn2hl"><a href="/mail/messages/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton mail messages</a></li><li class="astro-epfkn2hl"><a href="/mail/conversations/" aria-current="page" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton mail conversations</a></li><li class="astro-epfkn2hl"><a href="/mail/drafts/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton mail drafts</a></li><li class="astro-epfkn2hl"><a href="/mail/settings/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton mail settings</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Drive</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/drive/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Guide</a></li><li class="astro-epfkn2hl"><a href="/drive/items/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton drive items</a></li><li class="astro-epfkn2hl"><a href="/drive/trash/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton drive trash</a></li><li class="astro-epfkn2hl"><a href="/drive/photos/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton drive photos</a></li><li class="astro-epfkn2hl"><a href="/drive/sharing/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton drive sharing</a></li><li class="astro-epfkn2hl"><a href="/drive/shared/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton drive shared</a></li><li class="astro-epfkn2hl"><a href="/drive/invitations/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton drive invitations</a></li><li class="astro-epfkn2hl"><a href="/drive/settings/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton drive settings</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Calendar</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/calendar/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Guide</a></li><li class="astro-epfkn2hl"><a href="/calendar/events/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton calendar events</a></li><li class="astro-epfkn2hl"><a href="/calendar/reminders/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton calendar reminders</a></li><li class="astro-epfkn2hl"><a href="/calendar/invitations/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton calendar invitations</a></li><li class="astro-epfkn2hl"><a href="/calendar/settings/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton calendar settings</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Pass</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/pass/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Guide</a></li><li class="astro-epfkn2hl"><a href="/pass/items/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass items</a></li><li class="astro-epfkn2hl"><a href="/pass/vaults/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass vaults</a></li><li class="astro-epfkn2hl"><a href="/pass/aliases/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass aliases</a></li><li class="astro-epfkn2hl"><a href="/pass/links/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass links</a></li><li class="astro-epfkn2hl"><a href="/pass/sharing/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass sharing</a></li><li class="astro-epfkn2hl"><a href="/pass/shared/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass shared</a></li><li class="astro-epfkn2hl"><a href="/pass/invitations/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass invitations</a></li><li class="astro-epfkn2hl"><a href="/pass/trash/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass trash</a></li><li class="astro-epfkn2hl"><a href="/pass/breaches/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass breaches</a></li><li class="astro-epfkn2hl"><a href="/pass/settings/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton pass settings</a></li><li class="astro-epfkn2hl"><a href="/pass/pass/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>import, export, generate</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Contacts</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/contacts/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Guide</a></li><li class="astro-epfkn2hl"><a href="/contacts/contacts/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton contacts</a></li><li class="astro-epfkn2hl"><a href="/contacts/groups/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton contacts groups</a></li><li class="astro-epfkn2hl"><a href="/contacts/keys/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton contacts keys</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Account</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/account/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Guide</a></li><li class="astro-epfkn2hl"><a href="/account/account/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton account</a></li><li class="astro-epfkn2hl"><a href="/account/sessions/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton account sessions</a></li><li class="astro-epfkn2hl"><a href="/account/profiles/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton account profiles</a></li><li class="astro-epfkn2hl"><a href="/account/settings/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton account settings</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Raw API</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/api/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Guide</a></li><li class="astro-epfkn2hl"><a href="/api/api/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>proton api</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">Everyday use</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/using/naming/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Naming what to act on</a></li><li class="astro-epfkn2hl"><a href="/using/filters/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Filters and bulk changes</a></li><li class="astro-epfkn2hl"><a href="/using/confirmations/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Dry runs and confirmations</a></li><li class="astro-epfkn2hl"><a href="/using/output/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Output and exit codes</a></li><li class="astro-epfkn2hl"><a href="/using/scripting/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Scripting</a></li><li class="astro-epfkn2hl"><a href="/using/settings/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Settings, files and environment</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">When something goes wrong</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/help/troubleshooting/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Troubleshooting</a></li><li class="astro-epfkn2hl"><a href="/help/limits/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>What it can&#39;t do</a></li></ul></div></li><li class="container-sidebar-entry  astro-epfkn2hl"><div class="entry-title astro-epfkn2hl">About</div><div class="container-group-link astro-epfkn2hl"><ul class="astro-epfkn2hl"><li class="astro-epfkn2hl"><a href="/about/faq/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>FAQ</a></li><li class="astro-epfkn2hl"><a href="/about/security/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Security and encryption</a></li><li class="astro-epfkn2hl"><a href="/about/why/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Why it works this way</a></li><li class="astro-epfkn2hl"><a href="/about/commands/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>All commands</a></li><li class="astro-epfkn2hl"><a href="/changelog/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Changelog</a></li><li class="astro-epfkn2hl"><a href="/api-reference/" aria-current="false" class="entry-link astro-epfkn2hl"><span class="entry-link-inner astro-epfkn2hl"></span>Proton API reference</a></li></ul></div></li></ul><script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist></div></div></nav><div class="main-frame astro-gqpr5s5a"><script type="module">var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-abfeecmu"><aside class="right-sidebar-container print:hidden astro-abfeecmu"><div class="right-sidebar astro-abfeecmu"><div class="lg:sl-hidden astro-q5mffni3"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-5ulgm6bh"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-5ulgm6bh"><details id="starlight__mobile-toc" class="astro-5ulgm6bh"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-5ulgm6bh"><span class="toggle sl-flex astro-5ulgm6bh">On this page<svg aria-hidden="true" class="caret astro-5ulgm6bh astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></span><span class="display-current astro-5ulgm6bh"></span></summary><div class="dropdown astro-5ulgm6bh"><ul class="isMobile astro-cxyftcne" style="--depth: 0;"><li style="--depth: 0;" class="astro-cxyftcne"><a href="#_top" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Overview</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#attachments" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">attachments</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#attachments-download" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">attachments download</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#attachments-list" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">attachments list</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#delete" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">delete</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#export" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">export</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#forward" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">forward</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#get" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">get</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#label" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">label</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#list" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">list</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#mark" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">mark</span></a><ul class="isMobile astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#mark-read" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">mark read</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#mark-unread" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">mark unread</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#move" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">move</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#reply" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">reply</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#snooze" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">snooze</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#star" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">star</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#trash" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">trash</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#unlabel" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">unlabel</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#unsnooze" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">unsnooze</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#unstar" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">unstar</span></a></li></ul></div></details></nav></mobile-starlight-toc><script type="module" src="/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.BcSo_yiZ.js"></script></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-q5mffni3"><div class="sl-container astro-q5mffni3"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">On this page</h2><ul class="astro-cxyftcne" style="--depth: 0;"><li style="--depth: 0;" class="astro-cxyftcne"><a href="#_top" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">Overview</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#attachments" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">attachments</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#attachments-download" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">attachments download</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#attachments-list" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">attachments list</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#delete" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">delete</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#export" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">export</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#forward" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">forward</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#get" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">get</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#label" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">label</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#list" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">list</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#mark" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">mark</span></a><ul class="astro-cxyftcne" style="--depth: 1;"><li style="--depth: 1;" class="astro-cxyftcne"><a href="#mark-read" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">mark read</span></a></li><li style="--depth: 1;" class="astro-cxyftcne"><a href="#mark-unread" style="--depth: 1;" class="astro-cxyftcne"><span style="--depth: 1;" class="astro-cxyftcne">mark unread</span></a></li></ul></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#move" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">move</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#reply" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">reply</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#snooze" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">snooze</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#star" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">star</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#trash" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">trash</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#unlabel" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">unlabel</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#unsnooze" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">unsnooze</span></a></li><li style="--depth: 0;" class="astro-cxyftcne"><a href="#unstar" style="--depth: 0;" class="astro-cxyftcne"><span style="--depth: 0;" class="astro-cxyftcne">unstar</span></a></li></ul></nav></starlight-toc><script type="module" src="/_astro/TableOfContents.astro_astro_type_script_index_0_lang.Csloo1VZ.js"></script></div></div></div></aside><div class="main-pane astro-abfeecmu"><main data-pagefind-body class="astro-vdxcvpsm" lang="en" dir="ltr"><div class="content-panel astro-oil7k7jf"><div class="sl-container astro-oil7k7jf"><div class="page-title astro-rbtcva32"><div class="page-title-header astro-rbtcva32"><h1 id="_top" class="astro-rbtcva32">proton mail conversations</h1><div class="docs-nav astro-rbtcva32"><script type="module">function e(){document.querySelectorAll(`.copy-page-action`).forEach(e=>{e.addEventListener(`click`,async()=>{let t=e,n=t.dataset.content;if(!n)return;await navigator.clipboard.writeText(n);let r=t.innerHTML;t.innerHTML=`
+            
+<svg
+ xmlns="http://www.w3.org/2000/svg"
+ width="15"
+ height="15"
+ viewBox="0 0 24 24"
+ fill="none"
+ stroke="currentColor"
+ stroke-width="2"
+ stroke-linecap="round"
+ stroke-linejoin="round"
+>
+ <polyline points="20 6 9 17 4 12"/>
+</svg>
+
+            <span>Copy page</span>
+            `,setTimeout(()=>{t.innerHTML=r},2e3)})}),document.querySelectorAll(`.markdown-actions-dropdown`).forEach(e=>{let t=e.querySelector(`.markdown-actions-trigger`),n=e.querySelector(`.markdown-actions-menu`);!t||!n||(t.addEventListener(`click`,e=>{e.stopPropagation();let r=n.classList.contains(`open`);n.classList.toggle(`open`),t.setAttribute(`aria-expanded`,String(!r))}),document.addEventListener(`click`,()=>{n.classList.remove(`open`),t.setAttribute(`aria-expanded`,`false`)}),document.addEventListener(`keydown`,e=>{e.key===`Escape`&&(n.classList.remove(`open`),t.setAttribute(`aria-expanded`,`false`))}))})}e(),document.addEventListener(`astro:after-swap`,e);</script><div class="nav-buttons astro-rbtcva32"><a href="/mail/messages/" aria-label="Previous page" class="astro-rbtcva32"><svg aria-hidden="true" class="astro-rbtcva32 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg></a><a href="/mail/drafts/" aria-label="Next page" class="astro-rbtcva32"><svg aria-hidden="true" class="astro-rbtcva32 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg></a></div></div></div><p class="page-description astro-rbtcva32">Whole threads.</p></div></div></div><div class="content-panel astro-oil7k7jf"><div class="sl-container astro-oil7k7jf"><div class="sl-markdown-content"><p>Every command under <code dir="auto">proton mail conversations</code>, with the arguments and flags it takes. For these commands in use, see <a href="/mail/">the mail guide</a>.</p>
+<p>Holds <code dir="auto">attachments</code>, <code dir="auto">delete</code>, <code dir="auto">export</code>, <code dir="auto">forward</code>, <code dir="auto">get</code>, <code dir="auto">label</code>, <code dir="auto">list</code>, <code dir="auto">mark</code>, <code dir="auto">move</code>, <code dir="auto">reply</code>, <code dir="auto">snooze</code>, <code dir="auto">star</code>, <code dir="auto">trash</code>, <code dir="auto">unlabel</code>, <code dir="auto">unsnooze</code> and <code dir="auto">unstar</code>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="attachments"><code dir="auto">attachments</code></h2><a class="sl-anchor-link" href="#attachments"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “attachments”</span></a></div>
+<p>Files attached anywhere in a thread.</p>
+<p>Holds <code dir="auto">download</code> and <code dir="auto">list</code>.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="attachments-download"><code dir="auto">attachments download</code></h3><a class="sl-anchor-link" href="#attachments-download"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “attachments download”</span></a></div>
+<p>Download and decrypt attachments from a thread.</p>
+<div class="expressive-code"><link rel="stylesheet" href="/_astro/ec.0dixj.css"><script type="module" src="/_astro/ec.0vx5m.js"></script><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations attachments download REF [ATTACHMENT_REF]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations attachments download REF [ATTACHMENT_REF]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">attachments</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">download</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest-dir</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">.</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations attachments download &#x27;Quarterly numbers&#x27; --dest-dir ."><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--dest string</code></td>
+<td>Write to this path, or - for stdout</td>
+</tr>
+<tr>
+<td><code dir="auto">--dest-dir string</code></td>
+<td>Write into this directory, keeping each item’s own name</td>
+</tr>
+<tr>
+<td><code dir="auto">--force</code></td>
+<td>Overwrite a file that already exists</td>
+</tr>
+<tr>
+<td><code dir="auto">--include-inline</code></td>
+<td>Include inline attachments</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="attachments-list"><code dir="auto">attachments list</code></h3><a class="sl-anchor-link" href="#attachments-list"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “attachments list”</span></a></div>
+<p>List every attachment in a thread.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations attachments list REF</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations attachments list REF"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">attachments</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations attachments list &#x27;Quarterly numbers&#x27;"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--include-inline</code></td>
+<td>Include inline attachments</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="delete"><code dir="auto">delete</code></h2><a class="sl-anchor-link" href="#delete"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “delete”</span></a></div>
+<p>Delete threads permanently.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations delete [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations delete [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">delete</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">5bH2mQxK</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations delete 5bH2mQxK"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="export"><code dir="auto">export</code></h2><a class="sl-anchor-link" href="#export"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “export”</span></a></div>
+<p>Write a whole thread out as .eml files or one mbox.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations export REF</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations export REF"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">export</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest-dir</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">./backup</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations export &#x27;Quarterly numbers&#x27; --dest-dir ./backup"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--dest string</code></td>
+<td>Write to this path, or - for stdout</td>
+</tr>
+<tr>
+<td><code dir="auto">--dest-dir string</code></td>
+<td>Write into this directory, keeping each item’s own name</td>
+</tr>
+<tr>
+<td><code dir="auto">--force</code></td>
+<td>Overwrite a file that already exists</td>
+</tr>
+<tr>
+<td><code dir="auto">--format string</code></td>
+<td>How to lay the thread down: eml, mbox (default <code dir="auto">mbox</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--no-attachments</code></td>
+<td>Skip attachments</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="forward"><code dir="auto">forward</code></h2><a class="sl-anchor-link" href="#forward"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “forward”</span></a></div>
+<p>Forward the newest message in a thread.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations forward REF</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations forward REF"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">forward</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations forward &#x27;Quarterly numbers&#x27; --to jane@example.com"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--attach stringArray</code></td>
+<td>File to attach (repeatable)</td>
+</tr>
+<tr>
+<td><code dir="auto">--attach-inline stringArray</code></td>
+<td>Image to embed in the HTML body by Content-ID (repeatable; needs –html)</td>
+</tr>
+<tr>
+<td><code dir="auto">--bcc stringArray</code></td>
+<td>Blind-carbon-copy recipient (repeatable)</td>
+</tr>
+<tr>
+<td><code dir="auto">--body string</code></td>
+<td>Your text, placed above the quoted original (- reads stdin)</td>
+</tr>
+<tr>
+<td><code dir="auto">--cc stringArray</code></td>
+<td>Carbon-copy recipient (repeatable)</td>
+</tr>
+<tr>
+<td><code dir="auto">--draft</code></td>
+<td>Save as a draft instead of sending</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-hint string</code></td>
+<td>Hint shown to password-protected recipients</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
+</tr>
+<tr>
+<td><code dir="auto">--expires string</code></td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Address to send from, by email or ID (default: your primary)</td>
+</tr>
+<tr>
+<td><code dir="auto">--html</code></td>
+<td>Compose in HTML (default: match the original)</td>
+</tr>
+<tr>
+<td><code dir="auto">--no-attachments</code></td>
+<td>Leave the original’s attachments behind</td>
+</tr>
+<tr>
+<td><code dir="auto">--no-quote</code></td>
+<td>Do not quote the original message</td>
+</tr>
+<tr>
+<td><code dir="auto">--no-signature</code></td>
+<td>Leave out this address’s signature and Proton’s footer</td>
+</tr>
+<tr>
+<td><code dir="auto">--send-at string</code></td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
+</tr>
+<tr>
+<td><code dir="auto">--to stringArray</code></td>
+<td>Recipient (repeatable; accepts “Name <addr>”)</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="get"><code dir="auto">get</code></h2><a class="sl-anchor-link" href="#get"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “get”</span></a></div>
+<p>Show a whole thread, decrypted.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations get REF</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations get REF"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">get</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">get</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">5bH2mQxK</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--summary</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations get &#x27;Quarterly numbers&#x27;proton mail conversations get 5bH2mQxK --summary"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--body-only</code></td>
+<td>Emit only the bodies, with no headers or dividers</td>
+</tr>
+<tr>
+<td><code dir="auto">--include-inline</code></td>
+<td>List inline attachments too</td>
+</tr>
+<tr>
+<td><code dir="auto">--render string</code></td>
+<td>Which representation of the body to print: text, html, raw (default <code dir="auto">text</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--strip-quotes</code></td>
+<td>Drop quoted reply blocks from each body</td>
+</tr>
+<tr>
+<td><code dir="auto">--summary</code></td>
+<td>One line per message instead of the full thread</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="label"><code dir="auto">label</code></h2><a class="sl-anchor-link" href="#label"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “label”</span></a></div>
+<p>Attach a label to threads.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations label [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations label [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">label</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--label</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Accounting</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations label &#x27;Quarterly numbers&#x27; --label Accounting"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--label string</code></td>
+<td>The label to attach or detach, by name or ID</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="list"><code dir="auto">list</code></h2><a class="sl-anchor-link" href="#list"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “list”</span></a></div>
+<p>List threads in a folder.</p>
+<p>Takes the same filters as the verbs that organise threads, so you can preview a selection here before acting on it. Text filters go through Proton’s index, which lags a change by a few seconds.</p>
+<p>Looks in the inbox unless told otherwise. Use –folder all to search everything.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations list</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations list"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--unread</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">inbox</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations listproton mail conversations list --unread --folder inboxproton mail conversations list --from jane@example.com --folder all"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: inbox)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--page int</code></td>
+<td>Which page of results, counting from zero</td>
+</tr>
+<tr>
+<td><code dir="auto">--page-size int</code></td>
+<td>How many threads per page (default <code dir="auto">25</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="mark"><code dir="auto">mark</code></h2><a class="sl-anchor-link" href="#mark"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “mark”</span></a></div>
+<p>Set whether threads count as read.</p>
+<p>Holds <code dir="auto">read</code> and <code dir="auto">unread</code>.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="mark-read"><code dir="auto">mark read</code></h3><a class="sl-anchor-link" href="#mark-read"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “mark read”</span></a></div>
+<p>Mark threads as read.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations mark read [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations mark read [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mark</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">read</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mark</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">read</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">inbox</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--all</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations mark read &#x27;Quarterly numbers&#x27;proton mail conversations mark read --folder inbox --all"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="mark-unread"><code dir="auto">mark unread</code></h3><a class="sl-anchor-link" href="#mark-unread"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “mark unread”</span></a></div>
+<p>Mark threads as unread.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations mark unread [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations mark unread [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mark</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">unread</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations mark unread &#x27;Quarterly numbers&#x27;"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="move"><code dir="auto">move</code></h2><a class="sl-anchor-link" href="#move"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “move”</span></a></div>
+<p>Move threads to a folder.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations move [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations move [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--older-than</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">90d</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">inbox</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations move &#x27;Quarterly numbers&#x27; --into archiveproton mail conversations move --older-than 90d --folder inbox --into archive"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--into string</code></td>
+<td>Destination folder, by name or ID</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="reply"><code dir="auto">reply</code></h2><a class="sl-anchor-link" href="#reply"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “reply”</span></a></div>
+<p>Reply to the newest message in a thread.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations reply REF</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations reply REF"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">reply</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--body</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Looks right to me.'</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">reply</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--everyone</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--body</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Agreed.</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations reply &#x27;Quarterly numbers&#x27; --body &#x27;Looks right to me.&#x27;proton mail conversations reply &#x27;Quarterly numbers&#x27; --everyone --body Agreed."><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--attach stringArray</code></td>
+<td>File to attach (repeatable)</td>
+</tr>
+<tr>
+<td><code dir="auto">--attach-inline stringArray</code></td>
+<td>Image to embed in the HTML body by Content-ID (repeatable; needs –html)</td>
+</tr>
+<tr>
+<td><code dir="auto">--bcc stringArray</code></td>
+<td>Blind-carbon-copy recipient (repeatable)</td>
+</tr>
+<tr>
+<td><code dir="auto">--body string</code></td>
+<td>Your text, placed above the quoted original (- reads stdin)</td>
+</tr>
+<tr>
+<td><code dir="auto">--cc stringArray</code></td>
+<td>Carbon-copy recipient (repeatable)</td>
+</tr>
+<tr>
+<td><code dir="auto">--draft</code></td>
+<td>Save as a draft instead of sending</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-hint string</code></td>
+<td>Hint shown to password-protected recipients</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
+</tr>
+<tr>
+<td><code dir="auto">--everyone</code></td>
+<td>Reply to everyone who was on the message, not just the sender</td>
+</tr>
+<tr>
+<td><code dir="auto">--expires string</code></td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Address to send from, by email or ID (default: your primary)</td>
+</tr>
+<tr>
+<td><code dir="auto">--html</code></td>
+<td>Compose in HTML (default: match the original)</td>
+</tr>
+<tr>
+<td><code dir="auto">--no-quote</code></td>
+<td>Do not quote the original message</td>
+</tr>
+<tr>
+<td><code dir="auto">--no-signature</code></td>
+<td>Leave out this address’s signature and Proton’s footer</td>
+</tr>
+<tr>
+<td><code dir="auto">--send-at string</code></td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
+</tr>
+<tr>
+<td><code dir="auto">--to stringArray</code></td>
+<td>Recipient (repeatable; accepts “Name <addr>”)</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="snooze"><code dir="auto">snooze</code></h2><a class="sl-anchor-link" href="#snooze"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “snooze”</span></a></div>
+<p>Take threads out of the inbox until later.</p>
+<p>–until takes a duration from now, such as 3d, or a moment written out in full, such as 2026-04-17T09:00. The thread returns to the inbox then, unread.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations snooze [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations snooze [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">snooze</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">5bH2mQxK</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--until</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">3d</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">snooze</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--unread</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--until</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-04-17T09:00</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations snooze 5bH2mQxK --until 3dproton mail conversations snooze --unread --until 2026-04-17T09:00"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--until string</code></td>
+<td>When they come back (e.g. 3d, or 2026-04-17T09:00)</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="star"><code dir="auto">star</code></h2><a class="sl-anchor-link" href="#star"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “star”</span></a></div>
+<p>Star threads.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations star [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations star [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">star</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations star &#x27;Quarterly numbers&#x27;"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="trash"><code dir="auto">trash</code></h2><a class="sl-anchor-link" href="#trash"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “trash”</span></a></div>
+<p>Move threads to the trash.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations trash [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations trash [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">trash</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">trash</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">newsletter@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--older-than</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">90d</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations trash &#x27;Quarterly numbers&#x27;proton mail conversations trash --from newsletter@example.com --older-than 90d"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="unlabel"><code dir="auto">unlabel</code></h2><a class="sl-anchor-link" href="#unlabel"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “unlabel”</span></a></div>
+<p>Detach a label from threads.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations unlabel [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations unlabel [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">unlabel</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--label</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Accounting</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations unlabel &#x27;Quarterly numbers&#x27; --label Accounting"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--label string</code></td>
+<td>The label to attach or detach, by name or ID</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="unsnooze"><code dir="auto">unsnooze</code></h2><a class="sl-anchor-link" href="#unsnooze"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “unsnooze”</span></a></div>
+<p>Bring snoozed threads back to the inbox now.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations unsnooze [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations unsnooze [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">unsnooze</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">5bH2mQxK</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations unsnooze 5bH2mQxK"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h2"><h2 id="unstar"><code dir="auto">unstar</code></h2><a class="sl-anchor-link" href="#unstar"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “unstar”</span></a></div>
+<p>Remove the star from threads.</p>
+<div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations unstar [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations unstar [REF...]"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">unstar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Quarterly numbers'</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations unstar &#x27;Quarterly numbers&#x27;"><div></div></button></div></figure></div>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>Match messages after this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--all</code></td>
+<td>Act on everything in scope, rather than a subset</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Match messages before this date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--folder string</code></td>
+<td>Folder or label to look in (default: all)</td>
+</tr>
+<tr>
+<td><code dir="auto">--from string</code></td>
+<td>Match the sender’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--keyword string</code></td>
+<td>Match text anywhere, including display names and bodies</td>
+</tr>
+<tr>
+<td><code dir="auto">--limit int</code></td>
+<td>Most messages to affect (Proton pages at 150) (default <code dir="auto">150</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--newer-than string</code></td>
+<td>Match messages newer than DURATION</td>
+</tr>
+<tr>
+<td><code dir="auto">--older-than string</code></td>
+<td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--starred</code></td>
+<td>Match starred messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--subject string</code></td>
+<td>Match text in the subject</td>
+</tr>
+<tr>
+<td><code dir="auto">--to string</code></td>
+<td>Match a recipient’s address</td>
+</tr>
+<tr>
+<td><code dir="auto">--unread</code></td>
+<td>Match unread messages</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p>Every command also takes the <a href="/about/commands/#flags-that-work-on-every-command">flags that work everywhere</a>.</p>
+</div><footer class="sl-flex astro-xhxjzfa7"><div class="meta sl-flex astro-xhxjzfa7"><a href="https://github.com/roman-16/proton-cli/edit/main/docs/mail/conversations.md" class="sl-flex print:hidden astro-xk5gmzsg"><svg aria-hidden="true" class="astro-xk5gmzsg astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.2em;"><path d="M22 7.24a1 1 0 0 0-.29-.71l-4.24-4.24a1 1 0 0 0-1.1-.22 1 1 0 0 0-.32.22l-2.83 2.83L2.29 16.05a1 1 0 0 0-.29.71V21a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .76-.29l10.87-10.93L21.71 8c.1-.1.17-.2.22-.33a1 1 0 0 0 0-.24v-.14l.07-.05ZM6.83 20H4v-2.83l9.93-9.93 2.83 2.83L6.83 20ZM18.17 8.66l-2.83-2.83 1.42-1.41 2.82 2.82-1.41 1.42Z"/></svg>Edit page</a></div><div class="pagination-links print:hidden astro-bqr5mxv2"><a class="prev astro-bqr5mxv2" href="/mail/messages/" rel="prev"><svg aria-hidden="true" class="astro-bqr5mxv2 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg>proton mail messages</a><a class="next astro-bqr5mxv2" href="/mail/drafts/" rel="next">proton mail drafts<svg aria-hidden="true" class="astro-bqr5mxv2 astro-n5k4ipy7" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg></a></div></footer></div></div></main></div></div></div></div></body></html>
