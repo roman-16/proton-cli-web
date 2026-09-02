@@ -212,7 +212,7 @@ proton calendar events get 4f2a1b9c@2026-04-16T09:00   # one occurrence
 proton calendar events get 4f2a1b9c                    # the whole series
 ```
 
-Keep the `@` part and you act on that occurrence; drop it and you act on the series. `--future` widens one occurrence to it and every later one.
+Keep the `@` part and you act on that occurrence; drop it and you act on the series. `--onwards` widens one occurrence to it and every later one.
 
 ### Drive is addressed by path
 
@@ -620,9 +620,11 @@ proton mail messages list --output yaml
 
 `count` is always there. `total`, `page`, `page_size` and `has_more` appear when the request involved them, so a consumer can tell “page 0” from “not paginated”.
 
+**A list is always a list.** An empty collection is `[]` and an empty map is `{}`, never a missing key - so `jq '.attendees[]'` iterates nothing rather than failing on `null`. Scalars are the other way round: a field that does not apply is absent. That is how `occurrence_count` answers only when there is a number to give - an event that does not recur has none, and neither does a series with no end, which `rrule` tells you apart.
+
 **Names, not numbers**, matching the text output and `set`: `{ "type": "file", "state": "active", "unread": true }`. Keys are `snake_case`, timestamps are `<verb>_time` in Unix seconds, sizes are `size` in bytes, and IDs are always complete.
 
-**Times come back in your own zone.** An event’s `start` and `end` are RFC 3339 with your offset, and what it is anchored to is its own field:
+**Times come back in the zone you are working in** - `--zone`, or `TZ`, or `zone:` in your [config](/configuration/), or your system’s. An event’s `start` and `end` are RFC 3339 with that offset, and what the event itself is anchored to is its own field:
 
 ```json
 { "start": "2026-04-16T16:00:00+02:00", "end": "2026-04-16T17:00:00+02:00", "zone": "Europe/Vienna" }
@@ -1159,7 +1161,6 @@ How long an event lasts is said **once**, with either `--end` or `--duration`. B
 | `--duration`                  | `15m`, `90m`, `1h`, `2h30m` - or `3d` for an all-day event             |
 | `--remind`                    | `15m`, `1h`, `1d`, repeatable; add `:email` for an emailed one         |
 | `--start` / `--end` on `list` | `YYYY-MM-DD`, both days included                                       |
-| `--zone`                      | an IANA zone name, e.g. `Europe/Vienna`                                |
 
 `--all-day` makes an event with no time of day, measured in days. It ends at the midnight after its last day, which is how every other calendar client writes it.
 
@@ -1167,11 +1168,25 @@ How long an event lasts is said **once**, with either `--end` or `--duration`. B
 
 **Attendees.** Proton users are added directly; external addresses get an emailed invitation. A bare address is required; `--attendee jane@example.com:optional` is not.
 
-**Recurrence.** `--rrule` takes an iCal recurrence rule. Pair it with `--zone`: a series anchored to `Europe/Vienna` stays at 09:00 when the clocks change, where one stored as a plain UTC instant would slide to 08:00.
+**Recurrence.** `--rrule` takes an iCal recurrence rule. The series is anchored to the zone you are working in, so a 09:00 standup stays at 09:00 when the clocks change, where one stored as a plain UTC instant would slide to 08:00.
 
 ```bash
 proton calendar events create --title Standup --start 2026-04-16T09:00 --duration 15m \
-  --rrule "FREQ=WEEKLY;COUNT=10" --remind 15m --zone Europe/Vienna
+  --rrule "FREQ=WEEKLY;COUNT=10" --remind 15m
+```
+
+**Times.** Every event carries the zone it is anchored to, and the result says which:
+
+```console
+$ proton calendar events create --title Dentist --start 2026-04-16T14:00
+✓ Created event "Dentist" for 2026-04-16 14:00 Europe/Vienna.
+```
+
+The zone comes from `--zone`, `TZ`, `zone:` in your [config](/configuration/), your system, or your Proton calendar’s primary zone, in that order. The four hours a year where a clock reading means two instants or none are refused rather than guessed - add an offset to say which you meant:
+
+```console
+$ proton calendar events create --title 'Night shift' --start 2026-10-25T02:30
+Error: 02:30 happens twice on 2026-10-25 in Europe/Vienna, when the clocks go back; say which one, as 2026-10-25T02:30:00+02:00 or 2026-10-25T02:30:00+01:00
 ```
 
 ## Change or answer one
@@ -1190,7 +1205,7 @@ Anything you do not mention is left alone, including the reminders, the recurren
 
 [Section titled “Recurring events, occurrence by occurrence”](#recurring-events-occurrence-by-occurrence)
 
-**The reference decides how far a change reaches.** Keep the `@occurrence` part and you act on that occurrence; drop it and you act on the series. `--future` widens one occurrence to it and everything after.
+**The reference decides how far a change reaches.** Keep the `@occurrence` part and you act on that occurrence; drop it and you act on the series. `--onwards` widens one occurrence to it and everything after.
 
 ```bash
 # move one standup, leaving the series alone
@@ -1202,18 +1217,31 @@ proton calendar events delete 4f2a1b9c@2026-04-22T09:00
 
 
 # from May the 4th on, it moves half an hour later
-proton calendar events update 4f2a1b9c@2026-05-04T09:00 --start 2026-05-04T09:30 --future
+proton calendar events update 4f2a1b9c@2026-05-04T09:00 --start 2026-05-04T09:30 --onwards
 
 
 # end the series there
-proton calendar events delete 4f2a1b9c@2026-05-04T09:00 --future
+proton calendar events delete 4f2a1b9c@2026-05-04T09:00 --onwards
 
 
 # the whole series
 proton calendar events delete 4f2a1b9c
 ```
 
-Deleting a series removes every occurrence, so it says how many and shows them first. `--future` on the *first* occurrence is refused, because nothing would be left - delete the series instead.
+A bare reference reaches every occurrence a series holds, so both `update` and `delete` say how many and show the first of them. A series with no end says that instead of a number, because there is no number to give:
+
+```console
+$ proton calendar events update Standup --start 2026-04-16T10:00 --dry-run
+Dry run - would update event "Standup" and all 500 occurrences of it, now 2026-04-16 10:00 Europe/Vienna:
+
+
+ID                                DATE        TIME   DURATION  TITLE    LOCATION
+────────────────────────────────  ──────────  ─────  ────────  ───────  ────────
+Fh3jAe…/9xL4pQ…@2026-04-16T09:00  2026-04-16  09:00  15m       Standup  Room 2
+…
+```
+
+`--onwards` on the *first* occurrence is refused, because nothing would be left - delete the series instead.
 
 ## Reminders
 
@@ -2239,6 +2267,7 @@ These are declared on the root, so they can be given to any command and mean the
 | `-q, --quiet`          | Suppress non-essential stderr output                                                            |
 | `--verified string`    | A human verification already solved, as the refusal printed it (env: PROTON\_VERIFIED)          |
 | `-y, --yes`            | Answer confirmation prompts with yes                                                            |
+| `--zone string`        | IANA time zone to work in (env: TZ; default: your system zone)                                  |
 
 See [Configuration](/configuration/) for what each one changes, and [Output](/output/) for the exit codes.
 
@@ -2539,7 +2568,6 @@ proton calendar events create --title Renewal --start 2026-09-01T09:00 --remind 
 | `--start string`         | Set the start (RFC 3339, or YYYY-MM-DDTHH:MM)                                                                |
 | `--status string`        | Set whether it is going ahead: confirmed, tentative, cancelled                                               |
 | `--title string`         | Set the title                                                                                                |
-| `--zone string`          | IANA time zone the event is anchored to (default: your system zone)                                          |
 
 ### `events delete`
 
@@ -2547,7 +2575,7 @@ proton calendar events create --title Renewal --start 2026-09-01T09:00 --remind 
 
 Delete events.
 
-A reference that names one occurrence of a recurring event deletes only that occurrence. Add –future to delete it and every later one, or drop the @ part of the reference to delete the whole series.
+A reference that names one occurrence of a recurring event deletes only that occurrence. Add –onwards to delete it and every later one, or drop the @ part of the reference to delete the whole series.
 
 ```plaintext
 proton calendar events delete REF...
@@ -2555,12 +2583,12 @@ proton calendar events delete REF...
 
 ```bash
 proton calendar events delete Dentist
-proton calendar events delete 4f2a1b9c@2026-05-04T09:00 --future
+proton calendar events delete 4f2a1b9c@2026-05-04T09:00 --onwards
 ```
 
-| Flag       | Description                                      |
-| ---------- | ------------------------------------------------ |
-| `--future` | Also delete every later occurrence of the series |
+| Flag        | Description                                      |
+| ----------- | ------------------------------------------------ |
+| `--onwards` | Also delete every later occurrence of the series |
 
 ### `events export`
 
@@ -2678,7 +2706,7 @@ Change an event.
 
 Anything you do not mention is left alone, including the reminders and the recurrence.
 
-A reference that names one occurrence of a recurring event changes only that occurrence. Add –future to change it and every later one, or drop the @ part of the reference to change the whole series.
+A reference that names one occurrence of a recurring event changes only that occurrence. Add –onwards to change it and every later one, or drop the @ part of the reference to change the whole series, which –dry-run will show you before you do.
 
 ```plaintext
 proton calendar events update REF
@@ -2687,7 +2715,7 @@ proton calendar events update REF
 ```bash
 proton calendar events update Dentist --start 2026-04-16T15:30
 proton calendar events update 4f2a1b9c@2026-04-22T09:00 --location 'Room 3'
-proton calendar events update 4f2a1b9c@2026-04-22T09:00 --title Standup --future
+proton calendar events update 4f2a1b9c@2026-04-22T09:00 --title Standup --onwards
 ```
 
 | Flag                   | Description                                                                   |
@@ -2696,15 +2724,14 @@ proton calendar events update 4f2a1b9c@2026-04-22T09:00 --title Standup --future
 | `--description string` | Replace the description                                                       |
 | `--duration string`    | Replace how long it lasts (e.g. 15m, 1h, 2h30m, 3d)                           |
 | `--end string`         | Replace the end (RFC 3339, or YYYY-MM-DDTHH:MM)                               |
-| `--future`             | Also change every later occurrence of the series                              |
 | `--location string`    | Replace where it is                                                           |
 | `--no-remind`          | Remove the reminders                                                          |
+| `--onwards`            | Also change every later occurrence of the series                              |
 | `--remind stringArray` | Remind this long before the start, as DURATION or DURATION:email (repeatable) |
 | `--rrule string`       | Replace the recurrence rule, e.g. FREQ=WEEKLY;COUNT=10                        |
 | `--start string`       | Replace the start (RFC 3339, or YYYY-MM-DDTHH:MM)                             |
 | `--status string`      | Replace whether it is going ahead: confirmed, tentative, cancelled            |
 | `--title string`       | Replace the title                                                             |
-| `--zone string`        | IANA time zone the event is anchored to (default: your system zone)           |
 
 ## `invitations`
 
@@ -4473,25 +4500,25 @@ proton mail conversations forward REF
 proton mail conversations forward 'Quarterly numbers' --to jane@example.com
 ```
 
-| Flag                          | Description                                                              |
-| ----------------------------- | ------------------------------------------------------------------------ |
-| `--attach stringArray`        | File to attach (repeatable)                                              |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
-| `--draft`                     | Save as a draft instead of sending                                       |
-| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
-| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
-| `--from string`               | Address to send from, by email or ID (default: your primary)             |
-| `--html`                      | Compose in HTML (default: match the original)                            |
-| `--no-attachments`            | Leave the original’s attachments behind                                  |
-| `--no-quote`                  | Do not quote the original message                                        |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
+| Flag                          | Description                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| `--attach stringArray`        | File to attach (repeatable)                                                      |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)          |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                         |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)                      |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                               |
+| `--draft`                     | Save as a draft instead of sending                                               |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file                      |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                                      |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin                       |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                            |
+| `--from string`               | Address to send from, by email or ID (default: your primary)                     |
+| `--html`                      | Compose in HTML (default: match the original)                                    |
+| `--no-attachments`            | Leave the original’s attachments behind                                          |
+| `--no-quote`                  | Do not quote the original message                                                |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
 ### `conversations get`
 
@@ -4699,25 +4726,25 @@ proton mail conversations reply 'Quarterly numbers' --body 'Looks right to me.'
 proton mail conversations reply 'Quarterly numbers' --everyone --body Agreed.
 ```
 
-| Flag                          | Description                                                              |
-| ----------------------------- | ------------------------------------------------------------------------ |
-| `--attach stringArray`        | File to attach (repeatable)                                              |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
-| `--draft`                     | Save as a draft instead of sending                                       |
-| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
-| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
-| `--everyone`                  | Reply to everyone who was on the message, not just the sender            |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
-| `--from string`               | Address to send from, by email or ID (default: your primary)             |
-| `--html`                      | Compose in HTML (default: match the original)                            |
-| `--no-quote`                  | Do not quote the original message                                        |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
+| Flag                          | Description                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| `--attach stringArray`        | File to attach (repeatable)                                                      |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)          |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                         |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)                      |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                               |
+| `--draft`                     | Save as a draft instead of sending                                               |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file                      |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                                      |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin                       |
+| `--everyone`                  | Reply to everyone who was on the message, not just the sender                    |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                            |
+| `--from string`               | Address to send from, by email or ID (default: your primary)                     |
+| `--html`                      | Compose in HTML (default: match the original)                                    |
+| `--no-quote`                  | Do not quote the original message                                                |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
 ### `conversations snooze`
 
@@ -4992,13 +5019,13 @@ proton mail drafts send 5bH2mQxK
 proton mail drafts send 5bH2mQxK --send-at 2026-04-16T09:00
 ```
 
-| Flag                        | Description                                                              |
-| --------------------------- | ------------------------------------------------------------------------ |
-| `--eo-password-file string` | Read the password for recipients outside Proton from a file              |
-| `--eo-password-hint string` | Hint shown to password-protected recipients                              |
-| `--eo-password-stdin`       | Read the password for recipients outside Proton from stdin               |
-| `--expires string`          | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
-| `--send-at string`          | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
+| Flag                        | Description                                                                      |
+| --------------------------- | -------------------------------------------------------------------------------- |
+| `--eo-password-file string` | Read the password for recipients outside Proton from a file                      |
+| `--eo-password-hint string` | Hint shown to password-protected recipients                                      |
+| `--eo-password-stdin`       | Read the password for recipients outside Proton from stdin                       |
+| `--expires string`          | Self-destruct after DURATION (e.g. 7d, 24h), or never                            |
+| `--send-at string`          | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
 
 ### `drafts update`
 
@@ -5240,25 +5267,25 @@ proton mail messages forward 'Invoice #2291' --to jane@example.com
 proton mail messages forward 'Invoice #2291' --to jane@example.com --no-attachments
 ```
 
-| Flag                          | Description                                                              |
-| ----------------------------- | ------------------------------------------------------------------------ |
-| `--attach stringArray`        | File to attach (repeatable)                                              |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
-| `--draft`                     | Save as a draft instead of sending                                       |
-| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
-| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
-| `--from string`               | Address to send from, by email or ID (default: your primary)             |
-| `--html`                      | Compose in HTML (default: match the original)                            |
-| `--no-attachments`            | Leave the original’s attachments behind                                  |
-| `--no-quote`                  | Do not quote the original message                                        |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
+| Flag                          | Description                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| `--attach stringArray`        | File to attach (repeatable)                                                      |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)          |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                         |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)                      |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                               |
+| `--draft`                     | Save as a draft instead of sending                                               |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file                      |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                                      |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin                       |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                            |
+| `--from string`               | Address to send from, by email or ID (default: your primary)                     |
+| `--html`                      | Compose in HTML (default: match the original)                                    |
+| `--no-attachments`            | Leave the original’s attachments behind                                          |
+| `--no-quote`                  | Do not quote the original message                                                |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
 ### `messages get`
 
@@ -5477,25 +5504,25 @@ proton mail messages reply 'Invoice #2291' --everyone --body 'Noted.'
 proton mail messages reply 'Invoice #2291' --body 'Draft first.' --draft
 ```
 
-| Flag                          | Description                                                              |
-| ----------------------------- | ------------------------------------------------------------------------ |
-| `--attach stringArray`        | File to attach (repeatable)                                              |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
-| `--draft`                     | Save as a draft instead of sending                                       |
-| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
-| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
-| `--everyone`                  | Reply to everyone who was on the message, not just the sender            |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
-| `--from string`               | Address to send from, by email or ID (default: your primary)             |
-| `--html`                      | Compose in HTML (default: match the original)                            |
-| `--no-quote`                  | Do not quote the original message                                        |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
+| Flag                          | Description                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| `--attach stringArray`        | File to attach (repeatable)                                                      |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)          |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                         |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)                      |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                               |
+| `--draft`                     | Save as a draft instead of sending                                               |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file                      |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                                      |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin                       |
+| `--everyone`                  | Reply to everyone who was on the message, not just the sender                    |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                            |
+| `--from string`               | Address to send from, by email or ID (default: your primary)                     |
+| `--html`                      | Compose in HTML (default: match the original)                                    |
+| `--no-quote`                  | Do not quote the original message                                                |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
 ### `messages send`
 
@@ -5515,24 +5542,24 @@ proton mail messages send --to jane@example.com --subject Invoice --body 'See at
 proton mail messages send --eml ./draft.eml
 ```
 
-| Flag                          | Description                                                               |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| `--attach stringArray`        | File to attach (repeatable)                                               |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)   |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                  |
-| `--body string`               | Message body (- reads stdin)                                              |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                        |
-| `--eml string`                | Build the message from an RFC 822 file; other flags override what it says |
-| `--eo-password-file string`   | Read the password for recipients outside Proton from a file               |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                               |
-| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin                |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                     |
-| `--from string`               | Address to send from, by email or ID (default: your primary)              |
-| `--html`                      | Treat the body as HTML rather than plain text                             |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                    |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)  |
-| `--subject string`            | Subject line                                                              |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                   |
+| Flag                          | Description                                                                      |
+| ----------------------------- | -------------------------------------------------------------------------------- |
+| `--attach stringArray`        | File to attach (repeatable)                                                      |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)          |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                         |
+| `--body string`               | Message body (- reads stdin)                                                     |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                               |
+| `--eml string`                | Build the message from an RFC 822 file; other flags override what it says        |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file                      |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                                      |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin                       |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                            |
+| `--from string`               | Address to send from, by email or ID (default: your primary)                     |
+| `--html`                      | Treat the body as HTML rather than plain text                                    |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
+| `--subject string`            | Subject line                                                                     |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
 ### `messages star`
 
@@ -5846,7 +5873,7 @@ proton mail settings autoreply get
 
 Configure the auto-reply and turn it on.
 
-–start and –end are written in the grammar the repeat mode dictates: fixed 2026-07-01T09:00 a date and time in –zone daily 09:00 a time of day, with –days weekly mon:09:00 a weekday and time monthly 1:09:00 a day of the month and time permanent - no bounds
+–start and –end are written in the grammar the repeat mode dictates: fixed 2026-07-01T09:00 a date and time in your zone daily 09:00 a time of day, with –days weekly mon:09:00 a weekday and time monthly 1:09:00 a day of the month and time permanent - no bounds
 
 Proton sends every auto-reply with the subject “Auto” and offers no way to change it. Auto-reply is a paid feature.
 
@@ -5870,7 +5897,6 @@ proton mail settings autoreply set --message 'On holiday.' --start 2026-07-01T09
 | `--repeat string`        | How the schedule repeats: fixed, daily, weekly, monthly, permanent (default `fixed`) |
 | `--start string`         | Start of the window (grammar depends on –repeat)                                     |
 | `--totp string`          | Two-factor code                                                                      |
-| `--zone string`          | IANA time zone the schedule is read in (default: the system zone)                    |
 
 ### `settings filters`
 
@@ -7825,6 +7851,7 @@ The top level applies whichever profile you are acting as. `per-profile:` narrow
 | `output`          | `-o`, `--output`                                                              |
 | `quiet`           | `-q`, `--quiet`                                                               |
 | `log-level`       | `--log-level`; `PROTON_LOG_LEVEL`                                             |
+| `zone`            | `--zone`; `TZ`                                                                |
 | `full-ids`        | `--full-ids`                                                                  |
 | `no-color`        | `--no-color`; `NO_COLOR`                                                      |
 | `no-input`        | `--no-input`; `PROTON_NO_INPUT`                                               |
@@ -7902,8 +7929,6 @@ $ proton --quiet=false mail messages list
 
 [Section titled “Environment variables”](#environment-variables)
 
-Nine, and none of them can name an account.
-
 | Variable                 | Description                                                                                                                                                                                    |
 | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `PROTON_CONFIG`          | A config file somewhere other than the default path                                                                                                                                            |
@@ -7914,6 +7939,7 @@ Nine, and none of them can name an account.
 | `COLORTERM`              | `truecolor` or `24bit` if your terminal takes 24-bit color and does not advertise it; only affects how exactly a color swatch is drawn ([why](/design-notes/#why-colour-is-asked-for-by-name)) |
 | `PROTON_NO_INPUT`        | Set to any value, even empty, to never prompt; a missing credential becomes an error                                                                                                           |
 | `PROTON_LOG_LEVEL`       | `debug`, `info`, `warn` or `error`                                                                                                                                                             |
+| `TZ`                     | The IANA zone to work in, e.g. `Europe/Vienna`; POSIX’s own variable, read when no flag or file names one                                                                                      |
 | `PROTON_NO_UPDATE_CHECK` | Set to any value, even empty, to never look for a new release ([what that is](/installation/#updating))                                                                                        |
 | `PROTON_VERIFIED`        | A human verification already solved, as the refusal printed it ([when you need it](/troubleshooting/#nothing-here-can-be-asked))                                                               |
 
@@ -7946,6 +7972,7 @@ Those paths are the Linux ones. macOS uses `~/Library/Application Support/proton
 | `--full-ids`                           | Don’t shorten IDs in interactive output                                                                             |
 | `--no-color`                           | Turn colored output off (env: `NO_COLOR`)                                                                           |
 | `--log-level debug\|info\|warn\|error` | Logging verbosity (env: `PROTON_LOG_LEVEL`)                                                                         |
+| `--zone NAME`                          | IANA time zone to work in (env: `TZ`)                                                                               |
 | `--no-input`                           | Never prompt; a missing credential becomes an error (env: `PROTON_NO_INPUT`)                                        |
 | `--verified TOKEN`                     | A human verification already solved, as the refusal printed it (env: `PROTON_VERIFIED`)                             |
 
@@ -8051,6 +8078,36 @@ That is why the trash is one list across every volume the account has. Photos ar
 It is why a filter that matches a folder and the files inside it selects the folder alone. Every verb it feeds - `trash`, `delete`, `move`, `copy` - acts on a folder whole, so the files under it were never separate work: counting them would inflate the number and then ask Proton twice, the second time about something that has already moved.
 
 And it is why a bulk verb acts on the IDs its selection resolved, in batches of fifty, reading the answer Proton gives per item. A path resolved a second time can mean something else by then; a batch that half-succeeded and reported the number it hoped for would be the count lying at the last moment. What was refused is named instead, and the count says what landed.
+
+## Why the zone is settled once
+
+[Section titled “Why the zone is settled once”](#why-the-zone-is-settled-once)
+
+Every wall-clock reading in this CLI is read against a named zone: `--start` on an event, `--send-at` on a message, `--until` on a snooze, the whole days `--start` and `--end` cut a listing into. It is the same zone for all of them - the one the person running the command is in - so it is settled once per invocation, in the same place every other setting is.
+
+The zone is a **name**, not an offset, because Proton anchors an event to one. A weekly 09:00 meeting anchored to `Europe/Vienna` stays at 09:00 when the clocks change; the same meeting stored as a UTC instant slides to 08:00. An offset pins the instant and says nothing about the anchor, so requiring one on every input would leave the load-bearing half of the answer to be guessed in silence.
+
+`TZ` is where it is read from when no flag or file names one, rather than a variable of this CLI’s own. A machine that has already been told which zone it is in should not have to be told again, and a second name for the setting every other tool reads would leave the two free to disagree.
+
+Naming it once also keeps printing and parsing in step. An occurrence reference is a wall-clock reading the CLI prints and a person types back; printed in one zone and read in another it is a reference nobody can use.
+
+## Why an ambiguous time is refused rather than resolved
+
+[Section titled “Why an ambiguous time is refused rather than resolved”](#why-an-ambiguous-time-is-refused-rather-than-resolved)
+
+For two hours a year a wall-clock reading names no instant, because the clocks went forward over it, and for two hours a year it names two, because they went back. Go answers both without complaint - it moves a time out of the gap and picks a side of the overlap - so `--start 2026-03-29T02:30` used to store an event at 03:30, and `--start 2026-10-25T02:30` used to pick one of two instants by a rule nobody wrote down.
+
+Neither can be settled from a zone name, and both are decidable from the command line alone, before anything reaches the network. So they are refused, and the message names the offset form that settles it. That is what an offset is for here: the four hours where a clock reading cannot name an instant, rather than every input in the year.
+
+## Why an occurrence count is a number or nothing
+
+[Section titled “Why an occurrence count is a number or nothing”](#why-an-occurrence-count-is-a-number-or-nothing)
+
+A recurring rule that says neither how many times it repeats nor when it stops repeats for ever. Such a series has no number of occurrences - not a very large one - and it says so in its own text, which is why it is read rather than counted.
+
+Three places used to answer it with a cap instead. `events get` reported a thousand occurrences for “every weekday forever”, a series delete reported two hundred, and the walk underneath both stopped at ten thousand and returned as though the rule had ended. Each cap was true of the walk and false of the series, and printed as though it were the whole truth.
+
+So a count is either exact or not given. `occurrence_count` on an event is a number when the rule ends and absent when it does not; a change that reached a series reports `occurrences`, a number or `null`, because there the question is always about a series and `null` can only mean one thing. In words, the sentence says it outright - “and all 500 occurrences of it”, or “and every occurrence of it, a series with no end” - and the table under it is a sample, enough to recognise what is about to change and few enough that the question underneath is still on screen.
 
 ## Why a listing carries no secret
 

@@ -317,7 +317,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--send-at string</code></td>
-<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)</td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
 </tr>
 <tr>
 <td><code dir="auto">--to stringArray</code></td>
@@ -776,7 +776,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--send-at string</code></td>
-<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)</td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
 </tr>
 <tr>
 <td><code dir="auto">--to stringArray</code></td>
@@ -1307,7 +1307,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--send-at string</code></td>
-<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)</td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
 </tr>
 </tbody>
 </table>
@@ -1764,7 +1764,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--send-at string</code></td>
-<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)</td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
 </tr>
 <tr>
 <td><code dir="auto">--to stringArray</code></td>
@@ -2222,7 +2222,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--send-at string</code></td>
-<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)</td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
 </tr>
 <tr>
 <td><code dir="auto">--to stringArray</code></td>
@@ -2296,7 +2296,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--send-at string</code></td>
-<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)</td>
+<td>Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in)</td>
 </tr>
 <tr>
 <td><code dir="auto">--subject string</code></td>
@@ -2690,7 +2690,7 @@
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">settings</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">autoreply</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">get</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail settings autoreply get"><div></div></button></div></figure></div>
 <div class="sl-heading-wrapper level-h3"><h3 id="settings-autoreply-set"><code dir="auto">settings autoreply set</code></h3><a class="sl-anchor-link" href="#settings-autoreply-set"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “settings autoreply set”</span></a></div>
 <p>Configure the auto-reply and turn it on.</p>
-<p>–start and –end are written in the grammar the repeat mode dictates: fixed      2026-07-01T09:00   a date and time in –zone daily      09:00              a time of day, with –days weekly     mon:09:00          a weekday and time monthly    1:09:00            a day of the month and time permanent  -                  no bounds</p>
+<p>–start and –end are written in the grammar the repeat mode dictates: fixed      2026-07-01T09:00   a date and time in your zone daily      09:00              a time of day, with –days weekly     mon:09:00          a weekday and time monthly    1:09:00            a day of the month and time permanent  -                  no bounds</p>
 <p>Proton sends every auto-reply with the subject “Auto” and offers no way to change it. Auto-reply is a paid feature.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail settings autoreply set</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail settings autoreply set"><div></div></button></div></figure></div>
 <div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">settings</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">autoreply</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">set</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--repeat</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">permanent</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--message</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Away until Monday.'</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">settings</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">autoreply</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">set</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--message</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'On holiday.'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--start</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-07-01T09:00</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--end</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-07-14T17:00</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail settings autoreply set --repeat permanent --message &#x27;Away until Monday.&#x27;proton mail settings autoreply set --message &#x27;On holiday.&#x27; --start 2026-07-01T09:00 --end 2026-07-14T17:00"><div></div></button></div></figure></div>
@@ -2737,10 +2737,6 @@
 <tr>
 <td><code dir="auto">--totp string</code></td>
 <td>Two-factor code</td>
-</tr>
-<tr>
-<td><code dir="auto">--zone string</code></td>
-<td>IANA time zone the schedule is read in (default: the system zone)</td>
 </tr>
 </tbody>
 </table>
