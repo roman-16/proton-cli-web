@@ -280,16 +280,20 @@
 <td>Save as a draft instead of sending</td>
 </tr>
 <tr>
-<td><code dir="auto">--eo-password string</code></td>
-<td>Password-protect the message for recipients outside Proton (expires after 28 days)</td>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
 </tr>
 <tr>
 <td><code dir="auto">--eo-password-hint string</code></td>
 <td>Hint shown to password-protected recipients</td>
 </tr>
 <tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
+</tr>
+<tr>
 <td><code dir="auto">--expires string</code></td>
-<td>Self-destruct after DURATION (e.g. 7d, 24h)</td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
 </tr>
 <tr>
 <td><code dir="auto">--from string</code></td>
@@ -735,12 +739,16 @@
 <td>Save as a draft instead of sending</td>
 </tr>
 <tr>
-<td><code dir="auto">--eo-password string</code></td>
-<td>Password-protect the message for recipients outside Proton (expires after 28 days)</td>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
 </tr>
 <tr>
 <td><code dir="auto">--eo-password-hint string</code></td>
 <td>Hint shown to password-protected recipients</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
 </tr>
 <tr>
 <td><code dir="auto">--everyone</code></td>
@@ -748,7 +756,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--expires string</code></td>
-<td>Self-destruct after DURATION (e.g. 7d, 24h)</td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
 </tr>
 <tr>
 <td><code dir="auto">--from string</code></td>
@@ -1282,16 +1290,20 @@
 </thead>
 <tbody>
 <tr>
-<td><code dir="auto">--eo-password string</code></td>
-<td>Password-protect the message for recipients outside Proton (expires after 28 days)</td>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
 </tr>
 <tr>
 <td><code dir="auto">--eo-password-hint string</code></td>
 <td>Hint shown to password-protected recipients</td>
 </tr>
 <tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
+</tr>
+<tr>
 <td><code dir="auto">--expires string</code></td>
-<td>Self-destruct after DURATION (e.g. 7d, 24h)</td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
 </tr>
 <tr>
 <td><code dir="auto">--send-at string</code></td>
@@ -1715,16 +1727,20 @@
 <td>Save as a draft instead of sending</td>
 </tr>
 <tr>
-<td><code dir="auto">--eo-password string</code></td>
-<td>Password-protect the message for recipients outside Proton (expires after 28 days)</td>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
 </tr>
 <tr>
 <td><code dir="auto">--eo-password-hint string</code></td>
 <td>Hint shown to password-protected recipients</td>
 </tr>
 <tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
+</tr>
+<tr>
 <td><code dir="auto">--expires string</code></td>
-<td>Self-destruct after DURATION (e.g. 7d, 24h)</td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
 </tr>
 <tr>
 <td><code dir="auto">--from string</code></td>
@@ -2169,12 +2185,16 @@
 <td>Save as a draft instead of sending</td>
 </tr>
 <tr>
-<td><code dir="auto">--eo-password string</code></td>
-<td>Password-protect the message for recipients outside Proton (expires after 28 days)</td>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
 </tr>
 <tr>
 <td><code dir="auto">--eo-password-hint string</code></td>
 <td>Hint shown to password-protected recipients</td>
+</tr>
+<tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
 </tr>
 <tr>
 <td><code dir="auto">--everyone</code></td>
@@ -2182,7 +2202,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--expires string</code></td>
-<td>Self-destruct after DURATION (e.g. 7d, 24h)</td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
 </tr>
 <tr>
 <td><code dir="auto">--from string</code></td>
@@ -2213,7 +2233,7 @@
 <div class="sl-heading-wrapper level-h3"><h3 id="messages-send"><code dir="auto">messages send</code></h3><a class="sl-anchor-link" href="#messages-send"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “messages send”</span></a></div>
 <p>Compose and send a message.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail messages send</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages send"><div></div></button></div></figure></div>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--subject</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Report</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--body</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'See attached.'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--attach</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">./report.pdf</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">team@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--subject</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Standup</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--body</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">-</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--subject</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Reminder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--send-at</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-04-16T09:00</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--eml</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">./draft.eml</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages send --to jane@example.com --subject Report --body &#x27;See attached.&#x27; --attach ./report.pdfproton mail messages send --to team@example.com --subject Standup --body -proton mail messages send --to jane@example.com --subject Reminder --send-at 2026-04-16T09:00proton mail messages send --eml ./draft.eml"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--subject</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Report</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--body</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'See attached.'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--attach</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">./report.pdf</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">team@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--subject</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Standup</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--body</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">-</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--subject</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Reminder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--send-at</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-04-16T09:00</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--subject</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Invoice</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--body</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'See attached.'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--eo-password-file</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">/run/secrets/jane</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--eml</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">./draft.eml</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages send --to jane@example.com --subject Report --body &#x27;See attached.&#x27; --attach ./report.pdfproton mail messages send --to team@example.com --subject Standup --body -proton mail messages send --to jane@example.com --subject Reminder --send-at 2026-04-16T09:00proton mail messages send --to jane@example.com --subject Invoice --body &#x27;See attached.&#x27; --eo-password-file /run/secrets/janeproton mail messages send --eml ./draft.eml"><div></div></button></div></figure></div>
 <table>
 <thead>
 <tr>
@@ -2247,16 +2267,20 @@
 <td>Build the message from an RFC 822 file; other flags override what it says</td>
 </tr>
 <tr>
-<td><code dir="auto">--eo-password string</code></td>
-<td>Password-protect the message for recipients outside Proton (expires after 28 days)</td>
+<td><code dir="auto">--eo-password-file string</code></td>
+<td>Read the password for recipients outside Proton from a file</td>
 </tr>
 <tr>
 <td><code dir="auto">--eo-password-hint string</code></td>
 <td>Hint shown to password-protected recipients</td>
 </tr>
 <tr>
+<td><code dir="auto">--eo-password-stdin</code></td>
+<td>Read the password for recipients outside Proton from stdin</td>
+</tr>
+<tr>
 <td><code dir="auto">--expires string</code></td>
-<td>Self-destruct after DURATION (e.g. 7d, 24h)</td>
+<td>Self-destruct after DURATION (e.g. 7d, 24h), or never</td>
 </tr>
 <tr>
 <td><code dir="auto">--from string</code></td>

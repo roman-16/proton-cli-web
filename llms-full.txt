@@ -970,7 +970,7 @@ printf '%s' "$PW" | proton calendar settings calendars delete Work --password-st
 ```console
 $ printf '%s' "$PW" | proton --password-stdin mail messages send --body - ...
 Error: --password-stdin and --body - both read standard input, which can only be read once.
-Try:   pass the password with --password-file instead
+Try:   pass it with --password-file instead
 ```
 
 ## Signing out
@@ -1491,9 +1491,12 @@ A path names every folder along it, so the ones above the last are made too: `Cr
 proton drive items trash /Documents/old.pdf     # reversible
 proton drive items delete /Documents/old.pdf    # permanent
 proton drive trash list
+proton drive trash list --sort trashed --desc --page 1
 proton drive trash restore 7Kd91mQx
-proton drive trash empty                        # permanent, across all volumes
+proton drive trash empty                        # permanent, and everything below
 ```
+
+The trash is one list however many volumes it is spread over: photos are kept on their own, and both `trash list` and `trash empty` cover them. `trash list` pages and sorts like any other listing, and says how many there are in total, which is the number `trash empty` deletes.
 
 `trash`, `delete`, `move` and `copy` all take filters instead of paths - `--pattern`, `--larger-than`, `--smaller-than`, `--older-than`, `--newer-than`, `--scope`, `--recursive`, `--all`. Try them with `list` or `--dry-run` first:
 
@@ -1502,6 +1505,8 @@ proton drive items list /Build --pattern "*.tmp" --recursive          # see what
 proton drive items trash --scope /Build --pattern "*.tmp" --recursive
 proton drive items delete --larger-than 100MB --scope /Downloads --recursive --dry-run
 ```
+
+A filter that matched a folder and the files inside it names one piece of work, not several: a folder is trashed, deleted, moved and copied whole, so what it already covers is left out of the count and out of the request.
 
 A trashed item has no place in the tree, so it has no path and is addressed by the ID its listing showed.
 
@@ -1528,7 +1533,8 @@ Neither command touches the version the file is at now. Restoring it would do no
 [Section titled “Share it”](#share-it)
 
 ```bash
-proton drive items share link /Documents/report.pdf --expires 7d --password hunter2
+proton drive items share link /Documents/report.pdf --expires 7d \
+  --link-password-file /run/secrets/report-link
 proton drive items share get /Documents/report.pdf     # who has access, plus the link
 proton drive items share unlink /Documents/report.pdf
 
@@ -1537,6 +1543,8 @@ proton drive items share add /Documents/project bob@proton.me --edit --message "
 proton drive items share update /Reports jane@proton.me --edit=false
 proton drive items share remove /Documents/report.pdf bob@proton.me
 ```
+
+The password that opens a public link is a secret, so it comes from a file or from standard input rather than from a flag value, and Proton allows at most 50 characters. `--expires never` makes an expiring link permanent, which is the word every screen prints for one that does not expire; the password needs `--clear-link-password`, because a value read from a file has no way of saying “none”.
 
 `share update` applies whether they have accepted yet or not. Nothing is re-encrypted - the key they hold still opens the share, and only what they may do with it changes. `share resend` sends an unanswered invitation again rather than cancelling and inviting afresh.
 
@@ -1641,8 +1649,11 @@ Scheduling, self-destruction, and a password for recipients outside Proton:
 ```bash
 proton mail messages send … --send-at 2026-05-01T09:00     # local time; confirms the resolved time
 proton mail messages send … --expires 7d
-proton mail messages send … --eo-password hunter2 --eo-password-hint "our usual"
+proton mail messages send … --eo-password-file /run/secrets/jane --eo-password-hint "our usual"
+pass show mail/jane | proton mail messages send … --eo-password-stdin
 ```
+
+The password a recipient outside Proton types is a secret, so it comes from a file or from standard input rather than from a flag value, and Proton asks for at least eight characters. Such a message expires after 28 days whatever `--expires` says. `--eo-password-stdin` takes the stream for itself, so it cannot be combined with `--body -`.
 
 A scheduled send sits in the `scheduled` folder until it goes. `proton mail messages unschedule REF` pulls it back to Drafts.
 
@@ -3778,21 +3789,26 @@ Create or update the public link for a file or folder.
 
 Running it again with different options changes the existing link rather than making a second one, so the URL you have shared keeps working.
 
+The password is read from a file or from stdin, never from a flag value, and may be at most 50 characters. –clear-link-password takes it off again, and –expires never makes an expiring link permanent.
+
 ```plaintext
 proton drive items share link PATH
 ```
 
 ```bash
 proton drive items share link /Documents/report.pdf
-proton drive items share link /Documents/report.pdf --expires 7d --password hunter2
+proton drive items share link /Documents/report.pdf --expires 7d --link-password-file /run/secrets/report-link
+proton drive items share link /Documents/report.pdf --clear-link-password --expires never
 proton drive items share link /Documents --edit
 ```
 
-| Flag                | Description                                    |
-| ------------------- | ---------------------------------------------- |
-| `--edit`            | Allow editing rather than only viewing         |
-| `--expires string`  | Stop working after DURATION (e.g. 7d, 2w, 6mo) |
-| `--password string` | Require this password to open the link         |
+| Flag                          | Description                                              |
+| ----------------------------- | -------------------------------------------------------- |
+| `--clear-link-password`       | Remove the public link’s password                        |
+| `--edit`                      | Allow editing rather than only viewing                   |
+| `--expires string`            | Stop working after DURATION (e.g. 7d, 2w, 6mo), or never |
+| `--link-password-file string` | Read the public link’s password from a file              |
+| `--link-password-stdin`       | Read the public link’s password from stdin               |
 
 ### `items share remove`
 
@@ -4272,6 +4288,8 @@ Holds `empty`, `list` and `restore`.
 
 Delete everything in the trash, permanently.
 
+That is everything `trash list` shows, on every volume the account has: trashed photos go with it.
+
 ```plaintext
 proton drive trash empty
 ```
@@ -4286,13 +4304,25 @@ proton drive trash empty
 
 List what is in the trash.
 
+Everything the account has trashed is here, photos included: they are kept on a volume of their own, and `trash empty` deletes both.
+
+A trashed item has no path any more, so it is addressed by the ID shown. An item whose name cannot be read is still listed, because knowing it is there is what lets you act on it.
+
 ```plaintext
 proton drive trash list
 ```
 
 ```bash
 proton drive trash list
+proton drive trash list --sort trashed --desc
 ```
+
+| Flag              | Description                                    |
+| ----------------- | ---------------------------------------------- |
+| `--desc`          | Reverse the order                              |
+| `--page int`      | Which page of results, counting from zero      |
+| `--page-size int` | How many items per page (default `50`)         |
+| `--sort string`   | Order by: name, size, trashed (default `name`) |
 
 ### `trash restore`
 
@@ -4443,24 +4473,25 @@ proton mail conversations forward REF
 proton mail conversations forward 'Quarterly numbers' --to jane@example.com
 ```
 
-| Flag                          | Description                                                                        |
-| ----------------------------- | ---------------------------------------------------------------------------------- |
-| `--attach stringArray`        | File to attach (repeatable)                                                        |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)            |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                           |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)                        |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                                 |
-| `--draft`                     | Save as a draft instead of sending                                                 |
-| `--eo-password string`        | Password-protect the message for recipients outside Proton (expires after 28 days) |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                                        |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h)                                        |
-| `--from string`               | Address to send from, by email or ID (default: your primary)                       |
-| `--html`                      | Compose in HTML (default: match the original)                                      |
-| `--no-attachments`            | Leave the original’s attachments behind                                            |
-| `--no-quote`                  | Do not quote the original message                                                  |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                             |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)           |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                            |
+| Flag                          | Description                                                              |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `--attach stringArray`        | File to attach (repeatable)                                              |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
+| `--draft`                     | Save as a draft instead of sending                                       |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
+| `--from string`               | Address to send from, by email or ID (default: your primary)             |
+| `--html`                      | Compose in HTML (default: match the original)                            |
+| `--no-attachments`            | Leave the original’s attachments behind                                  |
+| `--no-quote`                  | Do not quote the original message                                        |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
 
 ### `conversations get`
 
@@ -4668,24 +4699,25 @@ proton mail conversations reply 'Quarterly numbers' --body 'Looks right to me.'
 proton mail conversations reply 'Quarterly numbers' --everyone --body Agreed.
 ```
 
-| Flag                          | Description                                                                        |
-| ----------------------------- | ---------------------------------------------------------------------------------- |
-| `--attach stringArray`        | File to attach (repeatable)                                                        |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)            |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                           |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)                        |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                                 |
-| `--draft`                     | Save as a draft instead of sending                                                 |
-| `--eo-password string`        | Password-protect the message for recipients outside Proton (expires after 28 days) |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                                        |
-| `--everyone`                  | Reply to everyone who was on the message, not just the sender                      |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h)                                        |
-| `--from string`               | Address to send from, by email or ID (default: your primary)                       |
-| `--html`                      | Compose in HTML (default: match the original)                                      |
-| `--no-quote`                  | Do not quote the original message                                                  |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                             |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)           |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                            |
+| Flag                          | Description                                                              |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `--attach stringArray`        | File to attach (repeatable)                                              |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
+| `--draft`                     | Save as a draft instead of sending                                       |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
+| `--everyone`                  | Reply to everyone who was on the message, not just the sender            |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
+| `--from string`               | Address to send from, by email or ID (default: your primary)             |
+| `--html`                      | Compose in HTML (default: match the original)                            |
+| `--no-quote`                  | Do not quote the original message                                        |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
 
 ### `conversations snooze`
 
@@ -4960,12 +4992,13 @@ proton mail drafts send 5bH2mQxK
 proton mail drafts send 5bH2mQxK --send-at 2026-04-16T09:00
 ```
 
-| Flag                        | Description                                                                        |
-| --------------------------- | ---------------------------------------------------------------------------------- |
-| `--eo-password string`      | Password-protect the message for recipients outside Proton (expires after 28 days) |
-| `--eo-password-hint string` | Hint shown to password-protected recipients                                        |
-| `--expires string`          | Self-destruct after DURATION (e.g. 7d, 24h)                                        |
-| `--send-at string`          | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)           |
+| Flag                        | Description                                                              |
+| --------------------------- | ------------------------------------------------------------------------ |
+| `--eo-password-file string` | Read the password for recipients outside Proton from a file              |
+| `--eo-password-hint string` | Hint shown to password-protected recipients                              |
+| `--eo-password-stdin`       | Read the password for recipients outside Proton from stdin               |
+| `--expires string`          | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
+| `--send-at string`          | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
 
 ### `drafts update`
 
@@ -5207,24 +5240,25 @@ proton mail messages forward 'Invoice #2291' --to jane@example.com
 proton mail messages forward 'Invoice #2291' --to jane@example.com --no-attachments
 ```
 
-| Flag                          | Description                                                                        |
-| ----------------------------- | ---------------------------------------------------------------------------------- |
-| `--attach stringArray`        | File to attach (repeatable)                                                        |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)            |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                           |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)                        |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                                 |
-| `--draft`                     | Save as a draft instead of sending                                                 |
-| `--eo-password string`        | Password-protect the message for recipients outside Proton (expires after 28 days) |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                                        |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h)                                        |
-| `--from string`               | Address to send from, by email or ID (default: your primary)                       |
-| `--html`                      | Compose in HTML (default: match the original)                                      |
-| `--no-attachments`            | Leave the original’s attachments behind                                            |
-| `--no-quote`                  | Do not quote the original message                                                  |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                             |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)           |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                            |
+| Flag                          | Description                                                              |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `--attach stringArray`        | File to attach (repeatable)                                              |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
+| `--draft`                     | Save as a draft instead of sending                                       |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
+| `--from string`               | Address to send from, by email or ID (default: your primary)             |
+| `--html`                      | Compose in HTML (default: match the original)                            |
+| `--no-attachments`            | Leave the original’s attachments behind                                  |
+| `--no-quote`                  | Do not quote the original message                                        |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
 
 ### `messages get`
 
@@ -5443,24 +5477,25 @@ proton mail messages reply 'Invoice #2291' --everyone --body 'Noted.'
 proton mail messages reply 'Invoice #2291' --body 'Draft first.' --draft
 ```
 
-| Flag                          | Description                                                                        |
-| ----------------------------- | ---------------------------------------------------------------------------------- |
-| `--attach stringArray`        | File to attach (repeatable)                                                        |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)            |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                           |
-| `--body string`               | Your text, placed above the quoted original (- reads stdin)                        |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                                 |
-| `--draft`                     | Save as a draft instead of sending                                                 |
-| `--eo-password string`        | Password-protect the message for recipients outside Proton (expires after 28 days) |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                                        |
-| `--everyone`                  | Reply to everyone who was on the message, not just the sender                      |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h)                                        |
-| `--from string`               | Address to send from, by email or ID (default: your primary)                       |
-| `--html`                      | Compose in HTML (default: match the original)                                      |
-| `--no-quote`                  | Do not quote the original message                                                  |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                             |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)           |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                            |
+| Flag                          | Description                                                              |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| `--attach stringArray`        | File to attach (repeatable)                                              |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)  |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                 |
+| `--body string`               | Your text, placed above the quoted original (- reads stdin)              |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                       |
+| `--draft`                     | Save as a draft instead of sending                                       |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file              |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                              |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin               |
+| `--everyone`                  | Reply to everyone who was on the message, not just the sender            |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                    |
+| `--from string`               | Address to send from, by email or ID (default: your primary)             |
+| `--html`                      | Compose in HTML (default: match the original)                            |
+| `--no-quote`                  | Do not quote the original message                                        |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                   |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone) |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                  |
 
 ### `messages send`
 
@@ -5476,26 +5511,28 @@ proton mail messages send
 proton mail messages send --to jane@example.com --subject Report --body 'See attached.' --attach ./report.pdf
 proton mail messages send --to team@example.com --subject Standup --body -
 proton mail messages send --to jane@example.com --subject Reminder --send-at 2026-04-16T09:00
+proton mail messages send --to jane@example.com --subject Invoice --body 'See attached.' --eo-password-file /run/secrets/jane
 proton mail messages send --eml ./draft.eml
 ```
 
-| Flag                          | Description                                                                        |
-| ----------------------------- | ---------------------------------------------------------------------------------- |
-| `--attach stringArray`        | File to attach (repeatable)                                                        |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)            |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                           |
-| `--body string`               | Message body (- reads stdin)                                                       |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                                 |
-| `--eml string`                | Build the message from an RFC 822 file; other flags override what it says          |
-| `--eo-password string`        | Password-protect the message for recipients outside Proton (expires after 28 days) |
-| `--eo-password-hint string`   | Hint shown to password-protected recipients                                        |
-| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h)                                        |
-| `--from string`               | Address to send from, by email or ID (default: your primary)                       |
-| `--html`                      | Treat the body as HTML rather than plain text                                      |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                             |
-| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)           |
-| `--subject string`            | Subject line                                                                       |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                            |
+| Flag                          | Description                                                               |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| `--attach stringArray`        | File to attach (repeatable)                                               |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)   |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                  |
+| `--body string`               | Message body (- reads stdin)                                              |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                        |
+| `--eml string`                | Build the message from an RFC 822 file; other flags override what it says |
+| `--eo-password-file string`   | Read the password for recipients outside Proton from a file               |
+| `--eo-password-hint string`   | Hint shown to password-protected recipients                               |
+| `--eo-password-stdin`         | Read the password for recipients outside Proton from stdin                |
+| `--expires string`            | Self-destruct after DURATION (e.g. 7d, 24h), or never                     |
+| `--from string`               | Address to send from, by email or ID (default: your primary)              |
+| `--html`                      | Treat the body as HTML rather than plain text                             |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                    |
+| `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the system timezone)  |
+| `--subject string`            | Subject line                                                              |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                   |
 
 ### `messages star`
 
@@ -7983,9 +8020,37 @@ Five flags have a single-letter form, and they are the five typed most: `-p`, `-
 
 `--password-file` is usually the one to reach for, since systemd’s `LoadCredential=`, Kubernetes secrets and Docker secrets all hand you a path already.
 
+A password you choose *for somebody else* follows the same rule and gets a name of its own, because it is not the account’s: `--link-password-file` for what opens a Drive public link, `--eo-password-file` for what a recipient outside Proton types. Each is held to the bounds Proton’s own clients hold it to - at most 50 characters for a link, at least 8 for a message - and refused here rather than by the server.
+
+## Why there are three ways to say none
+
+[Section titled “Why there are three ways to say none”](#why-there-are-three-ways-to-say-none)
+
+Removing an optional value is one idea with three spellings in this CLI, and which one is right follows from what the value can carry.
+
+**The value says it.** `--expires never` is the answer to the question `--expires` asks, and it is the word every screen already prints for something that does not expire: `Expires: never`. A separate flag would be a second way to say the same thing, and then the two would have to be kept from being given at once.
+
+**`--no-x` is a state.** `calendar events update --no-remind` removes an event’s reminders and `calendar settings calendars update --no-remind` gives new events in that calendar none. One word covers both because it names the state of having none rather than the act of removing, and one flag name means one thing.
+
+**`--clear-x` is an act, on something that already exists.** It is what is left when the flag’s own value cannot carry the word: a signature is text, and “” is not something a shell shows you typing; a link’s password is read from a file, and a path cannot say “none”. So `--clear-signature` and `--clear-link-password`, each sitting beside the flag it clears - which `TestAClearFlagSitsBesideWhatItClears` is what keeps true.
+
+A verb whose entire subject is the field answers in its own words instead: `mail messages expire REF --never` is the same idea as `--in 7d`, not a flag clearing something.
+
 The rule holds for what Pass stores, too, which is where it matters most. The parts of an item that are secret - a password, a TOTP URI, a card’s number, CVV and PIN, a private key, a hidden field - arrive through `--secret-file NAME=FILE` or `--secret-stdin NAME`. They name their field rather than having a flag each because an item has several, a card three at once, and standard input can be read only once. `--password-file` itself is not available to them: it means the account password everywhere in this CLI, and one flag name means one thing.
 
 A new password needs no file at all. `proton pass items create --generate-password` makes one here, stores it, and prints it beside the item’s ID - so the only copy that ever existed is the one in the vault.
+
+## Why a count is a promise
+
+[Section titled “Why a count is a promise”](#why-a-count-is-a-promise)
+
+A confirmation and a dry run are read as a statement of what is about to happen, so the number in them has to be the number of things that happen.
+
+That is why the trash is one list across every volume the account has. Photos are kept on a volume of their own; a listing that read only the default one would say three while `trash empty` destroyed eight hundred. Both now walk the same set, fully paged, and `empty` counts what it will delete rather than what one page held.
+
+It is why a filter that matches a folder and the files inside it selects the folder alone. Every verb it feeds - `trash`, `delete`, `move`, `copy` - acts on a folder whole, so the files under it were never separate work: counting them would inflate the number and then ask Proton twice, the second time about something that has already moved.
+
+And it is why a bulk verb acts on the IDs its selection resolved, in batches of fifty, reading the answer Proton gives per item. A path resolved a second time can mean something else by then; a batch that half-succeeded and reported the number it hoped for would be the count lying at the last moment. What was refused is named instead, and the count says what landed.
 
 ## Why a listing carries no secret
 
