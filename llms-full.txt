@@ -76,7 +76,7 @@ proton completion bash | sudo tee /etc/bash_completion.d/proton
 proton completion fish > ~/.config/fish/completions/proton.fish
 ```
 
-Completion covers every command and flag, and offers real values as you type: your folder names, item types, output formats and setting keys.
+Completion covers every command and flag, and offers real values as you type: your folder names, item types, output formats and setting keys. Where a command takes a `REF` it offers back what your listings showed - see [naming what to act on](/using/naming/#tab-completion).
 
 ## Preview a change before making it
 
@@ -2634,13 +2634,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Adding a version section here is what publishes a release, so this file is the one place a version is decided: see [Releases](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md#releases). Versions that shipped before this file existed are on the [releases page](https://github.com/roman-16/proton-cli/releases).
 
+## \[3.2.0] - 2026-09-03
+
+[Section titled “\[3.2.0\] - 2026-09-03”](#320---2026-09-03)
+
+### Added
+
+[Section titled “Added”](#added)
+
+* Tab completion offers back what your listings showed: where a command takes a reference, the short ID and the subject, name or address beside it. It reads what this machine remembers rather than asking Proton, so a collection you have not listed yet offers nothing and says which listing would fill it.
+* Exit code `8` means the command reached a Proton feature this build does not implement. Nothing about the command was wrong, and neither a retry nor different arguments changes the answer.
+
+### Changed
+
+[Section titled “Changed”](#changed)
+
+* A short ID printed by a `get` resolves in the next command. Only what a listing showed was remembered before.
+* An account or recipient whose keys use post-quantum encryption says so and exits `8`. Signing in to such an account failed as a wrong password, and sending to one as an unreadable key.
+
 ## \[3.1.0] - 2026-09-03
 
 [Section titled “\[3.1.0\] - 2026-09-03”](#310---2026-09-03)
 
 ### Added
 
-[Section titled “Added”](#added)
+[Section titled “Added”](#added-1)
 
 * `proton report` prints what a bug report needs: the build, your settings and a redacted trace of the run that failed. It needs no account and no network. `--all` takes every run still kept, `--dest` writes a file to attach.
 * Every run records what it did to `~/.config/proton-cli/logs/`, one file per day, whatever `--log-level` says. Addresses, IDs and filenames are replaced by stand-ins before anything is written, so a log is safe to attach to an issue. The last 16 files are kept; `--no-log`, `PROTON_NO_LOG` or `no-log:` in the config file writes none.
@@ -2648,7 +2666,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed)
+[Section titled “Changed”](#changed-1)
 
 * A crash prints one line pointing at `proton report` instead of a Go stack trace.
 * Refusals that arrived as bare text now say what to do: a pinned key that does not match the recipient’s, an inline attachment with no `--html`, a reply to a message with no reply address, an unknown `pass items create --type`, an alias in a Pass import, and a `--remind` that is not a warning time.
@@ -2668,7 +2686,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-1)
+[Section titled “Added”](#added-2)
 
 * A config file. `~/.config/proton-cli/config.yaml` holds what you would otherwise retype on every command or export as its own variable - `output`, `profile`, `zone`, `quiet`, `log-level` and the rest - with a `per-profile:` section for narrowing one to an account. It does not exist until you write it, and a key it does not recognise is an error rather than a line quietly ignored. `--config` and `PROTON_CONFIG` read a different one.
 * A confirmation policy says what `proton` must stop for and what it must not do at all: `--confirm`, `PROTON_CONFIRM`, or `confirm:` in the config file, scoped as narrowly as one command. A denied command exits `6` and nothing answers it - not `--yes`, not `--dry-run`, not a `--confirm` on the command line. Nothing you can write makes `proton` less careful than it is with no configuration at all.
@@ -2686,7 +2704,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-1)
+[Section titled “Changed”](#changed-2)
 
 * **Breaking.** `--output` means the response format on every command. The commands that write bytes to disk take `--dest` and `--dest-dir` for where they go - every `download`, plus `mail messages export`, `contacts export`, `calendar events export` and `pass export`. A script passing a path to `--output` now fails, naming the three formats it accepts.
 * **Breaking.** A secret is never a flag value. `pass items create|update` no longer take `--password`, `--totp-uri`, `--totp-field`, `--hidden`, `--number`, `--cvv`, `--pin` or `--private-key`; use `--secret-file NAME=FILE`, `--secret-stdin NAME` or `--generate-password`. `drive items share link --password` is now `--link-password-file` / `--link-password-stdin`, with `--clear-link-password` to take one off. `--eo-password` on `mail messages send`, `reply`, `forward` and `drafts send` is now `--eo-password-file` / `--eo-password-stdin`.
@@ -2721,7 +2739,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-2)
+[Section titled “Added”](#added-3)
 
 * Signing in with a security key. An account with one is asked to touch it, and one that also has an authenticator app reaches for the key when the code prompt is answered with nothing. The same answer satisfies the re-authentication guarding `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`, which an account with only a key could not give before.
 * A CAPTCHA can be solved on any device. `proton` prints the page, opens it in your browser where it can, and waits while you solve it - here, on your phone, anywhere. A machine with no display signs in like any other.
@@ -2729,7 +2747,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-2)
+[Section titled “Changed”](#changed-3)
 
 * A CAPTCHA opens in your own browser rather than a window `proton` draws. Nothing to install on Linux: `libwebkit2gtk`, `libgtk-3` and `glib-networking` are no longer needed, the `.deb` and `.rpm` packages no longer depend on GTK or WebKit, and a `go install` build verifies exactly as a release binary does.
 
@@ -2745,7 +2763,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-3)
+[Section titled “Added”](#added-4)
 
 * Accounts in Proton’s two-password mode can be used at all: `account login` asks for the second password once the sign-in is through, or reads it from `--second-password-file` or `--second-password-stdin`. Such an account used to sign in and then fail on every key it tried to open.
 * `account settings get` says whether an account keeps the password that signs it in apart from the one that opens its data, as a `Two-Password Mode` row and as `two_password_mode`.
@@ -2753,7 +2771,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-3)
+[Section titled “Changed”](#changed-4)
 
 * A `--help` screen ends with a link to that command’s page instead of repeating the global flags, which are listed on `proton --help` alone.
 * A short ID starts after the dash an ID may begin with, so nothing a listing shortens can be read as a flag when it is pasted back. About one ID in sixty-four begins with one, and a short ID copied for such a thing before this release needs listing again.
@@ -2774,13 +2792,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-4)
+[Section titled “Added”](#added-5)
 
 * Messages say which thread they belong to: `conversation_id` is on every message under `--output json` and `--output yaml`, from `mail messages list`, `watch` and `get`. Acting on the whole thread no longer costs a second lookup.
 
 ### Changed
 
-[Section titled “Changed”](#changed-4)
+[Section titled “Changed”](#changed-5)
 
 * `calendar reminders list` and `calendar reminders watch` report the event a reminder warns about in full - its location, description, attendees and the rest sit on the row beside `fires`, `remind` and `says`. `reminders list` gains a `LOCATION` column, so a script reading that text output by column position will shift.
 
@@ -2797,7 +2815,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-5)
+[Section titled “Added”](#added-6)
 
 * `mail messages watch` prints a line the moment a message arrives and stays attached until you stop it. Without `--folder` it covers the inbox and every folder set to notify, and a thread coming back from snooze counts as arriving.
 * `calendar reminders list` says which reminders fall due between two dates, and `calendar reminders watch` prints each one at the second it is due. When a reminder fires is Proton’s own answer, so an all-day event reminds at the hour its calendar chose rather than at midnight.
@@ -2806,7 +2824,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-5)
+[Section titled “Changed”](#changed-6)
 
 * `mail settings folders list` shows a `NOTIFY` column, and a folder carries `notify` in JSON. A script reading that text output by column position will shift.
 
@@ -2816,7 +2834,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-6)
+[Section titled “Added”](#added-7)
 
 * Calendar sharing: `calendar settings calendars share add|list|remove` hands a calendar to another Proton account, and `calendar invitations list|accept|decline` is the other side of it.
 * `calendar settings calendars create --url` subscribes to a calendar published elsewhere, and `calendar settings calendars get` shows one in full.
@@ -2846,7 +2864,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-6)
+[Section titled “Changed”](#changed-7)
 
 * **Breaking.** `mail messages search` and `mail conversations search` are gone. `mail messages list` and `mail conversations list` take the same filters; they were always one request to Proton.
 * **Breaking.** `drive folders create` is now `drive items create`, and `drive share ...` is now `drive items share ...`. Update any scripts that call them.
@@ -2867,7 +2885,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-7)
+[Section titled “Added”](#added-8)
 
 * An install no package manager owns says when a release lands: once a day, under the command’s own output. `PROTON_NO_UPDATE_CHECK=1` ends it, and a package-managed copy, a pipe and `--quiet` never see it.
 * `proton changelog` says what a release changed, including one you have not installed. `--since` and `--until` cover the ground between two.
@@ -2875,7 +2893,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-7)
+[Section titled “Changed”](#changed-8)
 
 * `update --dry-run` and `uninstall --dry-run` no longer ask you to sign in: they change this machine, not your account.
 
@@ -2891,7 +2909,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-8)
+[Section titled “Changed”](#changed-9)
 
 * `drive items upload --recursive` sends a deep tree in fewer round trips.
 
@@ -2908,7 +2926,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-9)
+[Section titled “Changed”](#changed-10)
 
 * The command is `proton`. `proton-cli` stays on your `PATH` as a second name, so nothing already written breaks and upgrading does not sign you out.
 * **Breaking.** `go install github.com/roman-16/proton-cli/cmd/proton@latest` - the path gained `/cmd/proton`. Every other way of installing is unchanged.
@@ -2920,7 +2938,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-8)
+[Section titled “Added”](#added-9)
 
 * `drive items revisions download PATH REVISION_REF` reads an earlier version out to disk or into a pipe, leaving the file as it is.
 * `drive items revisions delete PATH REVISION_REF` removes an earlier version permanently.
@@ -2933,7 +2951,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-10)
+[Section titled “Changed”](#changed-11)
 
 * **Breaking.** An unrecognised reference exits `3` (not found) rather than `1`. Update scripts that read `1` as “no such thing”.
 * **Breaking.** A bad command line exits `1` (user error) rather than `2` (authentication), even when signed out.
@@ -4606,6 +4624,18 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 Closing this needs a public key built into the binary, and there is not one yet. Until then, an install from a package manager is verified by the package manager.
 
+**Post-quantum encryption is not supported.** Proton offered it for two weeks in May before pausing the rollout, and an account that opted in during that window holds keys - ML-DSA and ML-KEM, in version 6 OpenPGP packets - that the Go libraries proton-cli is built on do not implement.
+
+Such an account cannot sign in, and neither a message nor a share reaches somebody else who opted in. Every command that runs into one says so and exits `8`:
+
+```console
+$ proton account login
+Error: Your account uses post-quantum encryption, which is not supported yet.
+Try:   Proton's own apps can read these keys
+```
+
+The algorithms exist in Proton’s own builds of those libraries, so this is a matter of testing rather than of cryptography: it lands here once Proton resumes the rollout and an account can be made to carry these keys on purpose.
+
 **A recurring event needs a zone that can be named.** proton reads one from `TZ`, `/etc/localtime` or `/etc/timezone`, then falls back to your Proton calendar settings.
 
 Where none of those answers, a new event is stored as a plain UTC instant, and a recurring one then drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure.
@@ -4649,27 +4679,28 @@ For anything the commands do not reach, [`proton api`](/api/) sends raw authenti
 
 Errors say what happened and what to try, so read the message first. The code is what a script reads.
 
-| Code  | Means                               | What to do                                                    |
-| ----- | ----------------------------------- | ------------------------------------------------------------- |
-| `1`   | Something you passed was wrong      | Fix the command. Nothing was sent                             |
-| `2`   | Authentication failed               | Sign in again, or fix the password                            |
-| `3`   | Not found                           | Check the reference, or run the matching `list`               |
-| `4`   | Ambiguous, or a conflict            | Narrow the term, or use the ID it printed                     |
-| `5`   | Network or server problem           | Wait and retry. This is not your command’s fault              |
-| `6`   | Refused by your confirmation policy | Nothing about the command was wrong. The policy has to change |
-| `7`   | A bug in proton                     | Nothing you typed caused it. [Report it](#reporting-a-bug)    |
-| `130` | Cancelled with Ctrl+C               | Nothing to do                                                 |
+| Code  | Means                               | What to do                                                                |
+| ----- | ----------------------------------- | ------------------------------------------------------------------------- |
+| `1`   | Something you passed was wrong      | Fix the command. Nothing was sent                                         |
+| `2`   | Authentication failed               | Sign in again, or fix the password                                        |
+| `3`   | Not found                           | Check the reference, or run the matching `list`                           |
+| `4`   | Ambiguous, or a conflict            | Narrow the term, or use the ID it printed                                 |
+| `5`   | Network or server problem           | Wait and retry. This is not your command’s fault                          |
+| `6`   | Refused by your confirmation policy | Nothing about the command was wrong. The policy has to change             |
+| `7`   | A bug in proton                     | Nothing you typed caused it. [Report it](#reporting-a-bug)                |
+| `8`   | Not supported yet                   | Nothing was wrong with the command. See [What it can’t do](/help/limits/) |
+| `130` | Cancelled with Ctrl+C               | Nothing to do                                                             |
 
 The difference between `2` and `5` matters most to a scheduled job. `2` means fix the credential; `5` means come back later. A rate limit is `5`.
 
-`6` is the one code that retrying never helps. See [Deny](/using/confirmations/#deny).
+`6` and `8` are the codes retrying never helps. See [Deny](/using/confirmations/#deny) and [What it can’t do](/help/limits/).
 
 `7` means a failure proton never anticipated: no message was written for it, because nobody expected it. It says so on the screen, and it is worth reporting whatever else you do about it.
 
 ```console
 $ proton mail messages list
 Error: None of your addresses' keys could be opened.
-Try:   proton report   (this looks like a bug in proton, not something you did)
+proton report  (this looks like a bug in proton, not something you did)
 ```
 
 ## Reporting a bug
@@ -5087,7 +5118,7 @@ proton completion zsh > "${fpath[1]}/_proton"
 proton completion fish > ~/.config/fish/completions/proton.fish
 ```
 
-Completion covers every command and flag, and offers real values as you type: your folder names, item types, output formats and setting keys.
+Completion covers every command and flag, and offers real values as you type: your folder names, item types, output formats and setting keys. Where a command takes a `REF` it offers back what your listings showed - see [naming what to act on](/using/naming/#tab-completion).
 
 One script covers both command names, except in fish, which looks for a file named after the command being typed:
 
@@ -7859,7 +7890,7 @@ Holds `allow`, `block`, `create`, `delete` and `list`.
 Let a contact’s mail reach you again.
 
 ```plaintext
-proton pass aliases contacts allow REF CONTACT_REF...
+proton pass aliases contacts allow REF ALIAS_CONTACT_REF...
 ```
 
 ```bash
@@ -7873,7 +7904,7 @@ proton pass aliases contacts allow shopping seller@example.com
 Stop a contact’s mail reaching you.
 
 ```plaintext
-proton pass aliases contacts block REF CONTACT_REF...
+proton pass aliases contacts block REF ALIAS_CONTACT_REF...
 ```
 
 ```bash
@@ -7908,7 +7939,7 @@ proton pass aliases contacts create shopping seller@example.com --name "The sell
 Remove an address an alias can write to.
 
 ```plaintext
-proton pass aliases contacts delete REF CONTACT_REF...
+proton pass aliases contacts delete REF ALIAS_CONTACT_REF...
 ```
 
 ```bash
@@ -9261,7 +9292,11 @@ proton changelog --since 2.3.0 --until 2.4.0
 
 Generate a shell completion script.
 
-Completion knows the whole command tree, every flag, and the values each enumerated flag accepts - so it offers folder names, item types, output formats and setting keys as you type them. One script covers both proton and proton-cli.
+Completion knows the whole command tree, every flag, and the values each enumerated flag accepts - so it offers folder names, item types, output formats and setting keys as you type them.
+
+Where a command takes a reference it offers back what your listings showed: the short ID, and the subject, name or address beside it. It reads what this machine remembers rather than asking Proton, so a collection you have not listed yet offers nothing and says which listing would fill it.
+
+One script covers both proton and proton-cli.
 
 bash proton completion bash > /etc/bash\_completion.d/proton zsh proton completion zsh > “${fpath\[1]}/\_proton” fish proton completion fish > \~/.config/fish/completions/proton.fish powershell proton completion powershell | Out-String | Invoke-Expression
 
@@ -9645,6 +9680,41 @@ Short IDs carry no ellipsis and never start with a dash, so they copy cleanly ou
 **In scripts, IDs are always full.** Pipes, redirects, `--output json` and `--output yaml` all emit complete IDs, so no script ever sees a truncated value. To turn shortening off interactively too, pass `--full-ids`.
 
 **A short ID only works on the machine that printed it.** The lookup table lives in `~/.config/proton-cli/idcache/<profile>.json`. If you copied one from elsewhere, run the matching `list` here first, or use the full ID.
+
+## Tab completion
+
+[Section titled “Tab completion”](#tab-completion)
+
+With [completion installed](/install/#shell-completions), a `REF` completes from what your listings showed you - the short ID, and the subject, name or address beside it.
+
+```console
+$ proton mail conversations list
+ID        FROM                       SUBJECT                                MESSAGES  DATE
+ketTSogw  Gastronaut Reservierungen  Reservation Confirmation - Vero Sushi          1  2026-08-31 19:31
+
+
+$ proton mail conversations get ket⇥
+ketTSogw  -- Reservation Confirmation - Vero Sushi
+```
+
+The subject completes too, because it is a reference just as much as the ID is. Your shell decides between them by what you have already typed:
+
+```console
+$ proton mail messages get Invo⇥
+Invoice #2291 is ready  -- 5bH2mQxK
+
+
+$ proton contacts get jane⇥
+Jane Doe          -- QmxLp2Rt
+jane@example.com  -- QmxLp2Rt
+```
+
+**It offers only what this machine has seen.** Completion reads the same table short IDs come from, so it never waits on Proton - and a collection you have not listed yet has nothing to offer, and says which listing would fill it:
+
+```console
+$ proton pass items get ⇥
+Nothing seen yet - run `proton pass items list` first
+```
 
 ## Two IDs in one
 
