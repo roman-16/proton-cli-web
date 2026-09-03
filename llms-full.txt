@@ -847,6 +847,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass vaults update`](/pass/vaults/#update)                                             | Rename a vault, or change how it looks                              |
 | [`proton changelog`](/proton/#changelog)                                                        | Print what each release changed                                     |
 | [`proton completion`](/proton/#completion)                                                      | Generate a shell completion script                                  |
+| [`proton report`](/proton/#report)                                                              | Collect what a bug report needs                                     |
 | [`proton uninstall`](/proton/#uninstall)                                                        | Remove a curl/PowerShell-installed proton                           |
 | [`proton update`](/proton/#update)                                                              | Update proton to the latest release                                 |
 | [`proton version`](/proton/#version)                                                            | Print the version and build information                             |
@@ -866,6 +867,7 @@ These are declared on the root, so any command takes them and they mean the same
 | `--log-level string`   | Logging verbosity: debug, info, warn, error (env: PROTON\_LOG\_LEVEL)                           |
 | `--no-color`           | Disable colored output (env: NO\_COLOR)                                                         |
 | `--no-input`           | Never prompt; a missing credential becomes an error (env: PROTON\_NO\_INPUT)                    |
+| `--no-log`             | Write no diagnostic log for this run (env: PROTON\_NO\_LOG)                                     |
 | `-o, --output string`  | Output format: text, json, yaml (default “text”)                                                |
 | `-p, --profile string` | Profile to act as (env: PROTON\_PROFILE; default: default)                                      |
 | `-q, --quiet`          | Suppress non-essential stderr output                                                            |
@@ -942,7 +944,7 @@ Reading works the other way around: content arrives encrypted, is decrypted loca
 
 **What never leaves:** your password, your second password if you have one, your key password, and your private keys.
 
-There is no telemetry, and there is nothing to turn off. proton-cli never reports a command you ran, a feature you used, or the fact that you ran it at all.
+There is no telemetry, and there is nothing to turn off. proton-cli never reports a command you ran, a feature you used, or the fact that you ran it at all. The [diagnostic log](#the-diagnostic-log) is written to your disk and read by nobody unless you run `proton report` and paste it somewhere yourself.
 
 Everything known about how the tool is used comes from counters the distribution channels publish themselves, and is [on the site](https://proton-cli.lerchster.dev/stats/) in full.
 
@@ -967,6 +969,31 @@ Two consequences:
 The caveat that matters: the file still contains the session **refresh token**, so it is not safe to share. Encryption at rest limits the damage of a leaked copy, and revoking neutralises it. Neither is a substitute for protecting the file.
 
 macOS keeps it under `~/Library/Application Support/proton-cli/`, and Windows under `%APPDATA%\proton-cli\`.
+
+## The diagnostic log
+
+[Section titled “The diagnostic log”](#the-diagnostic-log)
+
+Every run writes what it did to `~/.config/proton-cli/logs/`, one file per day, mode `0600`. The last 16 files are kept. `proton report` reads them back so a bug can be reported without you reproducing it, and `--no-log` or `PROTON_NO_LOG` stops it being written ([what it is for](/help/troubleshooting/#reporting-a-bug)).
+
+It is written to be handed to a stranger, so **nothing that identifies you goes into it**. That is a property of how it is written rather than a promise about what anybody remembered to leave out: every value in a log record is written under a name, and each name has a declared policy saying what may appear for it. A name with no policy cannot be logged at all - the build fails on it.
+
+| What                                     | How it is recorded                                                                                                                                           |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| An email address                         | `address:3f9c1e@proton.me`. The local part becomes a stand-in; the domain survives only if it is one of Proton’s own, and anything else becomes `@elsewhere` |
+| An ID - message, file, vault, key, share | `message:88ab02`, a stand-in under its own kind                                                                                                              |
+| An API path                              | `/drive/shares/{id}/links/{id}`. The endpoint stays, the arguments go, the query string goes entirely                                                        |
+| A local file path                        | `<path>`. The filename does not survive                                                                                                                      |
+| A URL                                    | The scheme, host and path shape. The query - where a verification token lives - goes                                                                         |
+| An error message                         | Rewritten: addresses, IDs, paths and tokens inside it are replaced before it is written                                                                      |
+| The command                              | Its path, and the **names** of the flags that were set. Never a flag’s value, never a positional argument                                                    |
+| Counts, statuses, durations, endpoints   | As they stand. This is what the log is read for                                                                                                              |
+
+**Never recorded, under any name:** a password, a second password, a Pass extra password, a session token, key material, a message subject or body, a filename, a contact’s details, a search term.
+
+The stand-ins are derived with HMAC-SHA256 under a 32-byte random salt at `~/.config/proton-cli/logs/salt`, mode `0600`, which never leaves the machine and is never in a report. So one address reads the same way in every line of every run here - which is what lets somebody debugging follow it - and means nothing anywhere else: the same address on another machine produces a different stand-in, and no stand-in can be turned back into an address.
+
+`--log-level debug` puts the same records on your screen, redacted the same way, so pasting terminal output is as safe as pasting a report.
 
 ## Elevated operations
 
@@ -2607,13 +2634,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Adding a version section here is what publishes a release, so this file is the one place a version is decided: see [Releases](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md#releases). Versions that shipped before this file existed are on the [releases page](https://github.com/roman-16/proton-cli/releases).
 
+## \[3.1.0] - 2026-09-03
+
+[Section titled “\[3.1.0\] - 2026-09-03”](#310---2026-09-03)
+
+### Added
+
+[Section titled “Added”](#added)
+
+* `proton report` prints what a bug report needs: the build, your settings and a redacted trace of the run that failed. It needs no account and no network. `--all` takes every run still kept, `--dest` writes a file to attach.
+* Every run records what it did to `~/.config/proton-cli/logs/`, one file per day, whatever `--log-level` says. Addresses, IDs and filenames are replaced by stand-ins before anything is written, so a log is safe to attach to an issue. The last 16 files are kept; `--no-log`, `PROTON_NO_LOG` or `no-log:` in the config file writes none.
+* Exit code `7` means the failure is a bug in proton rather than something you typed. Every failure you can act on keeps the code it had.
+
+### Changed
+
+[Section titled “Changed”](#changed)
+
+* A crash prints one line pointing at `proton report` instead of a Go stack trace.
+* Refusals that arrived as bare text now say what to do: a pinned key that does not match the recipient’s, an inline attachment with no `--html`, a reply to a message with no reply address, an unknown `pass items create --type`, an alias in a Pass import, and a `--remind` that is not a warning time.
+* `uninstall --purge` also removes the diagnostic log.
+
+### Fixed
+
+[Section titled “Fixed”](#fixed)
+
+* A listing that cannot decrypt something says how many are missing instead of dropping them in silence, and `--output json` carries a `skipped` count.
+* “Failed to unlock any address keys.” now says which of four things went wrong, and the log records it per key.
+* `--log-level debug` shows what Mail, Drive, Calendar, Contacts and Pass log while they work. It never showed those lines before.
+
 ## \[3.0.0] - 2026-09-02
 
 [Section titled “\[3.0.0\] - 2026-09-02”](#300---2026-09-02)
 
 ### Added
 
-[Section titled “Added”](#added)
+[Section titled “Added”](#added-1)
 
 * A config file. `~/.config/proton-cli/config.yaml` holds what you would otherwise retype on every command or export as its own variable - `output`, `profile`, `zone`, `quiet`, `log-level` and the rest - with a `per-profile:` section for narrowing one to an account. It does not exist until you write it, and a key it does not recognise is an error rather than a line quietly ignored. `--config` and `PROTON_CONFIG` read a different one.
 * A confirmation policy says what `proton` must stop for and what it must not do at all: `--confirm`, `PROTON_CONFIRM`, or `confirm:` in the config file, scoped as narrowly as one command. A denied command exits `6` and nothing answers it - not `--yes`, not `--dry-run`, not a `--confirm` on the command line. Nothing you can write makes `proton` less careful than it is with no configuration at all.
@@ -2631,7 +2686,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed)
+[Section titled “Changed”](#changed-1)
 
 * **Breaking.** `--output` means the response format on every command. The commands that write bytes to disk take `--dest` and `--dest-dir` for where they go - every `download`, plus `mail messages export`, `contacts export`, `calendar events export` and `pass export`. A script passing a path to `--output` now fails, naming the three formats it accepts.
 * **Breaking.** A secret is never a flag value. `pass items create|update` no longer take `--password`, `--totp-uri`, `--totp-field`, `--hidden`, `--number`, `--cvv`, `--pin` or `--private-key`; use `--secret-file NAME=FILE`, `--secret-stdin NAME` or `--generate-password`. `drive items share link --password` is now `--link-password-file` / `--link-password-stdin`, with `--clear-link-password` to take one off. `--eo-password` on `mail messages send`, `reply`, `forward` and `drafts send` is now `--eo-password-file` / `--eo-password-stdin`.
@@ -2646,7 +2701,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed)
+[Section titled “Fixed”](#fixed-1)
 
 * `drive trash list` shows everything `drive trash empty` deletes. Trashed photos sit on a volume of their own and were missing from the listing while `empty` destroyed them anyway, so the number you confirmed was not the number that went.
 * A filtered Drive command counts a folder and the files inside it once rather than twice - a folder is trashed, deleted, moved and copied whole - and names what Proton refused rather than reporting the count it hoped for.
@@ -2666,7 +2721,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-1)
+[Section titled “Added”](#added-2)
 
 * Signing in with a security key. An account with one is asked to touch it, and one that also has an authenticator app reaches for the key when the code prompt is answered with nothing. The same answer satisfies the re-authentication guarding `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`, which an account with only a key could not give before.
 * A CAPTCHA can be solved on any device. `proton` prints the page, opens it in your browser where it can, and waits while you solve it - here, on your phone, anywhere. A machine with no display signs in like any other.
@@ -2674,7 +2729,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-1)
+[Section titled “Changed”](#changed-2)
 
 * A CAPTCHA opens in your own browser rather than a window `proton` draws. Nothing to install on Linux: `libwebkit2gtk`, `libgtk-3` and `glib-networking` are no longer needed, the `.deb` and `.rpm` packages no longer depend on GTK or WebKit, and a `go install` build verifies exactly as a release binary does.
 
@@ -2690,7 +2745,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-2)
+[Section titled “Added”](#added-3)
 
 * Accounts in Proton’s two-password mode can be used at all: `account login` asks for the second password once the sign-in is through, or reads it from `--second-password-file` or `--second-password-stdin`. Such an account used to sign in and then fail on every key it tried to open.
 * `account settings get` says whether an account keeps the password that signs it in apart from the one that opens its data, as a `Two-Password Mode` row and as `two_password_mode`.
@@ -2698,7 +2753,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-2)
+[Section titled “Changed”](#changed-3)
 
 * A `--help` screen ends with a link to that command’s page instead of repeating the global flags, which are listed on `proton --help` alone.
 * A short ID starts after the dash an ID may begin with, so nothing a listing shortens can be read as a flag when it is pasted back. About one ID in sixty-four begins with one, and a short ID copied for such a thing before this release needs listing again.
@@ -2707,7 +2762,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-1)
+[Section titled “Fixed”](#fixed-2)
 
 * Installing an older version from the APT repository works again: it carries the last ten releases rather than only the newest, so `apt install proton-cli=2.8.0` and a rollback find something to install.
 * The key password kept with a session is a cache: one that has stopped opening the keys is worked out again instead of leaving a profile that decrypts nothing, which is what a password changed elsewhere used to leave behind. Signing in drops the one a previous session left, so `account get` no longer calls such a profile unlocked.
@@ -2719,19 +2774,19 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-3)
+[Section titled “Added”](#added-4)
 
 * Messages say which thread they belong to: `conversation_id` is on every message under `--output json` and `--output yaml`, from `mail messages list`, `watch` and `get`. Acting on the whole thread no longer costs a second lookup.
 
 ### Changed
 
-[Section titled “Changed”](#changed-3)
+[Section titled “Changed”](#changed-4)
 
 * `calendar reminders list` and `calendar reminders watch` report the event a reminder warns about in full - its location, description, attendees and the rest sit on the row beside `fires`, `remind` and `says`. `reminders list` gains a `LOCATION` column, so a script reading that text output by column position will shift.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-2)
+[Section titled “Fixed”](#fixed-3)
 
 * Signing in survives a bad moment at Proton’s edge: a 502 or a dropped connection is waited out and asked again, instead of coming out as a complaint about JSON and exit `1`. Only what spends nothing is ever asked twice - a two-factor code least of all.
 * A sign-in refused for a wrong password or two-factor code exits `2`, and one that outlasts the waiting - a rate limit included - exits `5`, so a scheduled job can tell “fix the password” from “come back later”.
@@ -2742,7 +2797,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-4)
+[Section titled “Added”](#added-5)
 
 * `mail messages watch` prints a line the moment a message arrives and stays attached until you stop it. Without `--folder` it covers the inbox and every folder set to notify, and a thread coming back from snooze counts as arriving.
 * `calendar reminders list` says which reminders fall due between two dates, and `calendar reminders watch` prints each one at the second it is due. When a reminder fires is Proton’s own answer, so an all-day event reminds at the hour its calendar chose rather than at midnight.
@@ -2751,7 +2806,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-4)
+[Section titled “Changed”](#changed-5)
 
 * `mail settings folders list` shows a `NOTIFY` column, and a folder carries `notify` in JSON. A script reading that text output by column position will shift.
 
@@ -2761,7 +2816,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-5)
+[Section titled “Added”](#added-6)
 
 * Calendar sharing: `calendar settings calendars share add|list|remove` hands a calendar to another Proton account, and `calendar invitations list|accept|decline` is the other side of it.
 * `calendar settings calendars create --url` subscribes to a calendar published elsewhere, and `calendar settings calendars get` shows one in full.
@@ -2791,7 +2846,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-5)
+[Section titled “Changed”](#changed-6)
 
 * **Breaking.** `mail messages search` and `mail conversations search` are gone. `mail messages list` and `mail conversations list` take the same filters; they were always one request to Proton.
 * **Breaking.** `drive folders create` is now `drive items create`, and `drive share ...` is now `drive items share ...`. Update any scripts that call them.
@@ -2799,7 +2854,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-3)
+[Section titled “Fixed”](#fixed-4)
 
 * `contacts create` reports Proton’s refusal instead of exiting `0` having written nothing. Proton answers inside a successful response, and only the response was being read.
 * `contacts groups add` puts every one of a contact’s addresses in the group, as it always said it would, and `--email` acts on the address you named rather than one that happens to belong to another contact.
@@ -2812,7 +2867,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-6)
+[Section titled “Added”](#added-7)
 
 * An install no package manager owns says when a release lands: once a day, under the command’s own output. `PROTON_NO_UPDATE_CHECK=1` ends it, and a package-managed copy, a pipe and `--quiet` never see it.
 * `proton changelog` says what a release changed, including one you have not installed. `--since` and `--until` cover the ground between two.
@@ -2820,13 +2875,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-6)
+[Section titled “Changed”](#changed-7)
 
 * `update --dry-run` and `uninstall --dry-run` no longer ask you to sign in: they change this machine, not your account.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-4)
+[Section titled “Fixed”](#fixed-5)
 
 * Tab completion answers again - every shell’s completion script was being refused as a mistyped command.
 
@@ -2836,13 +2891,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-7)
+[Section titled “Changed”](#changed-8)
 
 * `drive items upload --recursive` sends a deep tree in fewer round trips.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-5)
+[Section titled “Fixed”](#fixed-6)
 
 * `drive folders create /a/b/c` makes the folders above `c` instead of failing, and says how many it made.
 * `drive folders create` names the file standing in the path instead of failing with `Link has no hash key`.
@@ -2853,7 +2908,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-8)
+[Section titled “Changed”](#changed-9)
 
 * The command is `proton`. `proton-cli` stays on your `PATH` as a second name, so nothing already written breaks and upgrading does not sign you out.
 * **Breaking.** `go install github.com/roman-16/proton-cli/cmd/proton@latest` - the path gained `/cmd/proton`. Every other way of installing is unchanged.
@@ -2865,7 +2920,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-7)
+[Section titled “Added”](#added-8)
 
 * `drive items revisions download PATH REVISION_REF` reads an earlier version out to disk or into a pipe, leaving the file as it is.
 * `drive items revisions delete PATH REVISION_REF` removes an earlier version permanently.
@@ -2878,7 +2933,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-9)
+[Section titled “Changed”](#changed-10)
 
 * **Breaking.** An unrecognised reference exits `3` (not found) rather than `1`. Update scripts that read `1` as “no such thing”.
 * **Breaking.** A bad command line exits `1` (user error) rather than `2` (authentication), even when signed out.
@@ -2899,7 +2954,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-6)
+[Section titled “Fixed”](#fixed-7)
 
 * IDs that begin with `-` are no longer read as flags, in full, short and `SHARE/ITEM` references.
 * `drive items revisions restore` reports success instead of an error when Proton accepts it.
@@ -4602,11 +4657,85 @@ Errors say what happened and what to try, so read the message first. The code is
 | `4`   | Ambiguous, or a conflict            | Narrow the term, or use the ID it printed                     |
 | `5`   | Network or server problem           | Wait and retry. This is not your command’s fault              |
 | `6`   | Refused by your confirmation policy | Nothing about the command was wrong. The policy has to change |
+| `7`   | A bug in proton                     | Nothing you typed caused it. [Report it](#reporting-a-bug)    |
 | `130` | Cancelled with Ctrl+C               | Nothing to do                                                 |
 
 The difference between `2` and `5` matters most to a scheduled job. `2` means fix the credential; `5` means come back later. A rate limit is `5`.
 
 `6` is the one code that retrying never helps. See [Deny](/using/confirmations/#deny).
+
+`7` means a failure proton never anticipated: no message was written for it, because nobody expected it. It says so on the screen, and it is worth reporting whatever else you do about it.
+
+```console
+$ proton mail messages list
+Error: None of your addresses' keys could be opened.
+Try:   proton report   (this looks like a bug in proton, not something you did)
+```
+
+## Reporting a bug
+
+[Section titled “Reporting a bug”](#reporting-a-bug)
+
+```console
+$ proton report
+```
+
+That prints everything a fix needs: the version, the platform, how it was installed, your settings, and what the run that failed actually did, request by request. Paste it into an [issue](https://github.com/roman-16/proton-cli/issues/new). To attach it as a file instead, `proton report --dest bug.txt`.
+
+**You do not have to reproduce anything.** Every run records what it did, so the failure you just hit is already written down. `proton report` picks the last run that failed - or `--all` for every run still on disk. See [the diagnostic log](/using/settings/#the-diagnostic-log) for what is kept and how to turn it off.
+
+**It is safe to post.** Addresses, IDs, filenames, search terms and tokens never enter the log. An address is written as a stand-in like `address:3f9c1e@proton.me`, the same way every time, so a reader can follow which of your addresses failed without learning whose it is. It goes to stdout rather than straight to a file so that you can read it first.
+
+A crash is the same story with fewer words:
+
+```console
+$ proton drive items list
+Error: proton crashed. This is a bug.
+Try:   proton report
+```
+
+The stack trace is not printed - it says nothing to you. It is in the log, and `report` carries it.
+
+## A listing is missing something
+
+[Section titled “A listing is missing something”](#a-listing-is-missing-something)
+
+```console
+$ proton pass items list --vault Work
+NAME                  TYPE    VAULT    MODIFIED
+aws-root              login   Work     2026-08-30 11:02
+github.com            login   Work     2026-08-14 09:41
+41 items.
+⚠ 1 item could not be decrypted and is not listed.
+  This is a bug or damaged data - `proton report` has the details.
+```
+
+Everything decrypts on your machine, one item at a time, and one that will not open is no reason to refuse the other forty-one. So the listing carries on and then says it is short. The exit code stays `0`: the command answered, just not completely.
+
+In a machine format the same fact is a field, because a script never sees a warning:
+
+```console
+$ proton pass items list --vault Work --output json | jq .skipped
+1
+```
+
+`skipped` is absent when nothing was skipped. A container says what went with it, since how much was inside is exactly what could not be read:
+
+```console
+⚠ 1 vault could not be opened, so nothing inside it is listed.
+⚠ 1 folder could not be opened, so nothing inside it is listed.
+```
+
+The same tally answers a puzzling `get`, where an item that cannot be read is otherwise indistinguishable from one that was never there:
+
+```console
+$ proton pass items get stripe-live
+Error: No item matching "stripe-live".
+Try:   1 item could not be decrypted and is not listed.
+       proton report
+```
+
+Run `proton report` and open an issue. This is not something you can fix from the command line, and it is not your data being gone - it is proton failing to open something Proton still holds.
 
 ## The config file is refused
 
@@ -4842,7 +4971,13 @@ The exception is the `■` beside a label, folder, calendar or group. That hex i
 
 [Section titled “Still stuck”](#still-stuck)
 
-Run the command again with `--log-level debug` and open an [issue](https://github.com/roman-16/proton-cli/issues) with what it printed. Redact the IDs and addresses you would rather not publish; none of them are needed to reproduce a bug.
+```console
+$ proton report
+```
+
+Paste it into an [issue](https://github.com/roman-16/proton-cli/issues/new). Nothing to reproduce and nothing to redact by hand - see [Reporting a bug](#reporting-a-bug).
+
+To watch a run as it happens instead, `--log-level debug` puts on the screen what the log is recording anyway. It is redacted the same way, so it is safe to paste too.
 
 Please do not report a **security** issue in a public issue. [`SECURITY.md`](https://github.com/roman-16/proton-cli/blob/main/SECURITY.md) has the private channels.
 
@@ -9134,6 +9269,34 @@ bash proton completion bash > /etc/bash\_completion.d/proton zsh proton completi
 proton completion
 ```
 
+## `report`
+
+[Section titled “report”](#report)
+
+Collect what a bug report needs: this build, your settings, and a redacted trace of the run that failed.
+
+The last run that failed, or –all for every run still on disk. One file per day; the last 16 are kept.
+
+Addresses, IDs and file paths are replaced by stable stand-ins before anything is written, so the same address reads as the same name throughout and as nothing at all to anybody else. Nothing here can be turned back into an address, a password, a subject or a filename.
+
+Reads only what is already on this machine: no account, no network.
+
+```plaintext
+proton report
+```
+
+```bash
+proton report
+proton report --all
+proton report --dest bug.txt
+```
+
+| Flag            | Description                                      |
+| --------------- | ------------------------------------------------ |
+| `--all`         | Act on everything in scope, rather than a subset |
+| `--dest string` | Write to this path, or - for stdout              |
+| `--force`       | Overwrite a file that already exists             |
+
 ## `uninstall`
 
 [Section titled “uninstall”](#uninstall)
@@ -9142,7 +9305,7 @@ Remove a proton binary installed with the curl or PowerShell installer, or downl
 
 A package-managed install (apt, dnf, apk, AUR, Homebrew, winget, npm, Nix) is refused, with the right command to use instead.
 
-Only the binary goes, under both names it answers to. –purge also deletes your saved sessions and the ID cache.
+Only the binary goes, under both names it answers to. –purge also deletes your saved sessions, the ID cache and the diagnostic log.
 
 ```plaintext
 proton uninstall
@@ -9154,9 +9317,9 @@ proton uninstall --yes
 proton uninstall --yes --purge
 ```
 
-| Flag      | Description                                          |
-| --------- | ---------------------------------------------------- |
-| `--purge` | Also remove local data (saved sessions and ID cache) |
+| Flag      | Description                                                          |
+| --------- | -------------------------------------------------------------------- |
+| `--purge` | Also remove local data (saved sessions, ID cache and diagnostic log) |
 
 ## `update`
 
@@ -10007,6 +10170,7 @@ The top level applies whichever profile you are acting as. `per-profile:` narrow
 | `full-ids`        | `--full-ids`                                                                                   |
 | `no-color`        | `--no-color`; `NO_COLOR`                                                                       |
 | `no-input`        | `--no-input`; `PROTON_NO_INPUT`                                                                |
+| `no-log`          | `--no-log`; `PROTON_NO_LOG`                                                                    |
 | `no-update-check` | `PROTON_NO_UPDATE_CHECK`                                                                       |
 | `confirm`         | `--confirm`; `PROTON_CONFIRM` ([what it does](/using/confirmations/#making-more-commands-ask)) |
 
@@ -10093,6 +10257,7 @@ $ proton --quiet=false mail messages list
 | `COLORTERM`              | Set to `truecolor` or `24bit` if your terminal takes 24-bit colour and does not advertise it. Only affects how exactly a colour swatch is drawn ([why](/about/why/#why-colour-is-asked-for-by-name)) |
 | `PROTON_NO_INPUT`        | Set to any value, even empty, to never prompt. A missing credential becomes an error                                                                                                                 |
 | `PROTON_LOG_LEVEL`       | `debug`, `info`, `warn` or `error`                                                                                                                                                                   |
+| `PROTON_NO_LOG`          | Set to any value, even empty, to write no diagnostic log ([what that is](#the-diagnostic-log))                                                                                                       |
 | `TZ`                     | The IANA zone to work in, such as `Europe/Vienna`. POSIX’s own variable, read when no flag or file names one                                                                                         |
 | `PROTON_NO_UPDATE_CHECK` | Set to any value, even empty, to never look for a new release ([what that is](/install/#updating))                                                                                                   |
 | `PROTON_VERIFIED`        | A human verification already solved, as the refusal printed it ([when you need it](/help/troubleshooting/#solving-a-captcha-in-a-script))                                                            |
@@ -10107,8 +10272,30 @@ $ proton --quiet=false mail messages list
 | `~/.config/proton-cli/sessions/<profile>.json` | Session tokens and the encrypted key password (mode `0600`)           |
 | `~/.config/proton-cli/idcache/<profile>.json`  | Short-ID lookup table ([what that is](/using/naming/#short-ids))      |
 | `~/.config/proton-cli/update-check.json`       | When proton last looked for a new release ([why](/install/#updating)) |
+| `~/.config/proton-cli/logs/`                   | What every run did, one file per day ([below](#the-diagnostic-log))   |
 
 Those are the Linux paths. macOS uses `~/Library/Application Support/proton-cli/`, and Windows uses `%APPDATA%\proton-cli\`. Nothing else is written.
+
+## The diagnostic log
+
+[Section titled “The diagnostic log”](#the-diagnostic-log)
+
+Every run writes what it did to `~/.config/proton-cli/logs/`, one file per day named for it, at full detail whatever `--log-level` says - that flag decides what reaches your screen, not what is recorded. The last **16 files** are kept.
+
+It exists so that `proton report` can tell a maintainer what happened without you having to reproduce it. **Addresses, IDs, filenames and search terms never enter it.** An address is written as a stand-in like `address:3f9c1e@proton.me` - the same address reads the same way in every line, so a reader can follow which one failed, and it cannot be turned back into an address by anybody. What is left is the shape of what ran: which command, which endpoints, which status codes, how long, and what went wrong.
+
+To write nothing at all:
+
+```console
+$ proton --no-log mail messages list
+$ PROTON_NO_LOG=1 proton mail messages list
+```
+
+```yaml
+no-log: true
+```
+
+With the log off, `proton report` has nothing to show but this build and your settings.
 
 ## Global flags
 
@@ -10130,6 +10317,7 @@ Every command takes these.
 | `--log-level debug\|info\|warn\|error` | Logging verbosity (env: `PROTON_LOG_LEVEL`)                                                        |
 | `--zone NAME`                          | IANA time zone to work in (env: `TZ`)                                                              |
 | `--no-input`                           | Never prompt. A missing credential becomes an error (env: `PROTON_NO_INPUT`)                       |
+| `--no-log`                             | Write no diagnostic log for this run (env: `PROTON_NO_LOG`)                                        |
 | `--verified TOKEN`                     | A human verification already solved, as the refusal printed it (env: `PROTON_VERIFIED`)            |
 
 The five you type most have a single-letter form, and they cluster, so `-qn` is a quiet dry run. [Why only five](/about/why/#why-one-flag-name-means-one-thing).
