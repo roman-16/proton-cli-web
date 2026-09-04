@@ -1365,10 +1365,12 @@ proton account login --user alice@proton.me \
 
 [Section titled “Commands that ask for the password again”](#commands-that-ask-for-the-password-again)
 
-Three commands reach an endpoint Proton guards behind an elevated session, and ask for your password again at that moment:
+These commands reach an endpoint Proton guards behind an elevated session, and ask for your password again at that moment:
 
 * `calendar settings calendars delete`
 * `mail messages expire`
+* `mail settings autoreply disable`
+* `mail settings autoreply enable`
 * `mail settings autoreply set`
 
 ```bash
@@ -4938,10 +4940,12 @@ proton account login --user "$ACCOUNT" --password-file "$CRED"
 
 [Section titled “It asks for my password again”](#it-asks-for-my-password-again)
 
-Three commands reach endpoints Proton guards behind an elevated session. Proton re-authenticates against the password itself rather than accepting your session:
+A few commands reach endpoints Proton guards behind an elevated session. Proton re-authenticates against the password itself rather than accepting your session:
 
 * `calendar settings calendars delete`
 * `mail messages expire`
+* `mail settings autoreply disable`
+* `mail settings autoreply enable`
 * `mail settings autoreply set`
 
 They prompt, or take `--password-file` and `--password-stdin`. The key password sealed into your session cannot stand in: it is a one-way derivation.
@@ -7046,6 +7050,12 @@ proton mail settings autoreply disable
 proton mail settings autoreply disable
 ```
 
+| Flag                     | Description                           |
+| ------------------------ | ------------------------------------- |
+| `--password-file string` | Read the account password from a file |
+| `--password-stdin`       | Read the account password from stdin  |
+| `--totp string`          | Two-factor code                       |
+
 ### `autoreply enable`
 
 [Section titled “autoreply enable”](#autoreply-enable)
@@ -7059,6 +7069,12 @@ proton mail settings autoreply enable
 ```bash
 proton mail settings autoreply enable
 ```
+
+| Flag                     | Description                           |
+| ------------------------ | ------------------------------------- |
+| `--password-file string` | Read the account password from a file |
+| `--password-stdin`       | Read the account password from stdin  |
+| `--totp string`          | Two-factor code                       |
 
 ### `autoreply get`
 
@@ -10300,7 +10316,7 @@ An account in [two-password mode](/account/#two-password-mode) needs `--second-p
 
 [Section titled “Commands that ask for the password again”](#commands-that-ask-for-the-password-again)
 
-Proton asks for your password again before `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own.
+Proton asks for your password again before `calendar settings calendars delete`, `mail messages expire`, `mail settings autoreply set`, `mail settings autoreply enable` and `mail settings autoreply disable` - it guards the autoresponder whichever way the switch goes. A session cannot answer for it, so those commands take `--password-file` and `--password-stdin` of their own.
 
 ### Secrets you store
 
