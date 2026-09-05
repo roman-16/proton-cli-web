@@ -3595,7 +3595,7 @@ description: (the description proton skill prints)
 ---
 
 
-Before using proton, run proton skill --body-only and follow what it prints.
+Before using proton, run `proton skill --body-only` and follow what it prints.
 ```
  ## What the agent is taught [Section titled “What the agent is taught”](#what-the-agent-is-taught) * To check that proton is installed and that somebody is signed in, before anything else. * The grammar, and that `proton <command> --help` is the reference - so it reads a command’s help instead of guessing a flag. * To pass `--output json` and `--no-input` on everything it reads. * How to name things: full IDs, short IDs, and handles like a subject or a Drive path. * To preview every change with `--dry-run`, show you the result, and pass `--yes` only once you have agreed to that change. * That exit `6` is your confirmation policy refusing the command, and is not to be worked around. * That secrets from Pass are yours: shown when you ask, written nowhere else. * Where every command lives, so it lands on the right `--help` in one step. ## What stays yours [Section titled “What stays yours”](#what-stays-yours) Signing in. The agent is told to stop and ask you when nobody is signed in, and never to handle a password. That leaves the [commands Proton asks for the password again on](/using/scripting/#commands-that-ask-for-the-password-again) as ones the agent cannot finish on its own either. ## Fence what it may do [Section titled “Fence what it may do”](#fence-what-it-may-do) A [confirmation policy](/using/confirmations/#making-more-commands-ask) is what says an agent may read your mail but never delete any: 
 ```bash
