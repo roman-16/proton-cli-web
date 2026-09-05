@@ -260,6 +260,10 @@
 <td>Set to any value, even empty, to turn colour off (<a href="https://no-color.org">no-color.org</a>)</td>
 </tr>
 <tr>
+<td><code dir="auto">FORCE_COLOR</code></td>
+<td>Set to any value, even empty, to paint even when the output is piped (<a href="https://force-color.org">force-color.org</a>). Set beside <code dir="auto">NO_COLOR</code>, this one wins</td>
+</tr>
+<tr>
 <td><code dir="auto">COLORTERM</code></td>
 <td>Set to <code dir="auto">truecolor</code> or <code dir="auto">24bit</code> if your terminal takes 24-bit colour and does not advertise it. Only affects how exactly a colour swatch is drawn (<a href="/about/why/#why-colour-is-asked-for-by-name">why</a>)</td>
 </tr>
@@ -373,6 +377,10 @@
 <tr>
 <td><code dir="auto">--no-color</code></td>
 <td>Turn colour off (env: <code dir="auto">NO_COLOR</code>)</td>
+</tr>
+<tr>
+<td><code dir="auto">--force-color</code></td>
+<td>Paint even when the output is piped or redirected (env: <code dir="auto">FORCE_COLOR</code>)</td>
 </tr>
 <tr>
 <td><code dir="auto">--log-level debug|info|warn|error</code></td>

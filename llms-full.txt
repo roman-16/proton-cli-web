@@ -386,6 +386,13 @@ Shades come from your terminal’s theme, not from proton ([why](/about/why/#why
 
 Colour is off whenever output is piped or redirected, under `--output json` or `yaml`, and with `--no-color` or `NO_COLOR`. It never changes the layout, and it never carries meaning on its own: every verdict is spelled out in words.
 
+`--force-color` or `FORCE_COLOR` paints anyway, for the cases proton cannot see: a pager, a multiplexer, a CI log that renders the escapes itself.
+
+```bash
+proton mail messages list --force-color | less -R
+FORCE_COLOR=1 proton mail messages list | tee run.log
+```
+
 ## Width
 
 [Section titled “Width”](#width)
@@ -870,6 +877,7 @@ These are declared on the root, so any command takes them and they mean the same
 | `--config string`      | Settings file to read (env: PROTON\_CONFIG; default: config.yaml in the config directory)       |
 | `--confirm string`     | Which commands stop for a yes: default, deletions, mutations, reads, all (env: PROTON\_CONFIRM) |
 | `-n, --dry-run`        | Preview mutations without applying them                                                         |
+| `--force-color`        | Force colored output, even when piped (env: FORCE\_COLOR)                                       |
 | `--full-ids`           | Show full IDs in interactive output (default: shortened to 8 chars on TTY)                      |
 | `--log-level string`   | Logging verbosity: debug, info, warn, error (env: PROTON\_LOG\_LEVEL)                           |
 | `--no-color`           | Disable colored output (env: NO\_COLOR)                                                         |
@@ -5054,7 +5062,7 @@ proton asks your terminal for a colour by name, and your terminal decides what i
 
 The exception is the `■` beside a label, folder, calendar or group. That hex is the value stored on Proton’s side, and drawing it faithfully needs 24-bit colour. If your terminal takes it but does not advertise it, set `COLORTERM=truecolor`.
 
-`--no-color` or `NO_COLOR` turns colour off entirely. ([Why it works this way](/about/why/#why-colour-is-asked-for-by-name).)
+`--no-color` or `NO_COLOR` turns colour off entirely, and `--force-color` or `FORCE_COLOR` keeps it through a pipe - a pager, a multiplexer, a CI log that renders the escapes itself. ([Why it works this way](/about/why/#why-colour-is-asked-for-by-name).)
 
 ## Still stuck
 
@@ -10509,6 +10517,7 @@ $ proton --quiet=false mail messages list
 | `PROTON_PROFILE`         | Active profile (default: `default`)                                                                                                                                                                  |
 | `PROTON_API_URL`         | API base URL (default: `https://mail.proton.me/api`)                                                                                                                                                 |
 | `NO_COLOR`               | Set to any value, even empty, to turn colour off ([no-color.org](https://no-color.org))                                                                                                              |
+| `FORCE_COLOR`            | Set to any value, even empty, to paint even when the output is piped ([force-color.org](https://force-color.org)). Set beside `NO_COLOR`, this one wins                                              |
 | `COLORTERM`              | Set to `truecolor` or `24bit` if your terminal takes 24-bit colour and does not advertise it. Only affects how exactly a colour swatch is drawn ([why](/about/why/#why-colour-is-asked-for-by-name)) |
 | `PROTON_NO_INPUT`        | Set to any value, even empty, to never prompt. A missing credential becomes an error                                                                                                                 |
 | `PROTON_LOG_LEVEL`       | `debug`, `info`, `warn` or `error`                                                                                                                                                                   |
@@ -10569,6 +10578,7 @@ Every command takes these.
 | `--confirm POLICY`                     | Which commands stop for a yes (env: `PROTON_CONFIRM`)                                              |
 | `--full-ids`                           | Do not shorten IDs in interactive output                                                           |
 | `--no-color`                           | Turn colour off (env: `NO_COLOR`)                                                                  |
+| `--force-color`                        | Paint even when the output is piped or redirected (env: `FORCE_COLOR`)                             |
 | `--log-level debug\|info\|warn\|error` | Logging verbosity (env: `PROTON_LOG_LEVEL`)                                                        |
 | `--zone NAME`                          | IANA time zone to work in (env: `TZ`)                                                              |
 | `--no-input`                           | Never prompt. A missing credential becomes an error (env: `PROTON_NO_INPUT`)                       |
