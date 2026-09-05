@@ -506,6 +506,19 @@ Yes, and it signs in for itself.
 
 Proton sometimes asks for a CAPTCHA at login. proton prints the verification page and waits while you solve it on whatever device is to hand, then carries on. There is nothing to install. [What that looks like](/help/troubleshooting/#proton-asks-for-a-captcha).
 
+## Can an AI agent use it?
+
+[Section titled “Can an AI agent use it?”](#can-an-ai-agent-use-it)
+
+Yes, and proton tells it how. `proton skill` prints a skill in the [Agent Skills](https://agentskills.io) format - what the tool is for, the grammar, and the rules it should hold to - which you save wherever your agent reads skills:
+
+```bash
+mkdir -p /path/to/skills/proton-cli
+proton skill > /path/to/skills/proton-cli/SKILL.md
+```
+
+There is no MCP server, and the [AI agents](/using/agents/) page says why, along with how to fence what an agent may do.
+
 ## Can I use two Proton accounts at once?
 
 [Section titled “Can I use two Proton accounts at once?”](#can-i-use-two-proton-accounts-at-once)
@@ -862,6 +875,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton changelog`](/proton/#changelog)                                                        | Print what each release changed                                     |
 | [`proton completion`](/proton/#completion)                                                      | Generate a shell completion script                                  |
 | [`proton report`](/proton/#report)                                                              | Collect what a bug report needs                                     |
+| [`proton skill`](/proton/#skill)                                                                | Print the skill that teaches an AI agent to use proton              |
 | [`proton uninstall`](/proton/#uninstall)                                                        | Remove a curl/PowerShell-installed proton                           |
 | [`proton update`](/proton/#update)                                                              | Update proton to the latest release                                 |
 | [`proton version`](/proton/#version)                                                            | Print the version and build information                             |
@@ -2698,13 +2712,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Adding a version section here is what publishes a release, so this file is the one place a version is decided: see [Releases](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md#releases). Versions that shipped before this file existed are on the [releases page](https://github.com/roman-16/proton-cli/releases).
 
+## \[3.5.0] - 2026-09-05
+
+[Section titled “\[3.5.0\] - 2026-09-05”](#350---2026-09-05)
+
+### Added
+
+[Section titled “Added”](#added)
+
+* `proton skill` prints the instructions an AI agent reads before using proton: what it is for, how to name things, which filters a listing takes, and to preview a change and ask before making it. It is written from the installed build, so it names exactly the commands you have. `--body-only` leaves the frontmatter off, for an agent that reads it as it runs rather than from a saved file.
+
 ## \[3.4.0] - 2026-09-05
 
 [Section titled “\[3.4.0\] - 2026-09-05”](#340---2026-09-05)
 
 ### Added
 
-[Section titled “Added”](#added)
+[Section titled “Added”](#added-1)
 
 * `calendar events create` and `update` take `--color`, giving one event a colour of its own by accent name or hex; `events get` reports it. It colours what the reference names: one occurrence, `--onwards` for that one and every later one, or the whole series. A colour can only be changed, never taken off, and Proton’s own apps draw a per-event colour only on a paid plan.
 * `calendar events export` carries an event’s own colour as a `COLOR` property, and `import` reads one back as the nearest of Proton’s twenty accents, so a round trip keeps it.
@@ -2750,7 +2774,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-1)
+[Section titled “Added”](#added-2)
 
 * `proton mail settings forwarding` hands mail arriving at one of your addresses to another Proton account, end-to-end encrypted: `list`, `get`, `create`, `delete`, `enable`, `disable`, `resend`. Accepting a forwarding somebody sent you is not built - that happens in a Proton client.
 
@@ -2783,7 +2807,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-2)
+[Section titled “Added”](#added-3)
 
 * Tab completion offers back what your listings showed: where a command takes a reference, the short ID and the subject, name or address beside it. It reads what this machine remembers rather than asking Proton, so a collection you have not listed yet offers nothing and says which listing would fill it.
 * Exit code `8` means the command reached a Proton feature this build does not implement. Nothing about the command was wrong, and neither a retry nor different arguments changes the answer.
@@ -2801,7 +2825,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-3)
+[Section titled “Added”](#added-4)
 
 * `proton report` prints what a bug report needs: the build, your settings and a redacted trace of the run that failed. It needs no account and no network. `--all` takes every run still kept, `--dest` writes a file to attach.
 * Every run records what it did to `~/.config/proton-cli/logs/`, one file per day, whatever `--log-level` says. Addresses, IDs and filenames are replaced by stand-ins before anything is written, so a log is safe to attach to an issue. The last 16 files are kept; `--no-log`, `PROTON_NO_LOG` or `no-log:` in the config file writes none.
@@ -2829,7 +2853,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-4)
+[Section titled “Added”](#added-5)
 
 * A config file. `~/.config/proton-cli/config.yaml` holds what you would otherwise retype on every command or export as its own variable - `output`, `profile`, `zone`, `quiet`, `log-level` and the rest - with a `per-profile:` section for narrowing one to an account. It does not exist until you write it, and a key it does not recognise is an error rather than a line quietly ignored. `--config` and `PROTON_CONFIG` read a different one.
 * A confirmation policy says what `proton` must stop for and what it must not do at all: `--confirm`, `PROTON_CONFIRM`, or `confirm:` in the config file, scoped as narrowly as one command. A denied command exits `6` and nothing answers it - not `--yes`, not `--dry-run`, not a `--confirm` on the command line. Nothing you can write makes `proton` less careful than it is with no configuration at all.
@@ -2882,7 +2906,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-5)
+[Section titled “Added”](#added-6)
 
 * Signing in with a security key. An account with one is asked to touch it, and one that also has an authenticator app reaches for the key when the code prompt is answered with nothing. The same answer satisfies the re-authentication guarding `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`, which an account with only a key could not give before.
 * A CAPTCHA can be solved on any device. `proton` prints the page, opens it in your browser where it can, and waits while you solve it - here, on your phone, anywhere. A machine with no display signs in like any other.
@@ -2906,7 +2930,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-6)
+[Section titled “Added”](#added-7)
 
 * Accounts in Proton’s two-password mode can be used at all: `account login` asks for the second password once the sign-in is through, or reads it from `--second-password-file` or `--second-password-stdin`. Such an account used to sign in and then fail on every key it tried to open.
 * `account settings get` says whether an account keeps the password that signs it in apart from the one that opens its data, as a `Two-Password Mode` row and as `two_password_mode`.
@@ -2935,7 +2959,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-7)
+[Section titled “Added”](#added-8)
 
 * Messages say which thread they belong to: `conversation_id` is on every message under `--output json` and `--output yaml`, from `mail messages list`, `watch` and `get`. Acting on the whole thread no longer costs a second lookup.
 
@@ -2958,7 +2982,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-8)
+[Section titled “Added”](#added-9)
 
 * `mail messages watch` prints a line the moment a message arrives and stays attached until you stop it. Without `--folder` it covers the inbox and every folder set to notify, and a thread coming back from snooze counts as arriving.
 * `calendar reminders list` says which reminders fall due between two dates, and `calendar reminders watch` prints each one at the second it is due. When a reminder fires is Proton’s own answer, so an all-day event reminds at the hour its calendar chose rather than at midnight.
@@ -2977,7 +3001,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-9)
+[Section titled “Added”](#added-10)
 
 * Calendar sharing: `calendar settings calendars share add|list|remove` hands a calendar to another Proton account, and `calendar invitations list|accept|decline` is the other side of it.
 * `calendar settings calendars create --url` subscribes to a calendar published elsewhere, and `calendar settings calendars get` shows one in full.
@@ -3028,7 +3052,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-10)
+[Section titled “Added”](#added-11)
 
 * An install no package manager owns says when a release lands: once a day, under the command’s own output. `PROTON_NO_UPDATE_CHECK=1` ends it, and a package-managed copy, a pipe and `--quiet` never see it.
 * `proton changelog` says what a release changed, including one you have not installed. `--since` and `--until` cover the ground between two.
@@ -3081,7 +3105,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-11)
+[Section titled “Added”](#added-12)
 
 * `drive items revisions download PATH REVISION_REF` reads an earlier version out to disk or into a pipe, leaving the file as it is.
 * `drive items revisions delete PATH REVISION_REF` removes an earlier version permanently.
@@ -5333,7 +5357,7 @@ go build ./cmd/proton
 
 [Section titled “Every command that manages the install”](#every-command-that-manages-the-install)
 
-[`proton` itself](/proton/) has the full reference for `update`, `uninstall`, `completion`, `changelog` and `version`.
+[`proton` itself](/proton/) has the full reference for `update`, `uninstall`, `completion`, `changelog`, `report`, `skill` and `version`.
 
 # Mail
 
@@ -9530,7 +9554,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 # proton itself
 
-> Updating, uninstalling, shell completions, and what a release changed.
+> Updating, uninstalling, shell completions, the skill an AI agent reads, and what a release changed.
 
 These act on this installation rather than on your account, so none of them needs you to be signed in.
 
@@ -9606,6 +9630,30 @@ proton report --dest bug.txt
 | `--dest string` | Write to this path, or - for stdout              |
 | `--force`       | Overwrite a file that already exists             |
 
+## `skill`
+
+[Section titled “skill”](#skill)
+
+Print the skill that teaches an AI agent to use proton.
+
+A skill is a SKILL.md an agent reads before it acts (<https://agentskills.io>): what proton is for, how to check it is installed and signed in, the flags every call takes, what to do before changing anything, and where every command lives. It is written from this build, so it names exactly the commands this proton has, and it tells the agent to print it again when the installed proton is a different one.
+
+Save it as SKILL.md inside a directory named proton-cli, wherever your agent reads skills. An agent that reads it as it runs rather than from a saved file wants –body-only, which leaves the frontmatter out.
+
+```plaintext
+proton skill
+```
+
+```bash
+proton skill
+proton skill --body-only
+proton skill > skills/proton-cli/SKILL.md
+```
+
+| Flag          | Description                             |
+| ------------- | --------------------------------------- |
+| `--body-only` | Emit only the body, with no frontmatter |
+
 ## `uninstall`
 
 [Section titled “uninstall”](#uninstall)
@@ -9672,6 +9720,99 @@ proton version --output json
 ***
 
 Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
+# AI agents
+
+> Anything that runs shell commands can use proton, and proton can teach it how.
+
+## Give the agent the skill
+
+[Section titled “Give the agent the skill”](#give-the-agent-the-skill)
+
+`proton skill` prints a skill in the [Agent Skills](https://agentskills.io) format: a `SKILL.md` an agent reads before it acts. Save it in a directory named `proton-cli`, wherever your agent reads its skills from:
+
+```bash
+mkdir -p /path/to/skills/proton-cli
+proton skill > /path/to/skills/proton-cli/SKILL.md
+```
+
+It is written from the installed build, so it names exactly the commands your proton has. It also tells the agent to print it again when the version it finds is not the one that wrote the file, so a saved copy cannot quietly go stale.
+
+An agent can read it as it runs instead. `proton skill --body-only` leaves the frontmatter out, which is what a skill of your own wants when all it says is to run this first:
+
+```markdown
+---
+name: proton-cli
+description: (the description proton skill prints)
+---
+
+
+Before using proton, run proton skill --body-only and follow what it prints.
+```
+
+## What the agent is taught
+
+[Section titled “What the agent is taught”](#what-the-agent-is-taught)
+
+* To check that proton is installed and that somebody is signed in, before anything else.
+* The grammar, and that `proton <command> --help` is the reference - so it reads a command’s help instead of guessing a flag.
+* To pass `--output json` and `--no-input` on everything it reads.
+* How to name things: full IDs, short IDs, and handles like a subject or a Drive path.
+* To preview every change with `--dry-run`, show you the result, and pass `--yes` only once you have agreed to that change.
+* That exit `6` is your confirmation policy refusing the command, and is not to be worked around.
+* That secrets from Pass are yours: shown when you ask, written nowhere else.
+* Where every command lives, so it lands on the right `--help` in one step.
+
+## What stays yours
+
+[Section titled “What stays yours”](#what-stays-yours)
+
+Signing in. The agent is told to stop and ask you when nobody is signed in, and never to handle a password.
+
+That leaves the [commands Proton asks for the password again on](/using/scripting/#commands-that-ask-for-the-password-again) as ones the agent cannot finish on its own either.
+
+## Fence what it may do
+
+[Section titled “Fence what it may do”](#fence-what-it-may-do)
+
+A [confirmation policy](/using/confirmations/#making-more-commands-ask) is what says an agent may read your mail but never delete any:
+
+```bash
+export PROTON_CONFIRM='deletions=deny'
+```
+
+A permanent removal then exits `6` and touches nothing. `--yes` does not answer a deny, so the `--yes` the agent needs for the trashing it *is* meant to do cannot quietly authorise more.
+
+`=deny` is the part that fences. A class written without it only makes the command ask first, and `--yes` answers that in advance.
+
+```bash
+# read-only: nothing changes, at all
+export PROTON_CONFIRM='mutations=deny'
+
+
+# read-only, except that it may send
+export PROTON_CONFIRM='mutations=deny, mail messages send:default'
+```
+
+The full syntax is in [Writing a policy](/using/confirmations/#writing-a-policy).
+
+Give it [a profile of its own](/account/#more-than-one-account) if you want a way to cut it off:
+
+```bash
+proton account login --profile agent
+PROTON_PROFILE=agent PROTON_CONFIRM='deletions=deny' your-agent
+proton account logout --profile agent
+```
+
+## Is there an MCP server?
+
+[Section titled “Is there an MCP server?”](#is-there-an-mcp-server)
+
+No, and there is not likely to be one.
+
+The CLI is already the interface an agent needs: one envelope shape for every listing, exit codes that mean something, `--dry-run` on everything that changes state, and a confirmation policy you control. An MCP server in front of it would restate every command’s help as a tool schema, in a second place that can disagree with the first.
+
+What an agent is missing is not a protocol but the instructions, and that is what `proton skill` hands it.
 
 # Dry runs and confirmations
 
@@ -10351,7 +10492,7 @@ To keep a policy from following you around, point the job at its own file:
 PROTON_CONFIG=/etc/proton/backup.yaml proton drive items upload ~/Documents /Backups
 ```
 
-The full syntax is in [Writing a policy](/using/confirmations/#writing-a-policy).
+The full syntax is in [Writing a policy](/using/confirmations/#writing-a-policy). When the thing running proton is an agent, [AI agents](/using/agents/) covers what it can be taught and what to fence off.
 
 ### Systemd timer
 
