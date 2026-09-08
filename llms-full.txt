@@ -3621,9 +3621,9 @@ A link with a password of its own takes it from a file or from standard input, a
 proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --link-password-file /run/secrets/q3-link --dest-dir .
 ```
 
-A link can be listed, shown and downloaded. Uploading into one, and opening one without signing in, are in [Limits](/help/limits/).
+A link can be listed, shown and downloaded without an account. A link names nobody as the author of what is in it, so `items get` shows no Created By and reports Signature as `anonymous`. Uploading into a link is in [Limits](/help/limits/).
 
-Save a link to open it later without the URL or the password:
+Save a link to open it later without the URL or the password. Saving needs an account:
 
 ```bash
 proton drive shared add 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
@@ -3925,7 +3925,7 @@ proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ
 
 Show a file or folder’s details.
 
-Reached through a public link, the details include the link itself and, for a link saved with `shared add`, the password its owner set on it.
+Reached through a public link, the details include the link itself and, for a link saved with `shared add`, the password its owner set on it. A link names nobody as the author of what is in it, so Created By is absent and Signature reads anonymous.
 
 ```plaintext
 proton drive items get PATH
@@ -4847,7 +4847,6 @@ Each of these has an equivalent in a web client.
 | What is missing                                                       | What to do instead                                                                   |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | Uploading into a public link that allows editing                      | Open it in a browser                                                                 |
-| Opening a public link without signing in                              | Open it in a browser                                                                 |
 | Accepting a forwarding somebody sent you                              | Accept it in the web client. Setting one up, pausing it and taking it down are built |
 | Mail forwarding to a non-Proton address                               | Proton emails the address a link its owner must follow; finish it there              |
 | Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one, so the commands work, is built                    |
