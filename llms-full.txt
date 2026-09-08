@@ -195,6 +195,8 @@ Global flags:    proton --help
 Full reference:  https://proton-cli.lerchster.dev/mail/messages/#send
 ```
 
+`proton help mail messages send` shows the same screen.
+
 The page a command links to is named after the command. `proton drive items upload` is documented at `/drive/items/#upload`.
 
 Shell completion knows the whole tree, including which values each flag accepts. See [Install](/install/#shell-completions).
@@ -1478,7 +1480,7 @@ proton account settings set KEY VALUE
 
 ```bash
 proton account settings set locale de_AT
-proton account settings set news off
+proton account settings set week-start monday
 ```
 
 ***
@@ -1836,7 +1838,7 @@ Until you accept, you see the calendar’s name and who sent it, and nothing tha
 [Section titled “Settings”](#settings)
 
 ```bash
-proton calendar settings          # time zones, layout, invitations
+proton calendar settings get      # time zones, layout, invitations
 proton calendar settings set view week
 proton calendar settings set primary-timezone Europe/Vienna
 ```
@@ -2421,8 +2423,8 @@ proton calendar settings set KEY VALUE
 ```
 
 ```bash
-proton calendar settings set week-start monday
-proton calendar settings set default-duration 30
+proton calendar settings set view week
+proton calendar settings set primary-timezone Europe/Vienna
 ```
 
 ***
@@ -4395,7 +4397,7 @@ proton drive settings set KEY VALUE
 ```
 
 ```bash
-proton drive settings set revision-retention 30
+proton drive settings set version-history 30d
 ```
 
 ***
@@ -5399,8 +5401,8 @@ A decision applies before the spam filter forms an opinion. Deciding again about
 [Section titled “Settings”](#settings)
 
 ```bash
-proton mail settings              # everything, at a glance
-proton mail settings set          # the writable keys, grouped by page
+proton mail settings get          # everything, at a glance
+proton mail settings list         # the writable keys, grouped by page
 proton mail settings set view-mode conversations
 proton mail settings addresses update me@proton.me --display-name "Roman L."
 proton mail settings addresses update me@proton.me --signature - < signature.html --html
@@ -7094,7 +7096,7 @@ Set the order filters run in.
 The first rule to file a message wins, so the order decides where mail lands. Name every filter, in the order you want them. This replaces the whole order; a partial one is refused.
 
 ```plaintext
-proton mail settings filters reorder REF...
+proton mail settings filters reorder REF REF...
 ```
 
 ```bash
@@ -7529,8 +7531,8 @@ proton mail settings set KEY VALUE
 ```
 
 ```bash
-proton mail settings set signature off
-proton mail settings set view-mode conversation
+proton mail settings set pm-signature off
+proton mail settings set view-mode conversations
 ```
 
 ***
@@ -9294,7 +9296,7 @@ One script covers both proton and proton-cli.
 bash proton completion bash > /etc/bash\_completion.d/proton zsh proton completion zsh > “${fpath\[1]}/\_proton” fish proton completion fish > \~/.config/fish/completions/proton.fish powershell proton completion powershell | Out-String | Invoke-Expression
 
 ```plaintext
-proton completion
+proton completion SHELL
 ```
 
 ## `report`

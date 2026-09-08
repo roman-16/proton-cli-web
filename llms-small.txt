@@ -79,7 +79,7 @@ Compose and send a message
 Global flags:    proton --help
 Full reference:  https://proton-cli.lerchster.dev/mail/messages/#send
 ```
- The page a command links to is named after the command. `proton drive items upload` is documented at `/drive/items/#upload`. Shell completion knows the whole tree, including which values each flag accepts. See [Install](/install/#shell-completions). ## What to read next [Section titled “What to read next”](#what-to-read-next) | Page | What it covers | | --------------------------------------------------- | ----------------------------------------- | | [Naming what to act on](/using/naming/) | IDs, short IDs, names, paths | | [Filters and bulk changes](/using/filters/) | Acting on many things at once | | [Dry runs and confirmations](/using/confirmations/) | Previewing a change, and what asks first | | [Output and exit codes](/using/output/) | What comes back, and what a failure means | | [All commands](/about/commands/) | Every command in one table |
+ `proton help mail messages send` shows the same screen. The page a command links to is named after the command. `proton drive items upload` is documented at `/drive/items/#upload`. Shell completion knows the whole tree, including which values each flag accepts. See [Install](/install/#shell-completions). ## What to read next [Section titled “What to read next”](#what-to-read-next) | Page | What it covers | | --------------------------------------------------- | ----------------------------------------- | | [Naming what to act on](/using/naming/) | IDs, short IDs, names, paths | | [Filters and bulk changes](/using/filters/) | Acting on many things at once | | [Dry runs and confirmations](/using/confirmations/) | Previewing a change, and what asks first | | [Output and exit codes](/using/output/) | What comes back, and what a failure means | | [All commands](/about/commands/) | Every command in one table |
 
 # Output and exit codes
 
@@ -485,7 +485,7 @@ proton account settings set KEY VALUE
  
 ```bash
 proton account settings set locale de_AT
-proton account settings set news off
+proton account settings set week-start monday
 ```
  *** Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
 
@@ -649,7 +649,7 @@ proton calendar invitations accept Work
 ```
  Until you accept, you see the calendar’s name and who sent it, and nothing that is on it. ## Settings [Section titled “Settings”](#settings) 
 ```bash
-proton calendar settings          # time zones, layout, invitations
+proton calendar settings get      # time zones, layout, invitations
 proton calendar settings set view week
 proton calendar settings set primary-timezone Europe/Vienna
 ```
@@ -895,8 +895,8 @@ proton calendar settings set KEY VALUE
 ```
  
 ```bash
-proton calendar settings set week-start monday
-proton calendar settings set default-duration 30
+proton calendar settings set view week
+proton calendar settings set primary-timezone Europe/Vienna
 ```
  *** Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
 
@@ -1585,7 +1585,7 @@ proton drive settings set KEY VALUE
 ```
  
 ```bash
-proton drive settings set revision-retention 30
+proton drive settings set version-history 30d
 ```
  *** Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
 
@@ -2001,8 +2001,8 @@ proton mail settings senders forget billing@example.com
 ```
  A decision applies before the spam filter forms an opinion. Deciding again about the same sender replaces the earlier decision. `forget` lets the filter decide again. ## Settings [Section titled “Settings”](#settings) 
 ```bash
-proton mail settings              # everything, at a glance
-proton mail settings set          # the writable keys, grouped by page
+proton mail settings get          # everything, at a glance
+proton mail settings list         # the writable keys, grouped by page
 proton mail settings set view-mode conversations
 proton mail settings addresses update me@proton.me --display-name "Roman L."
 proton mail settings addresses update me@proton.me --signature - < signature.html --html
@@ -2552,7 +2552,7 @@ proton mail settings filters list
 ```
  ### `filters reorder` [Section titled “filters reorder”](#filters-reorder) Set the order filters run in. The first rule to file a message wins, so the order decides where mail lands. Name every filter, in the order you want them. This replaces the whole order; a partial one is refused. 
 ```plaintext
-proton mail settings filters reorder REF...
+proton mail settings filters reorder REF REF...
 ```
  
 ```bash
@@ -2754,8 +2754,8 @@ proton mail settings set KEY VALUE
 ```
  
 ```bash
-proton mail settings set signature off
-proton mail settings set view-mode conversation
+proton mail settings set pm-signature off
+proton mail settings set view-mode conversations
 ```
  *** Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
 
@@ -3494,7 +3494,7 @@ proton changelog --since 2.3.0 --until 2.4.0
 ```
  | Flag | Description | | ---------------- | ---------------------------------------------- | | `--since string` | Only releases after this version | | `--until string` | Only releases up to and including this version | ## `completion` [Section titled “completion”](#completion) Generate a shell completion script. Completion knows the whole command tree, every flag, and the values each enumerated flag accepts - so it offers folder names, item types, output formats and setting keys as you type them. Where a command takes a reference it offers back what your listings showed: the short ID, and the subject, name or address beside it. It reads what this machine remembers rather than asking Proton, so a collection you have not listed yet offers nothing and says which listing would fill it. One script covers both proton and proton-cli. bash proton completion bash > /etc/bash\_completion.d/proton zsh proton completion zsh > “${fpath\[1]}/\_proton” fish proton completion fish > \~/.config/fish/completions/proton.fish powershell proton completion powershell | Out-String | Invoke-Expression 
 ```plaintext
-proton completion
+proton completion SHELL
 ```
  ## `report` [Section titled “report”](#report) Collect what a bug report needs: this build, your settings, and a redacted trace of the run that failed. The last run that failed, or –all for every run still on disk. One file per day; the last 16 are kept. Addresses, IDs and file paths are replaced by stable stand-ins before anything is written, so the same address reads as the same name throughout and as nothing at all to anybody else. Nothing here can be turned back into an address, a password, a subject or a filename. A long run is shortened to what an issue form takes: its first and last records, and everything above debug in between. –dest writes the whole of it to a file instead. Reads only what is already on this machine: no account, no network. 
 ```plaintext
