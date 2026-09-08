@@ -749,7 +749,10 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive settings get`](/drive/settings/#get)                                             | Show the drive settings now in effect                               |
 | [`proton drive settings list`](/drive/settings/#list)                                           | List the drive settings that can be changed                         |
 | [`proton drive settings set`](/drive/settings/#set)                                             | Change one drive setting                                            |
+| [`proton drive shared add`](/drive/shared/#add)                                                 | Add a public link to what is shared with you                        |
+| [`proton drive shared leave`](/drive/shared/#leave)                                             | Give up an item somebody shared with you                            |
 | [`proton drive shared list`](/drive/shared/#list)                                               | List what other people have shared with you                         |
+| [`proton drive shared remove`](/drive/shared/#remove)                                           | Forget a public link you saved                                      |
 | [`proton drive sharing list`](/drive/sharing/#list)                                             | List what you have shared                                           |
 | [`proton drive trash empty`](/drive/trash/#empty)                                               | Delete everything in the trash, permanently                         |
 | [`proton drive trash list`](/drive/trash/#list)                                                 | List what is in the trash                                           |
@@ -945,6 +948,7 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens.
 * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event.
 * The SRP proof during login, which does not reveal your password.
+* Opening a public link with `--link` or `--shared` carries your session, so Proton knows which account opened it, and the owner sees one more visit.
 * Once a day, on an install no package manager owns, a request to GitHub asking which release is newest. It carries nothing about you or your account, and `PROTON_NO_UPDATE_CHECK` ends it ([Updating](/install/#updating)).
 
 **What never leaves:** your password, your second password if you have one, your key password, and your private keys.
@@ -962,6 +966,12 @@ The paths are listed under [Files on disk](/using/settings/#files-on-disk). Two 
 **The session file**, one per profile, mode `0600`, holds the session tokens and your key password. The key password is stored encrypted with a key that Proton holds and hands out only to a live session, so it is never on disk in cleartext, and **revoking the session** - `proton account logout --revoke`, or from any Proton app - makes a leaked copy undecryptable. The file still holds the session’s refresh token, so it is not safe to share; revoking neutralises a leak, it does not excuse one.
 
 **The diagnostic log**, mode `0600`, holds what each run did, written so it can be handed to a stranger: addresses, IDs, paths, tokens, subjects, filenames, search terms and flag values never enter it. `--no-log` or `PROTON_NO_LOG` stops it being written ([Settings](/using/settings/#the-diagnostic-log)).
+
+## A file downloaded from a public link
+
+[Section titled “A file downloaded from a public link”](#a-file-downloaded-from-a-public-link)
+
+Every file downloaded anywhere else is checked against a hash list its author signed. A public link is served without that signature, because whoever opens a link is outside the share and cannot hold the key that signed it. Each block is still checked against the hash list the link came with, so a file that arrives damaged is refused - but the list itself is Proton’s word rather than the author’s.
 
 ## Two-factor and security keys
 
@@ -3587,7 +3597,42 @@ proton drive items download /report.pdf --shared Project --dest-dir ./downloads/
 proton drive items download / --shared quarterly.pdf    # a shared file is / itself
 ```
 
+`shared leave` gives up an item somebody shared with you. Only a new invitation from them brings it back, so it asks first.
+
 An item whose name cannot be decrypted is still listed, so you can still act on it by ID.
+
+### A link somebody sent you
+
+[Section titled “A link somebody sent you”](#a-link-somebody-sent-you)
+
+A public link is a tree of its own. Name it with `--link`, and everything in it by path from its root:
+
+```bash
+proton drive items list / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
+proton drive items download /Q3-report.pdf --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --dest-dir ./downloads/
+proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --dest-dir .
+```
+
+A link to a single file is `/` itself. Quote the link: the password is what follows the `#`, which a shell would otherwise drop.
+
+A link with a password of its own takes it from a file or from standard input, as `items share link` does:
+
+```bash
+proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --link-password-file /run/secrets/q3-link --dest-dir .
+```
+
+A link can be listed, shown and downloaded. Uploading into one, and opening one without signing in, are in [Limits](/help/limits/).
+
+Save a link to open it later without the URL or the password:
+
+```bash
+proton drive shared add 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
+proton drive shared list
+proton drive items download / --shared Q3-report.pdf --dest-dir .
+proton drive shared remove Q3-report.pdf
+```
+
+A saved link shows `public link` under SHARED BY. `shared remove` forgets it; the link itself keeps working, and `shared add` brings it back.
 
 ## Computers
 
@@ -3849,6 +3894,8 @@ proton drive items delete --pattern '*.tmp' --scope /Build --recursive --yes
 
 Download a file.
 
+Behind a public link, a file is / when the link points at the file itself, and a path inside the folder when it points at a folder. A link with a password takes it from –link-password-file or –link-password-stdin.
+
 ```plaintext
 proton drive items download PATH
 ```
@@ -3857,15 +3904,20 @@ proton drive items download PATH
 proton drive items download /Documents/report.pdf --dest-dir .
 proton drive items download /Documents/report.pdf --dest - > report.pdf
 proton drive items download /report.pdf --shared Project --dest-dir .
+proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --dest-dir .
+proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --link-password-file /run/secrets/q3-link --dest-dir .
 ```
 
-| Flag                | Description                                             |
-| ------------------- | ------------------------------------------------------- |
-| `--computer string` | Work inside this computer’s files, by name or ID        |
-| `--dest string`     | Write to this path, or - for stdout                     |
-| `--dest-dir string` | Write into this directory, keeping each item’s own name |
-| `--force`           | Overwrite a file that already exists                    |
-| `--shared string`   | Work inside an item shared with you, by name or ID      |
+| Flag                          | Description                                             |
+| ----------------------------- | ------------------------------------------------------- |
+| `--computer string`           | Work inside this computer’s files, by name or ID        |
+| `--dest string`               | Write to this path, or - for stdout                     |
+| `--dest-dir string`           | Write into this directory, keeping each item’s own name |
+| `--force`                     | Overwrite a file that already exists                    |
+| `--link string`               | Work inside a public link somebody sent you, by URL     |
+| `--link-password-file string` | Read the public link’s password from a file             |
+| `--link-password-stdin`       | Read the public link’s password from stdin              |
+| `--shared string`             | Work inside an item shared with you, by name or ID      |
 
 ## `get`
 
@@ -3873,18 +3925,24 @@ proton drive items download /report.pdf --shared Project --dest-dir .
 
 Show a file or folder’s details.
 
+Reached through a public link, the details include the link itself and, for a link saved with `shared add`, the password its owner set on it.
+
 ```plaintext
 proton drive items get PATH
 ```
 
 ```bash
 proton drive items get /Documents/report.pdf
+proton drive items get / --shared Q3-report.pdf
 ```
 
-| Flag                | Description                                        |
-| ------------------- | -------------------------------------------------- |
-| `--computer string` | Work inside this computer’s files, by name or ID   |
-| `--shared string`   | Work inside an item shared with you, by name or ID |
+| Flag                          | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `--computer string`           | Work inside this computer’s files, by name or ID    |
+| `--link string`               | Work inside a public link somebody sent you, by URL |
+| `--link-password-file string` | Read the public link’s password from a file         |
+| `--link-password-stdin`       | Read the public link’s password from stdin          |
+| `--shared string`             | Work inside an item shared with you, by name or ID  |
 
 ## `list`
 
@@ -3894,7 +3952,7 @@ List what is in a folder.
 
 Takes the same filters as move, copy, trash and delete, so you can preview a selection here before acting on it. What PATH is here, those commands call –scope.
 
-PATH is in your own files. –computer REF lists inside a computer instead, and –shared REF inside something somebody shared with you, where / is the item itself.
+PATH is in your own files. –computer REF lists inside a computer instead, –shared REF inside something somebody shared with you, and –link URL inside a public link somebody sent you. In the last two, / is the item itself.
 
 ```plaintext
 proton drive items list [PATH]
@@ -3905,22 +3963,26 @@ proton drive items list
 proton drive items list /Documents
 proton drive items list / --computer 'Work laptop'
 proton drive items list / --shared Project
+proton drive items list / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 ```
 
-| Flag                    | Description                                               |
-| ----------------------- | --------------------------------------------------------- |
-| `--computer string`     | Work inside this computer’s files, by name or ID          |
-| `--desc`                | Reverse the order                                         |
-| `--larger-than string`  | Match files above SIZE (e.g. 100MB, 2GB)                  |
-| `--newer-than string`   | Match files newer than DURATION                           |
-| `--older-than string`   | Match files older than DURATION (e.g. 30d, 2w, 1h)        |
-| `--page int`            | Which page of results, counting from zero                 |
-| `--page-size int`       | How many items per page; 0 for all of them (default `50`) |
-| `--pattern string`      | Match names against a shell glob, e.g. \*.tmp             |
-| `--recursive`           | Descend into subfolders when filtering                    |
-| `--shared string`       | Work inside an item shared with you, by name or ID        |
-| `--smaller-than string` | Match files below SIZE                                    |
-| `--sort string`         | Order by: name, size, modified (default `name`)           |
+| Flag                          | Description                                               |
+| ----------------------------- | --------------------------------------------------------- |
+| `--computer string`           | Work inside this computer’s files, by name or ID          |
+| `--desc`                      | Reverse the order                                         |
+| `--larger-than string`        | Match files above SIZE (e.g. 100MB, 2GB)                  |
+| `--link string`               | Work inside a public link somebody sent you, by URL       |
+| `--link-password-file string` | Read the public link’s password from a file               |
+| `--link-password-stdin`       | Read the public link’s password from stdin                |
+| `--newer-than string`         | Match files newer than DURATION                           |
+| `--older-than string`         | Match files older than DURATION (e.g. 30d, 2w, 1h)        |
+| `--page int`                  | Which page of results, counting from zero                 |
+| `--page-size int`             | How many items per page; 0 for all of them (default `50`) |
+| `--pattern string`            | Match names against a shell glob, e.g. \*.tmp             |
+| `--recursive`                 | Descend into subfolders when filtering                    |
+| `--shared string`             | Work inside an item shared with you, by name or ID        |
+| `--smaller-than string`       | Match files below SIZE                                    |
+| `--sort string`               | Order by: name, size, modified (default `name`)           |
 
 ## `move`
 
@@ -4579,7 +4641,46 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton drive shared`, with the arguments and flags it takes. For these commands in use, see [the drive guide](/drive/).
 
-Holds `list`.
+Holds `add`, `leave`, `list` and `remove`.
+
+## `add`
+
+[Section titled “add”](#add)
+
+Add a public link to what is shared with you.
+
+URL is the link as it was sent to you, including everything after the #. Once added it appears in `shared list` and opens with `--shared REF`, with nothing to pass again. A link with a password takes it from –link-password-file or –link-password-stdin and keeps it.
+
+```plaintext
+proton drive shared add URL
+```
+
+```bash
+proton drive shared add 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
+proton drive shared add 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --link-password-file /run/secrets/q3-link
+```
+
+| Flag                          | Description                                 |
+| ----------------------------- | ------------------------------------------- |
+| `--link-password-file string` | Read the public link’s password from a file |
+| `--link-password-stdin`       | Read the public link’s password from stdin  |
+
+## `leave`
+
+[Section titled “leave”](#leave)
+
+Give up an item somebody shared with you.
+
+Only a new invitation from whoever shared it brings it back, so this asks first. To take a public link you saved out of the listing, use `shared remove`.
+
+```plaintext
+proton drive shared leave REF...
+```
+
+```bash
+proton drive shared leave Project
+proton drive shared leave Project --yes
+```
 
 ## `list`
 
@@ -4587,7 +4688,9 @@ Holds `list`.
 
 List what other people have shared with you.
 
-These are not in your tree and have no path of their own. To open one, pass `--shared REF` to any `items` command: / is then the item itself, and anything below it is a path inside it.
+Items shared with you directly and public links you saved with `shared add` are listed together. A saved link shows `public link` under SHARED BY.
+
+These are not in your tree and have no path of their own. To open one, pass `--shared REF` to any `items` command: / is then the item itself, and anything below it is a path inside it. A saved link can only be listed, shown and downloaded.
 
 An item whose name cannot be decrypted is still listed, so you can still act on it by ID.
 
@@ -4597,6 +4700,22 @@ proton drive shared list
 
 ```bash
 proton drive shared list
+```
+
+## `remove`
+
+[Section titled “remove”](#remove)
+
+Forget a public link you saved.
+
+The link itself keeps working, and `shared add` brings it back. To give up an item somebody shared with you directly, use `shared leave`.
+
+```plaintext
+proton drive shared remove REF...
+```
+
+```bash
+proton drive shared remove Q3-report.pdf
 ```
 
 ***
@@ -4727,8 +4846,8 @@ Each of these has an equivalent in a web client.
 
 | What is missing                                                       | What to do instead                                                                   |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Opening a public link somebody sent you                               | Open it in a browser                                                                 |
-| Public links you saved for later in the web client                    | Use the web client                                                                   |
+| Uploading into a public link that allows editing                      | Open it in a browser                                                                 |
+| Opening a public link without signing in                              | Open it in a browser                                                                 |
 | Accepting a forwarding somebody sent you                              | Accept it in the web client. Setting one up, pausing it and taking it down are built |
 | Mail forwarding to a non-Proton address                               | Proton emails the address a link its owner must follow; finish it there              |
 | Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one, so the commands work, is built                    |
@@ -5041,6 +5160,12 @@ Colours come from your terminal’s theme, so they look the way your theme draws
 The exception is the `■` beside a label, folder, calendar or group, which is the exact colour you gave it and needs 24-bit colour to draw. If your terminal takes it but does not advertise it, set `COLORTERM=truecolor`.
 
 `--no-color` or `NO_COLOR` turns colour off entirely, and `--force-color` or `FORCE_COLOR` keeps it through a pipe - a pager, a multiplexer, a CI log that renders the escapes itself.
+
+## “The link does not exist any more, or has expired”
+
+[Section titled ““The link does not exist any more, or has expired””](#the-link-does-not-exist-any-more-or-has-expired)
+
+A public link answers this when its owner removed it, when it passed the date it was set to expire, or when it reached the number of downloads its owner allowed. Ask whoever sent it for a new one.
 
 ## Still stuck
 
@@ -9686,11 +9811,11 @@ Dry-run output goes to stderr, so it still appears if you redirect stdout.
 
 proton asks in two cases: before it removes something it cannot put back, and before it removes things you did not name yourself. Nothing else stops to ask.
 
-|                                  | You named it | A filter found it |
-| -------------------------------- | ------------ | ----------------- |
-| `delete` · `empty` · `uninstall` | asks         | asks              |
-| `trash`                          | acts         | asks              |
-| everything else                  | acts         | acts              |
+|                                            | You named it | A filter found it |
+| ------------------------------------------ | ------------ | ----------------- |
+| `delete` · `empty` · `leave` · `uninstall` | asks         | asks              |
+| `trash`                                    | acts         | asks              |
+| everything else                            | acts         | acts              |
 
 The question shows the things themselves, never just a count:
 
@@ -10013,11 +10138,12 @@ proton drive trash restore 7Kd91mQx
 proton drive photos download 3Ns8pT2v --dest-dir ./photos
 ```
 
-A computer and an item somebody shared with you each hold a tree of their own. Name the tree with `--computer REF` or `--shared REF`, and everything in it by path from its root:
+A computer, an item somebody shared with you and a public link somebody sent you each hold a tree of their own. Name the tree with `--computer REF`, `--shared REF` or `--link URL`, and everything in it by path from its root:
 
 ```bash
 proton drive items list /Documents --computer "Work laptop"
 proton drive items download /report.pdf --shared Project --dest-dir .
+proton drive items list / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 ```
 
 ## Full IDs that start with a dash
