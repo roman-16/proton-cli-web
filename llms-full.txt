@@ -827,7 +827,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail settings folders list`](/mail/settings/#folders-list)                             | List your folders                                                   |
 | [`proton mail settings folders update`](/mail/settings/#folders-update)                         | Rename or recolor a folder                                          |
 | [`proton mail settings forwarding accept`](/mail/settings/#forwarding-accept)                   | Accept forwardings sent to you                                      |
-| [`proton mail settings forwarding create`](/mail/settings/#forwarding-create)                   | Forward one of your addresses to another Proton address             |
+| [`proton mail settings forwarding create`](/mail/settings/#forwarding-create)                   | Forward one of your addresses to another address                    |
 | [`proton mail settings forwarding decline`](/mail/settings/#forwarding-decline)                 | Decline forwardings sent to you                                     |
 | [`proton mail settings forwarding delete`](/mail/settings/#forwarding-delete)                   | Stop forwardings, in either direction                               |
 | [`proton mail settings forwarding disable`](/mail/settings/#forwarding-disable)                 | Pause forwardings without taking them down                          |
@@ -952,7 +952,7 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 [Section titled “What leaves your machine”](#what-leaves-your-machine)
 
 * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens.
-* Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, and the locked key a forwarding you accepted adds to your address.
+* Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, the locked key a forwarding you accepted adds to your address, and the locked key a forwarding you set up derives for the other address, whose passphrase only that address can open.
 * The SRP proof during login, which does not reveal your password.
 * Opening a public link with `--link` or `--shared` carries your session, so Proton knows which account opened it, and the owner sees one more visit.
 * Once a day, on an install no package manager owns, a request to GitHub asking which release is newest. It carries nothing about you or your account, and `PROTON_NO_UPDATE_CHECK` ends it ([Updating](/install/#updating)).
@@ -1148,6 +1148,8 @@ These commands ask for your password again even when you are signed in:
 * `mail settings addresses disable`
 * `mail settings addresses enable`
 * `mail settings forwarding accept`
+* `mail settings forwarding create`
+* `mail settings forwarding delete`
 * `mail settings autoreply disable`
 * `mail settings autoreply enable`
 * `mail settings autoreply set`
@@ -4902,12 +4904,10 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 Each of these has an equivalent in a web client.
 
-| What is missing                                                       | What to do instead                                                                                                                                    |
-| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Setting up mail forwarding                                            | Add the forwarding at [account.proton.me](https://account.proton.me). Accepting one sent to you, pausing it, resuming it and taking it down are built |
-| Mail forwarding to a non-Proton address                               | Proton emails the address a link its owner must follow; finish it there                                                                               |
-| Turning on the `@pm.me` short domain                                  | Switch it on at [account.proton.me](https://account.proton.me). Adding, disabling and deleting other addresses is built                               |
-| Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one is built                                                                                                            |
+| What is missing                                                       | What to do instead                                                                                                      |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Turning on the `@pm.me` short domain                                  | Switch it on at [account.proton.me](https://account.proton.me). Adding, disabling and deleting other addresses is built |
+| Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one is built                                                                              |
 
 proton changes no credentials: the account password, two-factor, the recovery phrase and the Pass extra password are all set at [account.proton.me](https://account.proton.me) or in the Pass app.
 
@@ -5748,6 +5748,35 @@ proton mail settings senders forget billing@example.com
 
 A decision applies before the spam filter forms an opinion. Deciding again about the same sender replaces the earlier decision. `forget` lets the filter decide again.
 
+## Forward one of your addresses
+
+[Section titled “Forward one of your addresses”](#forward-one-of-your-addresses)
+
+```bash
+proton mail settings forwarding create me@proton.me jane@proton.me
+proton mail settings forwarding create me@proton.me jane@example.com
+proton mail settings forwarding list
+```
+
+Setting one up needs a paid Mail plan. Nothing is forwarded until the other side accepts. A Proton address accepts in its Proton client or with `forwarding accept`; an address outside Proton follows the link Proton emails it.
+
+Forwarding to an address outside Proton turns off end-to-end encryption for your address. It comes back on when the last such forwarding from that address is deleted. `proton mail settings addresses get me@proton.me` shows whether it is on.
+
+**Setting up that kind asks for your password**, and so does the `delete` that turns encryption back on. With no terminal, pass `--password-file` or `--password-stdin`. The other commands that do this are listed in [Account](/account/#commands-that-ask-for-the-password-again).
+
+## Change or stop a forwarding you set up
+
+[Section titled “Change or stop a forwarding you set up”](#change-or-stop-a-forwarding-you-set-up)
+
+```bash
+proton mail settings forwarding disable jane@proton.me
+proton mail settings forwarding enable jane@proton.me
+proton mail settings forwarding resend jane@proton.me
+proton mail settings forwarding delete jane@proton.me
+```
+
+`disable` stops mail being forwarded and keeps the arrangement. `resend` offers it again to a forwardee who declined it, or whose material your key change left outdated. `delete` takes one down in either direction.
+
 ## Accept a forwarding somebody sent you
 
 [Section titled “Accept a forwarding somebody sent you”](#accept-a-forwarding-somebody-sent-you)
@@ -5759,21 +5788,6 @@ proton mail settings forwarding decline jane@proton.me
 ```
 
 A forwarding is named by the other party’s address, in either direction. Only a pending forwarding sent to one of your addresses can be accepted or declined, and accepting needs no plan.
-
-## Forwardings you set up
-
-[Section titled “Forwardings you set up”](#forwardings-you-set-up)
-
-```bash
-proton mail settings forwarding list
-proton mail settings forwarding disable jane@proton.me
-proton mail settings forwarding enable jane@proton.me
-proton mail settings forwarding delete jane@proton.me
-```
-
-Nothing is forwarded until Jane accepts it, and it stays pending until she does. `disable` stops mail being forwarded and keeps the arrangement; `delete` takes one down in either direction.
-
-Adding a forwarding is done at [account.proton.me](https://account.proton.me) - see [What it can’t do](/help/limits/#not-built-yet).
 
 ## Add an address
 
@@ -7750,13 +7764,11 @@ proton mail settings forwarding accept jane@proton.me
 
 [Section titled “forwarding create”](#forwarding-create)
 
-Forward one of your addresses to another Proton address.
+Forward one of your addresses to another address.
 
-REF is the address of yours mail arrives at, EMAIL is the Proton address it is handed to. Mail stays end-to-end encrypted, and nothing is forwarded until they accept it.
+REF is the address of yours mail arrives at, EMAIL is where it is handed to. Needs a paid Mail plan, and nothing is forwarded until they accept it: a Proton address in its Proton client or with `forwarding accept`, an address outside Proton by following the link Proton emails it.
 
-Proton refuses this request from proton: add the forwarding at account.proton.me instead. Accepting one sent to you works here.
-
-Forwarding to an address outside Proton is not built.
+To a Proton address, mail stays end-to-end encrypted. To an address outside Proton, end-to-end encryption for REF is turned off until the last such forwarding from it is deleted, and your password is asked for to turn it off. With no terminal to ask, pass –password-file or –password-stdin.
 
 ```plaintext
 proton mail settings forwarding create REF EMAIL
@@ -7764,7 +7776,14 @@ proton mail settings forwarding create REF EMAIL
 
 ```bash
 proton mail settings forwarding create me@proton.me jane@proton.me
+proton mail settings forwarding create me@proton.me jane@example.com
 ```
+
+| Flag                     | Description                           |
+| ------------------------ | ------------------------------------- |
+| `--password-file string` | Read the account password from a file |
+| `--password-stdin`       | Read the account password from stdin  |
+| `--totp string`          | Two-factor code                       |
 
 ### `forwarding decline`
 
@@ -7788,6 +7807,8 @@ proton mail settings forwarding decline jane@proton.me
 
 Stop forwardings, in either direction.
 
+REF is a forwarding in either direction. Taking down the last forwarding from one of your addresses to an address outside Proton turns end-to-end encryption for it back on, and asks for your password to do it. With no terminal to ask, pass –password-file or –password-stdin.
+
 ```plaintext
 proton mail settings forwarding delete REF...
 ```
@@ -7795,6 +7816,12 @@ proton mail settings forwarding delete REF...
 ```bash
 proton mail settings forwarding delete jane@proton.me
 ```
+
+| Flag                     | Description                           |
+| ------------------------ | ------------------------------------- |
+| `--password-file string` | Read the account password from a file |
+| `--password-stdin`       | Read the account password from stdin  |
+| `--totp string`          | Two-factor code                       |
 
 ### `forwarding disable`
 
