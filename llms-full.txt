@@ -887,6 +887,9 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass generate`](/pass/pass/#generate)                                                  | Make a password                                                     |
 | [`proton pass import`](/pass/pass/#import)                                                      | Read a Proton Pass archive back in                                  |
 | [`proton pass settings domains list`](/pass/settings/#domains-list)                             | List the domains an alias can be made on                            |
+| [`proton pass settings extra-password disable`](/pass/settings/#extra-password-disable)         | Remove the extra password from Pass                                 |
+| [`proton pass settings extra-password enable`](/pass/settings/#extra-password-enable)           | Protect Pass with an extra password                                 |
+| [`proton pass settings extra-password get`](/pass/settings/#extra-password-get)                 | Show whether Pass has an extra password                             |
 | [`proton pass settings mailboxes create`](/pass/settings/#mailboxes-create)                     | Add an address for aliases to forward to                            |
 | [`proton pass settings mailboxes delete`](/pass/settings/#mailboxes-delete)                     | Remove an address aliases forward to                                |
 | [`proton pass settings mailboxes list`](/pass/settings/#mailboxes-list)                         | List the addresses your aliases forward to                          |
@@ -955,10 +958,11 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens.
 * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, the locked key a forwarding you accepted adds to your address, and the locked key a forwarding you set up derives for the other address, whose passphrase only that address can open.
 * The SRP proof during login, which does not reveal your password.
+* The verifier for a Pass extra password you set, which Proton checks a password against and cannot read one out of.
 * Opening a public link with `--link` or `--shared` carries your session, so Proton knows which account opened it, and the owner sees one more visit.
 * Once a day, on an install no package manager owns, a request to GitHub asking which release is newest. It carries nothing about you or your account, and `PROTON_NO_UPDATE_CHECK` ends it ([Updating](/install/#updating)).
 
-**What never leaves:** your password, your second password if you have one, your key password, and an unlocked private key.
+**What never leaves:** your password, your second password if you have one, your Pass extra password, your key password, and an unlocked private key.
 
 There is no telemetry, and there is nothing to turn off. proton-cli never reports a command you ran, a feature you used, or the fact that you ran it at all. The diagnostic log is written to your disk and read by nobody unless you run `proton report` and paste it somewhere yourself ([Reporting a bug](/help/troubleshooting/#reporting-a-bug)). What is known about how the tool is used comes from counters the distribution channels publish, and is [on the site](https://proton-cli.lerchster.dev/stats/) in full.
 
@@ -4905,11 +4909,13 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 Each of these has an equivalent in a web client.
 
-| What is missing                                                       | What to do instead                         |
-| --------------------------------------------------------------------- | ------------------------------------------ |
-| Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one is built |
+| What is missing                                             | What to do instead                                               |
+| ----------------------------------------------------------- | ---------------------------------------------------------------- |
+| Custom domains for aliases, and which domain is the default | Use the Pass app. `proton pass settings domains list` shows them |
+| Syncing SimpleLogin aliases into Pass                       | Use the Pass app                                                 |
+| Pass access tokens                                          | Use the Pass app                                                 |
 
-proton changes no credentials: the account password, two-factor, the recovery phrase and the Pass extra password are all set at [account.proton.me](https://account.proton.me) or in the Pass app.
+proton changes no account credential: the account password, two-factor and the recovery phrase are all set at [account.proton.me](https://account.proton.me).
 
 ## Out of scope
 
@@ -5155,6 +5161,8 @@ proton account login --user "$ACCOUNT" --password-file "$CRED" \
 **“That is not this account’s Pass extra password.”** A few wrong answers end the session; every command then exits `2` until you sign in again.
 
 It is not your Proton account password, and it is not the second password of a two-password account.
+
+Turning it on or off is covered by [Pass](/pass/#turn-the-extra-password-on-or-off).
 
 ## A change I just made does not show up
 
@@ -8465,7 +8473,21 @@ A `pass` command that needs it and finds nobody to ask says so and names that fl
 
 A few wrong answers end the session, so read a refusal rather than retrying blindly.
 
-Turning the extra password on or off is not something proton does. See [What it can’t do](/help/limits/).
+### Turn the extra password on or off
+
+[Section titled “Turn the extra password on or off”](#turn-the-extra-password-on-or-off)
+
+```bash
+proton pass settings extra-password get
+proton pass settings extra-password enable
+proton pass settings extra-password disable
+```
+
+`enable` asks for the password twice, or reads it once from `--extra-password-file` or `--extra-password-stdin`. It needs at least eight characters. Keep it safe: without it nothing opens Pass, on any device. Your other devices ask for it the next time they open Pass, and this session goes on working.
+
+`disable` asks for the password first. Pass then opens with your account password alone, on every device, and this session goes on working.
+
+To change it, turn it off and on again.
 
 ## History and breaches
 
@@ -9416,7 +9438,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton pass settings`, with the arguments and flags it takes. For these commands in use, see [the pass guide](/pass/).
 
-Holds `domains` and `mailboxes`.
+Holds `domains`, `extra-password` and `mailboxes`.
 
 ## `domains`
 
@@ -9440,6 +9462,78 @@ proton pass settings domains list
 
 ```bash
 proton pass settings domains list
+```
+
+## `extra-password`
+
+[Section titled “extra-password”](#extra-password)
+
+The extra password Pass can be protected with.
+
+Holds `disable`, `enable` and `get`.
+
+### `extra-password disable`
+
+[Section titled “extra-password disable”](#extra-password-disable)
+
+Remove the extra password from Pass.
+
+The password is asked for first, or comes from –extra-password-file or –extra-password-stdin.
+
+Pass then opens with your account password alone, on every device. This session goes on working.
+
+```plaintext
+proton pass settings extra-password disable
+```
+
+```bash
+proton pass settings extra-password disable
+proton pass settings extra-password disable --extra-password-file /run/secrets/proton-pass
+```
+
+| Flag                           | Description                              |
+| ------------------------------ | ---------------------------------------- |
+| `--extra-password-file string` | Read the Pass extra password from a file |
+| `--extra-password-stdin`       | Read the Pass extra password from stdin  |
+
+### `extra-password enable`
+
+[Section titled “extra-password enable”](#extra-password-enable)
+
+Protect Pass with an extra password.
+
+The password comes from –extra-password-file, from –extra-password-stdin, or from a prompt that asks for it twice. It needs at least eight characters.
+
+Keep it safe: without it nothing opens Pass, on any device. Your other devices ask for it the next time they open Pass, and this session goes on working.
+
+A Pass that already has one is refused. Turn it off and on again to change it.
+
+```plaintext
+proton pass settings extra-password enable
+```
+
+```bash
+proton pass settings extra-password enable
+proton pass settings extra-password enable --extra-password-file /run/secrets/proton-pass
+```
+
+| Flag                           | Description                              |
+| ------------------------------ | ---------------------------------------- |
+| `--extra-password-file string` | Read the Pass extra password from a file |
+| `--extra-password-stdin`       | Read the Pass extra password from stdin  |
+
+### `extra-password get`
+
+[Section titled “extra-password get”](#extra-password-get)
+
+Show whether Pass has an extra password.
+
+```plaintext
+proton pass settings extra-password get
+```
+
+```bash
+proton pass settings extra-password get
 ```
 
 ## `mailboxes`
