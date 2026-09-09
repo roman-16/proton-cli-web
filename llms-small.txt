@@ -1153,7 +1153,7 @@ pg_dump mydb | proton drive items upload - /Backups/db.sql
 proton drive items download /Documents/report.pdf --dest-dir ./downloads/
 proton drive items download /Documents/report.pdf --dest - | less
 ```
- Uploads show progress on stderr. **A name already taken is refused**, so nothing is overwritten by accident. `--if-exists` answers the question instead: 
+ Uploads show progress on stderr. **A name already taken is refused.** `--if-exists` answers instead: 
 ```bash
 proton drive items upload --if-exists replace ./report.pdf /Documents  # a new revision of it
 proton drive items upload --if-exists rename ./report.pdf /Documents   # keeps both, as "report (1).pdf"
@@ -1166,7 +1166,7 @@ proton drive items move /Documents/report.pdf --into /Archive
 proton drive items copy /Documents/report.pdf --into /Archive
 proton drive items create /Documents/2026/Q1/receipts   # makes 2026 and Q1 on the way
 ```
- A path names every folder along it, so the ones above the last are made too: `Created 3 folders down to /Documents/2026/Q1/receipts`. The folder you asked for is the exception. A name Drive already holds is refused, as is a path running through a file. ## Trash and delete [Section titled “Trash and delete”](#trash-and-delete) 
+ Every missing folder along the path is made: `Created 3 folders down to /Documents/2026/Q1/receipts`. The folder you asked for is the exception. A name Drive already holds is refused, as is a path running through a file. ## Trash and delete [Section titled “Trash and delete”](#trash-and-delete) 
 ```bash
 proton drive items trash /Documents/old.pdf     # reversible
 proton drive items delete /Documents/old.pdf    # permanent
@@ -1181,20 +1181,20 @@ proton drive items list /Build --pattern "*.tmp" --recursive          # see what
 proton drive items trash --scope /Build --pattern "*.tmp" --recursive
 proton drive items delete --larger-than 100MB --scope /Downloads --recursive --dry-run
 ```
- A filter that matches a folder and the files inside it selects the folder alone. See [Filters and bulk changes](/using/filters/). A trashed item has no place in the tree, so it has no path. Address it by the ID its listing showed. ## Earlier versions [Section titled “Earlier versions”](#earlier-versions) Uploading over a file with `--if-exists replace` keeps what was there as a revision. 
+ A filter that matches a folder and the files inside it selects the folder alone. See [Filters and bulk changes](/using/filters/). A trashed item has no path. Address it by the ID its listing showed. ## Earlier versions [Section titled “Earlier versions”](#earlier-versions) Uploading over a file with `--if-exists replace` keeps what was there as a revision. 
 ```bash
 proton drive items revisions list /Documents/report.pdf
 proton drive items revisions download /Documents/report.pdf 8f3a1c22 --dest ./earlier.pdf
 proton drive items revisions restore /Documents/report.pdf 8f3a1c22
 ```
- `download` reads an old version out and leaves the file alone. `restore` puts one back in place. Proton restores in the background, so the file changes a moment after the command returns. The version it replaces stays in the history, so a restore can itself be undone. Neither command touches the version the file is at now. Restoring it would do nothing, and deleting it would be deleting the file. ## Share it [Section titled “Share it”](#share-it) ### A public link [Section titled “A public link”](#a-public-link) 
+ `download` reads an old version out and leaves the file alone. `restore` puts one back in place. The file changes a moment after the command returns. The version it replaces stays in the history, and a restore can itself be undone. Neither command touches the version the file is at now. Restoring it would do nothing, and deleting it would be deleting the file. ## Share it [Section titled “Share it”](#share-it) ### A public link [Section titled “A public link”](#a-public-link) 
 ```bash
 proton drive items share link /Documents/report.pdf --expires 7d \
   --link-password-file /run/secrets/report-link
 proton drive items share get /Documents/report.pdf     # who has access, plus the link
 proton drive items share unlink /Documents/report.pdf
 ```
- The password that opens a public link is a secret, so it comes from a file or from standard input rather than from a flag value. Proton allows at most 50 characters. * `--expires never` makes an expiring link permanent. * `--clear-link-password` removes the password. ### With named people [Section titled “With named people”](#with-named-people) 
+ The password comes from a file or from standard input, never from a flag value, and is at most 50 characters. * `--expires never` makes an expiring link permanent. * `--clear-link-password` removes the password. ### With named people [Section titled “With named people”](#with-named-people) 
 ```bash
 proton drive items share add /Documents/project bob@proton.me --edit --message "Draft for review"
 proton drive items share update /Reports jane@proton.me --edit=false
@@ -1207,13 +1207,13 @@ proton drive sharing list      # what you have left open
 proton drive invitations list
 proton drive invitations accept INVITATION_ID
 ```
- An item somebody shared with you does not live in your tree, so it has no path of its own. Open it with `--shared`, naming it by the ID or the name the listing showed: 
+ An item somebody shared with you has no path of its own. Open it with `--shared`, naming it by the ID or the name the listing showed: 
 ```bash
 proton drive items list / --shared Project              # a shared folder
 proton drive items download /report.pdf --shared Project --dest-dir ./downloads/
 proton drive items download / --shared quarterly.pdf    # a shared file is / itself
 ```
- `shared leave` gives up an item somebody shared with you. Only a new invitation from them brings it back, so it asks first. An item whose name cannot be decrypted is still listed, so you can still act on it by ID. ### A link somebody sent you [Section titled “A link somebody sent you”](#a-link-somebody-sent-you) A public link is a tree of its own. Name it with `--link`, and everything in it by path from its root: 
+ ROLE in `shared list` is what you may do there: a viewer lists and downloads, an editor uploads and changes things as well. `shared leave` gives up an item somebody shared with you. It asks first; only a new invitation from them brings it back. An item whose name cannot be decrypted is still listed and can be acted on by ID. ### A link somebody sent you [Section titled “A link somebody sent you”](#a-link-somebody-sent-you) A public link is a tree of its own. Name it with `--link`, and everything in it by path from its root: 
 ```bash
 proton drive items list / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 proton drive items download /Q3-report.pdf --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --dest-dir ./downloads/
@@ -1223,7 +1223,13 @@ proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ
 ```bash
 proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --link-password-file /run/secrets/q3-link --dest-dir .
 ```
- A link can be listed, shown and downloaded without an account. A link names nobody as the author of what is in it, so `items get` shows no Created By and reports Signature as `anonymous`. Uploading into a link is in [Limits](/help/limits/). Save a link to open it later without the URL or the password. Saving needs an account: 
+ A link that allows editing takes new files and folders. `items get /` shows `Link Access: edit` on one: 
+```bash
+proton drive items upload ./photo.jpg / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
+proton drive items create /2026 --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
+proton drive items upload --recursive ./album /2026 --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
+```
+ `--if-exists rename` and `skip` work in a link; `replace` is refused. Nothing already in a link can be renamed, moved or removed from here. None of this needs an account. Signed in, what you upload names your address as Created By; without an account it names nobody. Behind a link, `items get` shows no Created By and reports Signature as `anonymous`. Save a link to open it later without the URL or the password. Saving needs an account: 
 ```bash
 proton drive shared add 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 proton drive shared list
@@ -1245,7 +1251,7 @@ proton drive photos upload ./IMG_0001.jpg
 proton drive photos download 3Ns8pT2v --dest-dir ./photos/
 proton drive photos favorite 3Ns8pT2v
 ```
- Tags are `favorites`, `screenshots`, `videos`, `live-photos`, `motion-photos`, `selfies`, `portraits`, `bursts`, `panoramas` and `raw`. Photos have no path either, so address them by ID. 
+ Tags are `favorites`, `screenshots`, `videos`, `live-photos`, `motion-photos`, `selfies`, `portraits`, `bursts`, `panoramas` and `raw`. Photos have no path; address them by ID. 
 ```bash
 proton drive photos albums create --name Holiday
 proton drive photos albums add ALBUM_ID PHOTO_ID...
@@ -1331,15 +1337,16 @@ proton drive items copy [PATH...]
 proton drive items copy /Documents/report.pdf --into /Archive
 proton drive items copy --pattern '*.pdf' --scope /Documents --into /Backup
 ```
- | Flag | Description | | ----------------------- | ------------------------------------------------------- | | `--all` | Act on everything in scope, rather than a subset | | `--computer string` | Work inside this computer’s files, by name or ID | | `--into string` | Destination folder | | `--larger-than string` | Match files above SIZE (e.g. 100MB, 2GB) | | `--newer-than string` | Match files newer than DURATION | | `--older-than string` | Match files older than DURATION (e.g. 30d, 2w, 1h) | | `--pattern string` | Match names against a shell glob, e.g. \*.tmp | | `--recursive` | Descend into subfolders when filtering | | `--scope string` | Look only inside this folder (default: the whole drive) | | `--shared string` | Work inside an item shared with you, by name or ID | | `--smaller-than string` | Match files below SIZE | ## `create` [Section titled “create”](#create) Create a folder, and any missing folder above it. 
+ | Flag | Description | | ----------------------- | ------------------------------------------------------- | | `--all` | Act on everything in scope, rather than a subset | | `--computer string` | Work inside this computer’s files, by name or ID | | `--into string` | Destination folder | | `--larger-than string` | Match files above SIZE (e.g. 100MB, 2GB) | | `--newer-than string` | Match files newer than DURATION | | `--older-than string` | Match files older than DURATION (e.g. 30d, 2w, 1h) | | `--pattern string` | Match names against a shell glob, e.g. \*.tmp | | `--recursive` | Descend into subfolders when filtering | | `--scope string` | Look only inside this folder (default: the whole drive) | | `--shared string` | Work inside an item shared with you, by name or ID | | `--smaller-than string` | Match files below SIZE | ## `create` [Section titled “create”](#create) Create a folder, and any missing folder above it. PATH is in your own files. –computer REF creates inside a computer instead, –shared REF inside something somebody shared with you, and –link URL inside a public link. A share or a link has to allow editing. 
 ```plaintext
 proton drive items create PATH
 ```
  
 ```bash
 proton drive items create /Documents/2026
+proton drive items create /2026 --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 ```
- | Flag | Description | | ------------------- | -------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--shared string` | Work inside an item shared with you, by name or ID | ## `delete` [Section titled “delete”](#delete) Delete files or folders permanently. 
+ | Flag | Description | | ----------------------------- | --------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--link string` | Work inside a public link somebody sent you, by URL | | `--link-password-file string` | Read the public link’s password from a file | | `--link-password-stdin` | Read the public link’s password from stdin | | `--shared string` | Work inside an item shared with you, by name or ID | ## `delete` [Section titled “delete”](#delete) Delete files or folders permanently. 
 ```plaintext
 proton drive items delete [PATH...]
 ```
@@ -1360,7 +1367,7 @@ proton drive items download /report.pdf --shared Project --dest-dir .
 proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --dest-dir .
 proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --link-password-file /run/secrets/q3-link --dest-dir .
 ```
- | Flag | Description | | ----------------------------- | ------------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--dest string` | Write to this path, or - for stdout | | `--dest-dir string` | Write into this directory, keeping each item’s own name | | `--force` | Overwrite a file that already exists | | `--link string` | Work inside a public link somebody sent you, by URL | | `--link-password-file string` | Read the public link’s password from a file | | `--link-password-stdin` | Read the public link’s password from stdin | | `--shared string` | Work inside an item shared with you, by name or ID | ## `get` [Section titled “get”](#get) Show a file or folder’s details. Reached through a public link, the details include the link itself and, for a link saved with `shared add`, the password its owner set on it. A link names nobody as the author of what is in it, so Created By is absent and Signature reads anonymous. 
+ | Flag | Description | | ----------------------------- | ------------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--dest string` | Write to this path, or - for stdout | | `--dest-dir string` | Write into this directory, keeping each item’s own name | | `--force` | Overwrite a file that already exists | | `--link string` | Work inside a public link somebody sent you, by URL | | `--link-password-file string` | Read the public link’s password from a file | | `--link-password-stdin` | Read the public link’s password from stdin | | `--shared string` | Work inside an item shared with you, by name or ID | ## `get` [Section titled “get”](#get) Show a file or folder’s details. Reached through a public link, the details include the link, whether it allows editing and, for a link saved with `shared add`, the password its owner set on it. Behind a link, Created By is absent and Signature reads anonymous. 
 ```plaintext
 proton drive items get PATH
 ```
@@ -1501,7 +1508,7 @@ proton drive items update PATH
 ```bash
 proton drive items update /Documents/report.pdf --name summary.pdf
 ```
- | Flag | Description | | ------------------- | -------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--name string` | New name, without a path | | `--shared string` | Work inside an item shared with you, by name or ID | ## `upload` [Section titled “upload”](#upload) Upload a file or directory. A name already taken is refused, so nothing is overwritten by accident. –if-exists answers instead: replace a new revision, keeping the file’s history rename keep both, numbering the one being uploaded skip leave what is there alone With –recursive that answer is about the folder the tree lands in. SRC of - reads standard input, and then DEST has to name the file. 
+ | Flag | Description | | ------------------- | -------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--name string` | New name, without a path | | `--shared string` | Work inside an item shared with you, by name or ID | ## `upload` [Section titled “upload”](#upload) Upload a file or directory. A name already taken is refused. –if-exists answers instead: replace a new revision, keeping the file’s history rename keep both, numbering the one being uploaded skip leave what is there alone With –recursive that answer is about the folder the tree lands in. SRC of - reads standard input, and then DEST has to name the file. DEST is in your own files. –computer REF uploads into a computer instead, –shared REF into something somebody shared with you, and –link URL into a public link. In the last two, / is the item itself. A share or a link has to allow editing, and a link takes no new revisions: –if-exists replace is refused there. 
 ```plaintext
 proton drive items upload SRC [DEST]
 ```
@@ -1510,9 +1517,10 @@ proton drive items upload SRC [DEST]
 proton drive items upload ./report.pdf /Documents
 proton drive items upload --recursive ./project /Backup
 proton drive items upload --if-exists replace ./report.pdf /Documents
+proton drive items upload ./photo.jpg / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 pg_dump mydb | gzip | proton drive items upload - /Backups/db.sql.gz
 ```
- | Flag | Description | | -------------------- | ----------------------------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--if-exists string` | What to do when the folder already has that name: rename, replace, skip | | `--recursive` | Upload a directory and everything under it | | `--shared string` | Work inside an item shared with you, by name or ID | *** Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+ | Flag | Description | | ----------------------------- | ----------------------------------------------------------------------- | | `--computer string` | Work inside this computer’s files, by name or ID | | `--if-exists string` | What to do when the folder already has that name: rename, replace, skip | | `--link string` | Work inside a public link somebody sent you, by URL | | `--link-password-file string` | Read the public link’s password from a file | | `--link-password-stdin` | Read the public link’s password from stdin | | `--recursive` | Upload a directory and everything under it | | `--shared string` | Work inside an item shared with you, by name or ID | *** Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
 
 # proton drive photos
 
@@ -1679,7 +1687,7 @@ proton drive shared leave REF...
 proton drive shared leave Project
 proton drive shared leave Project --yes
 ```
- ## `list` [Section titled “list”](#list) List what other people have shared with you. Items shared with you directly and public links you saved with `shared add` are listed together. A saved link shows `public link` under SHARED BY. These are not in your tree and have no path of their own. To open one, pass `--shared REF` to any `items` command: / is then the item itself, and anything below it is a path inside it. A saved link can only be listed, shown and downloaded. An item whose name cannot be decrypted is still listed, so you can still act on it by ID. 
+ ## `list` [Section titled “list”](#list) List what other people have shared with you. Items shared with you directly and public links you saved with `shared add` are listed together. A saved link shows `public link` under SHARED BY, and ROLE is what you may do: a viewer lists and downloads, an editor uploads as well. These are not in your tree and have no path of their own. To open one, pass `--shared REF` to any `items` command: / is then the item itself, and anything below it is a path inside it. Nothing in a saved link can be renamed, moved or removed from here. An item whose name cannot be decrypted is still listed and can be acted on by ID. 
 ```plaintext
 proton drive shared list
 ```
@@ -1746,7 +1754,7 @@ proton drive trash restore 5bH2mQxK
 
 > proton-cli aims for parity with what the Proton web clients let you do. This page is where it falls short.
 
-A refusal that comes from Proton rather than from proton-cli belongs to [Troubleshooting](/help/troubleshooting/) instead. ## Known gaps [Section titled “Known gaps”](#known-gaps) **An update cannot be verified offline.** `proton update` checks the download against `checksums.txt` from the same release, and neither is signed. An install from a package manager is verified by the package manager. **Post-quantum keys are read, never generated.** An account that opted in during Proton’s rollout signs in, and mail and shares reach others who opted in. Turning the setting on is done in Proton’s own settings. **A recurring event needs a zone that can be named.** proton reads one from `TZ`, `/etc/localtime` or `/etc/timezone`, then from your Proton calendar settings. Where none of those answers, a recurring event drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure. **A Drive filter walks the tree.** `--pattern` and the size and age filters visit every folder under the scope, so over a large tree narrow it with `--scope`. ## Not built yet [Section titled “Not built yet”](#not-built-yet) Each of these has an equivalent in a web client. | What is missing | What to do instead | | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | | Uploading into a public link that allows editing | Open it in a browser | | Accepting a forwarding somebody sent you | Accept it in the web client. Setting one up, pausing it and taking it down are built | | Mail forwarding to a non-Proton address | Proton emails the address a link its owner must follow; finish it there | | Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one, so the commands work, is built | proton changes no credentials: the account password, two-factor, the recovery phrase and the Pass extra password are all set at [account.proton.me](https://account.proton.me) or in the Pass app. ## Out of scope [Section titled “Out of scope”](#out-of-scope) proton-cli mirrors the Proton web clients for Mail, Drive, Calendar, Pass and Contacts. Other Proton products are not covered: VPN, Wallet, Docs, Meet, Lumo and Authenticator. Proton VPN has [its own CLI](https://protonvpn.com/support/linux-vpn-tool). Endpoints that exist in the API but have no equivalent action in a web client are also out of scope. For anything the commands do not reach, [`proton api`](/api/) sends raw authenticated requests to any endpoint.
+A refusal that comes from Proton rather than from proton-cli belongs to [Troubleshooting](/help/troubleshooting/) instead. ## Known gaps [Section titled “Known gaps”](#known-gaps) **An update cannot be verified offline.** `proton update` checks the download against `checksums.txt` from the same release, and neither is signed. An install from a package manager is verified by the package manager. **Post-quantum keys are read, never generated.** An account that opted in during Proton’s rollout signs in, and mail and shares reach others who opted in. Turning the setting on is done in Proton’s own settings. **A recurring event needs a zone that can be named.** proton reads one from `TZ`, `/etc/localtime` or `/etc/timezone`, then from your Proton calendar settings. Where none of those answers, a recurring event drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure. **A Drive filter over a large tree is slow.** Narrow it with `--scope`. ## Not built yet [Section titled “Not built yet”](#not-built-yet) Each of these has an equivalent in a web client. | What is missing | What to do instead | | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | | Renaming or deleting what you uploaded into a public link | Open the link in a browser within an hour of the upload | | Accepting a forwarding somebody sent you | Accept it in the web client. Setting one up, pausing it and taking it down are built | | Mail forwarding to a non-Proton address | Proton emails the address a link its owner must follow; finish it there | | Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one is built | proton changes no credentials: the account password, two-factor, the recovery phrase and the Pass extra password are all set at [account.proton.me](https://account.proton.me) or in the Pass app. ## Out of scope [Section titled “Out of scope”](#out-of-scope) proton-cli mirrors the Proton web clients for Mail, Drive, Calendar, Pass and Contacts. Other Proton products are not covered: VPN, Wallet, Docs, Meet, Lumo and Authenticator. Proton VPN has [its own CLI](https://protonvpn.com/support/linux-vpn-tool). Endpoints that exist in the API but have no equivalent action in a web client are also out of scope. For anything the commands do not reach, [`proton api`](/api/) sends raw authenticated requests to any endpoint.
 
 # Troubleshooting
 
