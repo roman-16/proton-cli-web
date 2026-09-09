@@ -808,6 +808,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail settings addresses enable`](/mail/settings/#addresses-enable)                     | Let a disabled address send and receive again                       |
 | [`proton mail settings addresses get`](/mail/settings/#addresses-get)                           | Show one address, including its signature                           |
 | [`proton mail settings addresses list`](/mail/settings/#addresses-list)                         | List the addresses on the account                                   |
+| [`proton mail settings addresses reorder`](/mail/settings/#addresses-reorder)                   | Make an address the default, or set their order                     |
 | [`proton mail settings addresses update`](/mail/settings/#addresses-update)                     | Set an address’s display name or signature                          |
 | [`proton mail settings autoreply disable`](/mail/settings/#autoreply-disable)                   | Turn the auto-reply off, keeping its schedule                       |
 | [`proton mail settings autoreply enable`](/mail/settings/#autoreply-enable)                     | Turn the auto-reply on, keeping its schedule                        |
@@ -4904,10 +4905,9 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 Each of these has an equivalent in a web client.
 
-| What is missing                                                       | What to do instead                                                                                                      |
-| --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Turning on the `@pm.me` short domain                                  | Switch it on at [account.proton.me](https://account.proton.me). Adding, disabling and deleting other addresses is built |
-| Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one is built                                                                              |
+| What is missing                                                       | What to do instead                         |
+| --------------------------------------------------------------------- | ------------------------------------------ |
+| Turning the Pass [extra password](/pass/#an-extra-password) on or off | Use the Pass app. *Answering* one is built |
 
 proton changes no credentials: the account password, two-factor, the recovery phrase and the Pass extra password are all set at [account.proton.me](https://account.proton.me) or in the Pass app.
 
@@ -5806,6 +5806,27 @@ The address sends and receives as soon as it exists. Its domain has to be one th
 Your first Proton address and your short-domain address stay enabled and cannot be deleted. Proton allows one address deletion a year unless the address is on a custom domain, and a deleted address cannot be used again by anyone.
 
 `get` shows whether an address holds a key. One that does not can neither send nor receive; running `create` on it publishes the missing key.
+
+## Turn on your @pm.me address
+
+[Section titled “Turn on your @pm.me address”](#turn-on-your-pmme-address)
+
+```bash
+proton mail settings addresses create alice@pm.me
+```
+
+Your short-domain address is your username at `pm.me`: the local part of the address `addresses list` shows as `original`. It needs a paid Mail plan, takes the display name and signature of your default address, and once on cannot be disabled or deleted. Any other address on `pm.me` counts towards your address limit.
+
+## Make another address the default
+
+[Section titled “Make another address the default”](#make-another-address-the-default)
+
+```bash
+proton mail settings addresses reorder alice@pm.me
+proton mail settings addresses reorder alice@pm.me work@example.com alice@proton.me
+```
+
+The first address is the default: `addresses list` shows it first, and mail leaves from it when no `--from` is given. Name the addresses that should come first, in order; the rest keep the order they are in. A disabled or external address, or one that cannot send or receive, cannot be the default.
 
 ## Settings
 
@@ -7220,7 +7241,7 @@ Your addresses, display names and signatures.
 
 An address sends and receives mail under its own name. Adding, disabling and deleting one needs a paid Mail plan. Your first Proton address and your short-domain address stay enabled and cannot be deleted.
 
-Holds `create`, `delete`, `disable`, `enable`, `get`, `list` and `update`.
+Holds `create`, `delete`, `disable`, `enable`, `get`, `list`, `reorder` and `update`.
 
 ### `addresses create`
 
@@ -7229,6 +7250,8 @@ Holds `create`, `delete`, `disable`, `enable`, `get`, `list` and `update`.
 Add an address to the account.
 
 EMAIL is the address to add. Its domain has to be one the account can use: a Proton domain, or a custom domain already set up. Adding an address needs a paid Mail plan.
+
+Your short-domain address is your username at pm.me. It takes the signature of your default address, and its display name unless you pass –display-name. Once it exists it cannot be disabled or deleted.
 
 The address sends and receives as soon as it exists. An account that creates post-quantum keys is refused: add the address in a Proton client.
 
@@ -7241,6 +7264,7 @@ proton mail settings addresses create EMAIL
 ```bash
 proton mail settings addresses create work@example.com
 proton mail settings addresses create work@example.com --display-name Work
+proton mail settings addresses create alice@pm.me
 ```
 
 | Flag                     | Description                             |
@@ -7350,6 +7374,25 @@ proton mail settings addresses list
 
 ```bash
 proton mail settings addresses list
+```
+
+### `addresses reorder`
+
+[Section titled “addresses reorder”](#addresses-reorder)
+
+Make an address the default, or set their order.
+
+The first address is the default: mail leaves from it when no –from is given. Name the addresses that should come first, in order; the rest keep the order they are in.
+
+A disabled or external address, or one that cannot send or receive, cannot be the default.
+
+```plaintext
+proton mail settings addresses reorder REF...
+```
+
+```bash
+proton mail settings addresses reorder alice@pm.me
+proton mail settings addresses reorder alice@pm.me work@example.com alice@proton.me
 ```
 
 ### `addresses update`
