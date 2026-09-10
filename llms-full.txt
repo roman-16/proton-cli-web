@@ -10,9 +10,9 @@
 
 ```console
 $ proton account login
-Email:            you@proton.me
+Email: you@proton.me
 Password:
-Two-factor code:  123456
+Two-factor code: 123456
 
 
 ✓ Signed in as you@proton.me.
@@ -588,7 +588,7 @@ Yes. `proton account login` asks you to touch the key you registered with Proton
 
 ```console
 $ proton account login
-Email:             you@proton.me
+Email: you@proton.me
 Password:
 Touch your security key.
 ✓ Signed in as you@proton.me (profile "default").
@@ -1059,7 +1059,7 @@ An account that signs in with a security key is asked to touch it:
 
 ```console
 $ proton account login
-Email:             alice@proton.me
+Email: alice@proton.me
 Password:
 Touch your security key.
 ✓ Signed in as alice@proton.me (profile "default").
@@ -1069,7 +1069,7 @@ With an authenticator app enabled as well, the code prompt is the choice: type a
 
 ```console
 $ proton account login
-Email:             alice@proton.me
+Email: alice@proton.me
 Password:
 This account also has a security key. Press Enter to use it instead of a code.
 Two-factor code:
@@ -1091,7 +1091,7 @@ If your account is in [two-password mode](https://proton.me/support/switch-two-p
 
 ```console
 $ proton account login
-Email:            alice@proton.me
+Email: alice@proton.me
 Password:
 Second password:
 ✓ Signed in as alice@proton.me (profile "default").
@@ -5061,7 +5061,7 @@ proton prints the verification page and waits:
 
 ```console
 $ proton account login
-Email:             you@proton.me
+Email: you@proton.me
 Password:
 Proton wants to confirm you are human. Solve the CAPTCHA on this page -
 you can open it on any device:

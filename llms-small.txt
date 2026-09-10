@@ -7,9 +7,9 @@
 ## Sign in [Section titled “Sign in”](#sign-in) 
 ```console
 $ proton account login
-Email:            you@proton.me
+Email: you@proton.me
 Password:
-Two-factor code:  123456
+Two-factor code: 123456
 
 
 ✓ Signed in as you@proton.me.
@@ -205,7 +205,7 @@ proton --profile work mail messages list
  See [More than one account](/account/#more-than-one-account). ## Does it sync folders like rclone or Dropbox? [Section titled “Does it sync folders like rclone or Dropbox?”](#does-it-sync-folders-like-rclone-or-dropbox) No, and it is not trying to. proton-cli runs an operation and exits: upload this, download that, list what is there. There is no watcher, no daemon and no conflict resolution. For a scheduled one-way copy, `proton drive items upload --recursive` in a cron job or systemd timer is the shape that fits. [Scripting](/using/scripting/) has working examples. ## What about VPN, Wallet, Docs, Meet, Lumo and Authenticator? [Section titled “What about VPN, Wallet, Docs, Meet, Lumo and Authenticator?”](#what-about-vpn-wallet-docs-meet-lumo-and-authenticator) Not covered, and not planned. proton-cli mirrors what the Proton **web clients** let you do for Mail, Drive, Calendar, Pass and Contacts. Proton VPN has [its own CLI](https://protonvpn.com/support/linux-vpn-tool). See [What it can’t do](/help/limits/). ## Can it import my Gmail, or add a Zoom link to an event? [Section titled “Can it import my Gmail, or add a Zoom link to an event?”](#can-it-import-my-gmail-or-add-a-zoom-link-to-an-event) No, and neither can any terminal program. Both hand you off to another company’s consent screen - Google’s, Zoom’s - and only a browser can complete one. Proton’s own importer works the same way. Set those up in the web client. Whatever they produce is readable here like anything else. ## Does it support security keys? [Section titled “Does it support security keys?”](#does-it-support-security-keys) Yes. `proton account login` asks you to touch the key you registered with Proton, and signs in with it: 
 ```console
 $ proton account login
-Email:             you@proton.me
+Email: you@proton.me
 Password:
 Touch your security key.
 ✓ Signed in as you@proton.me (profile "default").
@@ -260,7 +260,7 @@ proton drive items upload backup.zst /backups
  A second factor is only asked for when the account actually has one enabled. ### Security keys [Section titled “Security keys”](#security-keys) An account that signs in with a security key is asked to touch it: 
 ```console
 $ proton account login
-Email:             alice@proton.me
+Email: alice@proton.me
 Password:
 Touch your security key.
 ✓ Signed in as alice@proton.me (profile "default").
@@ -268,7 +268,7 @@ Touch your security key.
  With an authenticator app enabled as well, the code prompt is the choice: type a code, or press Enter to use the key. 
 ```console
 $ proton account login
-Email:             alice@proton.me
+Email: alice@proton.me
 Password:
 This account also has a security key. Press Enter to use it instead of a code.
 Two-factor code:
@@ -278,7 +278,7 @@ Touch your security key.
  The key has to be one you plug in. On Windows the sign-in goes through Windows Hello, so a key built into the machine counts. A passkey living in a phone does not work. Sign in with a code instead. **On Linux, a key needs udev rules** to be readable by anyone but root. Every distribution ships them with `libfido2` or its own FIDO package. See [Troubleshooting](/help/troubleshooting/#a-security-key-that-nothing-finds). ### Two-password mode [Section titled “Two-password mode”](#two-password-mode) If your account is in [two-password mode](https://proton.me/support/switch-two-password-mode), `login` asks for the second password once it has signed in: 
 ```console
 $ proton account login
-Email:            alice@proton.me
+Email: alice@proton.me
 Password:
 Second password:
 ✓ Signed in as alice@proton.me (profile "default").
@@ -1818,7 +1818,7 @@ Error: /home/you/.config/proton-cli/config.yaml: [4:1] unknown field "loglevel"
  Nothing runs until the file parses. The position is the line and column in the file. [The key table](/using/settings/#the-config-file) has the spellings. Two mistakes account for most of these: * A key that belongs at the top level, written inside a `per-profile:` section. * `profile:` written inside a `per-profile:` section. Which profile you are acting as can only be set at the top level. ## Proton asks for a CAPTCHA [Section titled “Proton asks for a CAPTCHA”](#proton-asks-for-a-captcha) Proton sometimes asks for human verification at login: on a fresh install, from a new network, or after several failed attempts. proton prints the verification page and waits: 
 ```console
 $ proton account login
-Email:             you@proton.me
+Email: you@proton.me
 Password:
 Proton wants to confirm you are human. Solve the CAPTCHA on this page -
 you can open it on any device:
