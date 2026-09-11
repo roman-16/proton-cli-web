@@ -656,6 +656,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton account get`](/account/account/#get)                                                   | Show the account, its storage and this machine’s session            |
 | [`proton account login`](/account/account/#login)                                               | Sign in and save the session for this profile                       |
 | [`proton account logout`](/account/account/#logout)                                             | Discard the saved session for this profile                          |
+| [`proton account keys reactivate`](/account/keys/#reactivate)                                   | Bring back the keys a password reset locked                         |
 | [`proton account profiles delete`](/account/profiles/#delete)                                   | Remove saved sessions by profile name                               |
 | [`proton account profiles list`](/account/profiles/#list)                                       | List the profiles with a saved session                              |
 | [`proton account sessions list`](/account/sessions/#list)                                       | List every signed-in session                                        |
@@ -757,6 +758,9 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive trash empty`](/drive/trash/#empty)                                               | Delete everything in the trash, permanently                         |
 | [`proton drive trash list`](/drive/trash/#list)                                                 | List what is in the trash                                           |
 | [`proton drive trash restore`](/drive/trash/#restore)                                           | Put items back where they came from                                 |
+| [`proton drive volumes delete`](/drive/volumes/#delete)                                         | Delete a locked volume and everything on it                         |
+| [`proton drive volumes list`](/drive/volumes/#list)                                             | List the volumes your files and photos are kept on                  |
+| [`proton drive volumes restore`](/drive/volumes/#restore)                                       | Put the files of a locked volume back                               |
 | [`proton mail conversations attachments download`](/mail/conversations/#attachments-download)   | Download and decrypt attachments from a thread                      |
 | [`proton mail conversations attachments list`](/mail/conversations/#attachments-list)           | List every attachment in a thread                                   |
 | [`proton mail conversations delete`](/mail/conversations/#delete)                               | Delete threads permanently                                          |
@@ -1016,9 +1020,9 @@ Found a vulnerability? [`SECURITY.md`](https://github.com/roman-16/proton-cli/bl
 
 > Sign in once and your password is never asked for again on that machine.
 
-This page covers signing in and out, unattended and two-password sign-in, running several Proton accounts side by side, the sessions Proton holds across your devices, and your account settings.
+This page covers signing in and out, unattended and two-password sign-in, running several Proton accounts side by side, the sessions Proton holds across your devices, unlocking data after a password reset, and your account settings.
 
-For every command and flag, see the reference: [account](/account/account/), [sessions](/account/sessions/), [profiles](/account/profiles/), [settings](/account/settings/).
+For every command and flag, see the reference: [account](/account/account/), [keys](/account/keys/), [sessions](/account/sessions/), [profiles](/account/profiles/), [settings](/account/settings/).
 
 ## Check who you are signed in as
 
@@ -1028,12 +1032,12 @@ For every command and flag, see the reference: [account](/account/account/), [se
 $ proton account get
 Email:       you@proton.me
 Name:        Roman
-Storage:     128.4 GB of 500 GB (26%)
-Max Upload:  5.0 GB
+Storage:     ━━━━━───────────────   26%  119.6 GB of 465.7 GB
+Max Upload:  4.7 GB
 Profile:     default
 Session:     valid
 Unlocked:    yes
-ID:          Kd91mQxT…
+ID:          Kd91mQxT7v
 ```
 
 `Session: valid` and `Unlocked: yes` together mean this machine can act as the account right now.
@@ -1154,6 +1158,7 @@ proton account login --user alice@proton.me \
 
 These commands ask for your password again even when you are signed in:
 
+* `account keys reactivate`
 * `calendar settings calendars delete`
 * `mail messages expire`
 * `mail settings addresses create`
@@ -1177,6 +1182,67 @@ printf '%s' "$PW" | proton calendar settings calendars delete Work --password-st
 $ printf '%s' "$PW" | proton --password-stdin mail messages send --body - ...
 Error: --password-stdin and --body - both read standard input, which can only be read once.
 Try:   pass it with --password-file instead
+```
+
+## After a password reset
+
+[Section titled “After a password reset”](#after-a-password-reset)
+
+A password reset locks everything encrypted before it. Mail, contacts, calendars, vaults and Drive stay sealed until you bring the old keys back:
+
+```bash
+proton account keys reactivate
+```
+
+It asks for the password from before the reset, then for your current password. In two-password mode, the one from before the reset is the second password.
+
+```console
+$ proton account keys reactivate
+Previous password:
+Current password:
+✓ Reactivated 3 keys.
+```
+
+A recovery phrase or a recovery file works instead:
+
+```bash
+proton account keys reactivate --recovery-phrase
+proton account keys reactivate --recovery-file ~/Downloads/proton_recovery.asc
+```
+
+Keys the secret does not open stay locked and are named. A key from an earlier reset opens with the secret from that time, so run the command again with it.
+
+What was locked opens from the next command onwards. Drive files need one more step, under [Drive](/drive/#after-a-password-reset).
+
+`proton account get` counts what is still locked:
+
+```console
+$ proton account get
+Email:        you@proton.me
+Name:         Roman
+Storage:      ━━━━━───────────────   26%  119.6 GB of 465.7 GB
+Max Upload:   4.7 GB
+Profile:      default
+Session:      valid
+Unlocked:     yes
+Locked keys:  3
+ID:           Kd91mQxT7v
+```
+
+Until then, a command that meets locked data names why:
+
+```console
+$ proton mail messages get "Invoice #2291"
+Error: This message is sealed to a key that a password reset locked.
+Try:   proton account keys reactivate
+```
+
+An unattended run hands both secrets over:
+
+```bash
+proton account keys reactivate \
+    --previous-password-file /run/secrets/proton-old \
+    --password-file /run/secrets/proton
 ```
 
 ## Sign out
@@ -1296,7 +1362,7 @@ Mail, Calendar and Drive each have settings of their own, under `proton mail set
 
 Every command under `proton account`, with the arguments and flags it takes. For these commands in use, see [the account guide](/account/).
 
-Holds `get`, `login`, `logout`, `profiles`, `sessions` and `settings`.
+Holds `get`, `keys`, `login`, `logout`, `profiles`, `sessions` and `settings`.
 
 ## `get`
 
@@ -1379,6 +1445,49 @@ proton account logout --all
 | ---------- | ------------------------------------------------ |
 | `--all`    | Act on everything in scope, rather than a subset |
 | `--revoke` | Also invalidate the session at Proton            |
+
+***
+
+Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
+# proton account keys
+
+> The keys your data is encrypted with.
+
+Every command under `proton account keys`, with the arguments and flags it takes. For these commands in use, see [the account guide](/account/).
+
+Holds `reactivate`.
+
+## `reactivate`
+
+[Section titled “reactivate”](#reactivate)
+
+Bring back the keys a password reset locked.
+
+Give one secret from before the reset - the password, the recovery phrase or a recovery file - and your current password to confirm. With no flag, the previous password is asked for; in two-password mode that is the second one. Keys the secret does not open stay locked and are named. Drive files come back with `proton drive volumes restore`.
+
+```plaintext
+proton account keys reactivate
+```
+
+```bash
+proton account keys reactivate
+proton account keys reactivate --recovery-phrase
+proton account keys reactivate --recovery-file ~/Downloads/proton_recovery.asc
+proton account keys reactivate --previous-password-file /run/secrets/proton-old --password-file /run/secrets/proton
+```
+
+| Flag                              | Description                                               |
+| --------------------------------- | --------------------------------------------------------- |
+| `--password-file string`          | Read the account password from a file                     |
+| `--password-stdin`                | Read the account password from stdin                      |
+| `--previous-password-file string` | Read the password from before the reset from a file       |
+| `--previous-password-stdin`       | Read the password from before the reset from stdin        |
+| `--recovery-file string`          | Recover with a recovery file downloaded from Proton       |
+| `--recovery-phrase`               | Recover with the recovery phrase, asked for at the prompt |
+| `--recovery-phrase-file string`   | Read the recovery phrase from a file                      |
+| `--recovery-phrase-stdin`         | Read the recovery phrase from stdin                       |
+| `--totp string`                   | Two-factor code                                           |
 
 ***
 
@@ -3502,7 +3611,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 > Upload, download, share and organize Proton Drive as ordinary paths. Files are encrypted before they leave your machine and decrypted after they arrive, block by block, with your keys.
 
-This page is what people actually do. For every command and flag, see the reference: [items](/drive/items/), [trash](/drive/trash/), [photos](/drive/photos/), [computers](/drive/computers/), [shared](/drive/shared/), [sharing](/drive/sharing/), [invitations](/drive/invitations/), [settings](/drive/settings/).
+This page is what people actually do. For every command and flag, see the reference: [items](/drive/items/), [trash](/drive/trash/), [photos](/drive/photos/), [computers](/drive/computers/), [shared](/drive/shared/), [sharing](/drive/sharing/), [invitations](/drive/invitations/), [settings](/drive/settings/), [volumes](/drive/volumes/).
 
 ## Look around
 
@@ -3761,6 +3870,38 @@ proton drive photos albums add ALBUM_ID PHOTO_ID...
 proton drive photos list --album ALBUM_ID
 proton drive photos albums delete Holiday --delete-photos
 ```
+
+## After a password reset
+
+[Section titled “After a password reset”](#after-a-password-reset)
+
+A password reset locks the volume your files are on, and Drive starts again empty. The old files are still there, on a volume marked `locked`:
+
+```console
+$ proton drive volumes list
+ID        TYPE   STATE      USED  RESTORE  CREATED
+────────  ─────  ──────  ───────  ───────  ────────────────
+7Kd91mQx  files  active   1.2 GB           2026-05-04 09:14
+3Ns8pT2v  files  locked  38.6 GB           2023-02-11 18:02
+2 volumes.
+```
+
+Bring the keys back first, as under [Account](/account/#after-a-password-reset), then put the files back:
+
+```bash
+proton account keys reactivate
+proton drive volumes restore 3Ns8pT2v
+```
+
+They come back as a folder named `Restored files` and the date. Proton moves them in its own time, so they appear as it finishes. Computers and the photo library stay where they are.
+
+To give the old files up instead:
+
+```bash
+proton drive volumes delete 3Ns8pT2v
+```
+
+Proton removes them within 72 hours, and nothing brings them back afterwards.
 
 ## Settings
 
@@ -4934,6 +5075,78 @@ proton drive trash restore 5bH2mQxK
 
 Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
 
+# proton drive volumes
+
+> The volumes your files and photos are kept on.
+
+Every command under `proton drive volumes`, with the arguments and flags it takes. For these commands in use, see [the drive guide](/drive/).
+
+Holds `delete`, `list` and `restore`.
+
+## `delete`
+
+[Section titled “delete”](#delete)
+
+Delete a locked volume and everything on it.
+
+Only a locked volume can be deleted. Proton removes its files within 72 hours and nothing brings them back afterwards.
+
+```plaintext
+proton drive volumes delete [REF...]
+```
+
+```bash
+proton drive volumes delete 7Kd91mQx
+proton drive volumes delete 7Kd91mQx --yes
+```
+
+| Flag    | Description                                      |
+| ------- | ------------------------------------------------ |
+| `--all` | Act on everything in scope, rather than a subset |
+
+## `list`
+
+[Section titled “list”](#list)
+
+List the volumes your files and photos are kept on.
+
+There is one for files and, on newer accounts, one for photos. A password reset locks a volume and a fresh one takes its place, so a locked volume holds what you had before the reset. RESTORE says how far `volumes restore` has got with one.
+
+```plaintext
+proton drive volumes list
+```
+
+```bash
+proton drive volumes list
+```
+
+## `restore`
+
+[Section titled “restore”](#restore)
+
+Put the files of a locked volume back.
+
+The keys the volume was locked with have to be active first: reactivate them with `proton account keys reactivate`. Files come back as a folder named `Restored files` and the date; computers and the photo library stay where they are. Proton moves the files in its own time, so they appear as it finishes.
+
+A locked photo volume is skipped until a Proton client has made a photo library for it to come back into.
+
+```plaintext
+proton drive volumes restore [REF...]
+```
+
+```bash
+proton drive volumes restore 7Kd91mQx
+proton drive volumes restore --all
+```
+
+| Flag    | Description                                      |
+| ------- | ------------------------------------------------ |
+| `--all` | Act on everything in scope, rather than a subset |
+
+***
+
+Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
 # What it can't do
 
 > proton-cli aims for parity with what the Proton web clients let you do. This page is where it falls short.
@@ -5051,7 +5264,17 @@ Try:   1 item could not be decrypted and is not listed.
        proton report
 ```
 
-Run `proton report` and open an issue. This is not something you can fix from the command line, and it is not your data being gone - it is proton failing to open something Proton still holds.
+Run `proton report` and open an issue. Your data is not gone; proton could not open something Proton still holds.
+
+After a password reset the remedy is on the same line, and it is one you can run:
+
+```console
+$ proton contacts list
+! 3 contacts could not be decrypted and are not listed.
+  They are sealed to keys a password reset locked - `proton account keys reactivate` opens them.
+```
+
+See [Account](/account/#after-a-password-reset).
 
 ## The config file is refused
 
