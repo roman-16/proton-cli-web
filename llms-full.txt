@@ -237,7 +237,7 @@ ID        FROM              SUBJECT                DATE              FLAGS
 3 of 47 messages. Next page: --page 1
 ```
 
-`ID` is always the first column. `FLAGS` reads `●` for unread, `★` for starred, and a number for attachments.
+`ID` is always the first column. `FLAGS` reads `●` for unread, `★` for starred, `✗` for a message Proton flagged as phishing or suspicious, and a number for attachments.
 
 An empty collection prints nothing on stdout, so a redirect yields an empty file rather than a stray header. On stderr it says `No messages.`, or `No messages match.` when a filter was applied.
 
@@ -406,7 +406,7 @@ The one exception is [`proton api`](/api/), which passes Proton’s response thr
 
 [Section titled “Colour”](#colour)
 
-Colour marks the parts that carry a verdict: `✓` green, `!` yellow, `Error:` red, IDs magenta, `●` unread, `★` starred, and the signature line green, yellow or red. A `■` beside a label, folder, calendar or group is the exact colour Proton stores for it. Everything else stays plain.
+Colour marks the parts that carry a verdict: `✓` green, `!` yellow, `Error:` red, `✗` red, IDs magenta, `●` unread, `★` starred, and the signature, `DMARC` and `Flagged` lines green, yellow or red. A `■` beside a label, folder, calendar or group is the exact colour Proton stores for it. Everything else stays plain.
 
 Shades come from your terminal’s theme, not from proton.
 
@@ -790,6 +790,8 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail messages get`](/mail/messages/#get)                                               | Show one message, decrypted                                         |
 | [`proton mail messages label`](/mail/messages/#label)                                           | Attach a label to messages                                          |
 | [`proton mail messages list`](/mail/messages/#list)                                             | List messages in a folder                                           |
+| [`proton mail messages mark legitimate`](/mail/messages/#mark-legitimate)                       | Mark a message Proton flagged as legitimate                         |
+| [`proton mail messages mark phishing`](/mail/messages/#mark-phishing)                           | Report a message to Proton as phishing                              |
 | [`proton mail messages mark read`](/mail/messages/#mark-read)                                   | Mark messages as read                                               |
 | [`proton mail messages mark unread`](/mail/messages/#mark-unread)                               | Mark messages as unread                                             |
 | [`proton mail messages move`](/mail/messages/#move)                                             | Move messages to a folder                                           |
@@ -962,6 +964,7 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 
 * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens.
 * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, the locked key a forwarding you accepted adds to your address, and the locked key a forwarding you set up derives for the other address, whose passphrase only that address can open.
+* The decrypted body of a message you report with `mail messages mark phishing`, so Proton’s anti-abuse team can read what was sent to you. Nothing withdraws a report.
 * The SRP proof during login, which does not reveal your password.
 * The verifier for a Pass extra password you set, which Proton checks a password against and cannot read one out of.
 * Opening a public link with `--link` or `--shared` carries your session, so Proton knows which account opened it, and the owner sees one more visit.
@@ -5009,11 +5012,21 @@ NAME                  TYPE    VAULT    MODIFIED
 aws-root              login   Work     2026-08-30 11:02
 github.com            login   Work     2026-08-14 09:41
 41 items.
-⚠ 1 item could not be decrypted and is not listed.
+! 1 item could not be decrypted and is not listed.
   This is a bug or damaged data - `proton report` has the details.
 ```
 
 An item that will not open is left out, and the listing says so. The exit code stays `0`: the command answered, just not completely.
+
+A thread says the same when one of its messages will not open, and the message count above it is what was shown:
+
+```console
+$ proton mail conversations get 8Tr4nVx2
+! 1 message could not be decrypted and is not listed.
+  This is a bug or damaged data - `proton report` has the details.
+```
+
+Asking for that one message instead fails with exit `7`, because there would be nothing else in the answer.
 
 In a machine format the same fact is a field:
 
@@ -5025,8 +5038,8 @@ $ proton pass items list --vault Work --output json | jq .skipped
 `skipped` is absent when nothing was skipped. A container that cannot be opened says that nothing inside it is listed:
 
 ```console
-⚠ 1 vault could not be opened, so nothing inside it is listed.
-⚠ 1 folder could not be opened, so nothing inside it is listed.
+! 1 vault could not be opened, so nothing inside it is listed.
+! 1 folder could not be opened, so nothing inside it is listed.
 ```
 
 The same tally answers a puzzling `get`, where an item that cannot be read is otherwise indistinguishable from one that was never there:
@@ -5477,6 +5490,37 @@ Folders are `inbox`, `sent`, `drafts`, `trash`, `spam`, `archive`, `starred`, `s
 `get` shows the plain-text body by default. `--render html` gives you the original markup, `--render raw` the untouched body, and `--strip-quotes` drops quoted reply blocks.
 
 A `Signature:` line reports the verdict of the signature check against the sender’s key.
+
+## Spot a message Proton distrusts
+
+[Section titled “Spot a message Proton distrusts”](#spot-a-message-proton-distrusts)
+
+A message Proton flagged carries two more lines:
+
+```console
+$ proton mail messages get 5bH2mQxK
+Subject:    Your account will be suspended
+From:       PayPal <security@paypa1-secure.com>
+To:         me@proton.me
+Date:       2026-04-15 14:32
+Signature:  unsigned
+DMARC:      failed
+Flagged:    phishing
+ID:         5bH2mQxK
+```
+
+`Flagged:` reads `phishing`, `suspicious`, or both. `DMARC: failed` means the sender’s domain did not vouch for the message, so the address it claims to come from may not be the address it came from.
+
+`list` marks the same messages with `✗` in the FLAGS column. In `--output json` each verdict is a field of its own: `phishing`, `suspicious` and `dmarc_failed`, present only when true.
+
+```bash
+proton mail messages mark legitimate REF      # Proton was wrong about this one
+proton mail messages mark phishing REF        # report it, and file it as spam
+```
+
+`mark legitimate` settles the `Flagged:` verdict on that message alone, and the `DMARC:` line stays. To let a sender through from now on, see [Who reaches the inbox](#who-reaches-the-inbox).
+
+`mark phishing` sends the message to Proton decrypted, body included, for their anti-abuse team to read. Nothing withdraws a report. To keep a sender out without reporting anything, use `proton mail settings senders block`.
 
 ## Search
 
@@ -6810,6 +6854,8 @@ proton mail messages forward 'Invoice #2291' --to jane@example.com --no-attachme
 
 Show one message, decrypted.
 
+A message Proton flagged carries a Flagged line reading phishing or suspicious; `mark legitimate` overrules it. DMARC: failed means the sender’s domain did not vouch for the message, so the address it claims to come from may not be the address it came from.
+
 ```plaintext
 proton mail messages get REF
 ```
@@ -6902,9 +6948,42 @@ proton mail messages list --keyword invoice --after 2026-01-01 --folder all
 
 [Section titled “mark”](#mark)
 
-Set whether messages count as read.
+Set what messages count as.
 
-Holds `read` and `unread`.
+Holds `legitimate`, `phishing`, `read` and `unread`.
+
+### `mark legitimate`
+
+[Section titled “mark legitimate”](#mark-legitimate)
+
+Mark a message Proton flagged as legitimate.
+
+This overrules the phishing or suspicious verdict on that message alone. To let a sender through from now on, use `settings senders allow`.
+
+```plaintext
+proton mail messages mark legitimate REF...
+```
+
+```bash
+proton mail messages mark legitimate 5bH2mQxK
+```
+
+### `mark phishing`
+
+[Section titled “mark phishing”](#mark-phishing)
+
+Report a message to Proton as phishing.
+
+Proton receives the message decrypted, body included, and the message moves to spam. To keep a sender out without reporting anything, use `settings senders block`.
+
+```plaintext
+proton mail messages mark phishing REF...
+```
+
+```bash
+proton mail messages mark phishing 5bH2mQxK
+proton mail messages mark phishing 'Your account will be suspended' --dry-run
+```
 
 ### `mark read`
 

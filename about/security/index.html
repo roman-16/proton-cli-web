@@ -127,6 +127,7 @@
 <ul>
 <li>API requests to <code dir="auto">https://mail.proton.me/api</code> over HTTPS, authenticated with your session tokens.</li>
 <li>Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, the locked key a forwarding you accepted adds to your address, and the locked key a forwarding you set up derives for the other address, whose passphrase only that address can open.</li>
+<li>The decrypted body of a message you report with <code dir="auto">mail messages mark phishing</code>, so Proton’s anti-abuse team can read what was sent to you. Nothing withdraws a report.</li>
 <li>The SRP proof during login, which does not reveal your password.</li>
 <li>The verifier for a Pass extra password you set, which Proton checks a password against and cannot read one out of.</li>
 <li>Opening a public link with <code dir="auto">--link</code> or <code dir="auto">--shared</code> carries your session, so Proton knows which account opened it, and the owner sees one more visit.</li>
