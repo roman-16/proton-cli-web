@@ -864,8 +864,14 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass aliases enable`](/pass/aliases/#enable)                                           | Start receiving mail sent to an alias                               |
 | [`proton pass aliases list`](/pass/aliases/#list)                                               | List your aliases                                                   |
 | [`proton pass aliases options`](/pass/aliases/#options)                                         | List the suffixes and mailboxes an alias can use                    |
+| [`proton pass breaches create`](/pass/breaches/#create)                                         | Have Proton watch an address you own elsewhere                      |
+| [`proton pass breaches delete`](/pass/breaches/#delete)                                         | Stop Proton watching an address you added                           |
+| [`proton pass breaches disable`](/pass/breaches/#disable)                                       | Stop Proton watching an address                                     |
+| [`proton pass breaches enable`](/pass/breaches/#enable)                                         | Have Proton watch an address again                                  |
 | [`proton pass breaches get`](/pass/breaches/#get)                                               | Show the breaches one address has appeared in                       |
 | [`proton pass breaches list`](/pass/breaches/#list)                                             | List the addresses Proton watches, and how many breaches each is in |
+| [`proton pass breaches resend`](/pass/breaches/#resend)                                         | Send the confirmation code again                                    |
+| [`proton pass breaches verify`](/pass/breaches/#verify)                                         | Confirm an address with the code Proton emailed it                  |
 | [`proton pass invitations accept`](/pass/invitations/#accept)                                   | Take what somebody offered you                                      |
 | [`proton pass invitations decline`](/pass/invitations/#decline)                                 | Turn down what somebody offered you                                 |
 | [`proton pass invitations list`](/pass/invitations/#list)                                       | List what other people have offered you                             |
@@ -8953,23 +8959,58 @@ proton pass settings extra-password disable
 
 To change it, turn it off and on again.
 
-## History and breaches
+## History
 
-[Section titled “History and breaches”](#history-and-breaches)
+[Section titled “History”](#history)
 
 ```bash
 proton pass items revisions list github.com    # every edit, newest first
 proton pass items revisions get github.com 3   # one version, decrypted
 proton pass items revisions restore github.com 3
-proton pass breaches list                      # worst first
-proton pass breaches get jane@proton.me
 ```
 
 Pass keeps every edit, so a password changed by mistake can be read back. A revision written under a key this account no longer holds is still listed by its number.
 
 `revisions restore` writes that version as the newest one, so nothing in the history is lost. It changes the item’s fields; attachments are left as they are.
 
-`breaches` is Pass Monitor: which of your addresses have turned up in somebody else’s data breach, when, and what was exposed. If a password leaked in the clear it shows the last few characters, which is what tells you which one to change. Nothing here writes.
+## Check your passwords
+
+[Section titled “Check your passwords”](#check-your-passwords)
+
+```bash
+proton pass items list --risk reused           # which logins share a password
+proton pass items list --risk weak
+proton pass items list --risk missing-2fa      # a site offers a code and you store none
+proton pass items list --risk compromised      # the password has leaked somewhere
+```
+
+This is Pass Monitor’s password health. Each check keeps only the logins that fail it and adds a RISK column saying what was found. Logins sharing one password carry the same number, so two pairs do not read as one group of four. Anything you excluded from Proton’s security checks is left out of all of them.
+
+`--risk weak` is `proton`’s own reading: a password shorter than twelve characters, or shorter than sixteen and drawn from fewer than three of lowercase, uppercase, digits and symbols. Pass judges strength its own way, so the two can disagree.
+
+`--risk compromised` is the only check that reaches the network. It sends the first six hexadecimal characters of each password’s SHA-1 to `credential-check.protonweb.com`, never the password and never the whole hash, and asks one question per password you have stored.
+
+No check prints a password. `proton pass items get` is still the only command that does.
+
+## Breaches
+
+[Section titled “Breaches”](#breaches)
+
+```bash
+proton pass breaches list                      # worst first
+proton pass breaches get jane@proton.me
+proton pass breaches create me@example.com     # watch an address you own elsewhere
+proton pass breaches verify me@example.com --code 123456
+proton pass breaches disable jane.work@proton.me
+```
+
+`breaches` is Pass Monitor’s other half: which of your addresses have turned up in somebody else’s data breach, when, and what was exposed. If a password leaked in the clear it shows the last few characters, which is what tells you which one to change.
+
+Three kinds of address are watched, shown in the TYPE column: `proton` for the ones on your account, `alias` for the hide-my-email aliases in your vaults, and `custom` for the ones you added. Listing the aliases reads your vaults, so `breaches list` costs what `items list` costs.
+
+STATE says what has to happen next. An address you added is `unverified` until you hand back the code Proton emailed it with `verify`; `resend` sends the code again. Until then Proton is not watching it, so `get`, `enable` and `disable` refuse. `paused` means you told Proton to stop watching, which `enable` undoes.
+
+`delete` removes an address you added, and its breach history with it. To stop Proton watching one of your own addresses or an alias, use `disable`. Pausing an alias also leaves it out of the password checks above, which is the same switch.
 
 # proton pass aliases
 
@@ -9164,13 +9205,89 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton pass breaches`, with the arguments and flags it takes. For these commands in use, see [the pass guide](/pass/).
 
-Holds `get` and `list`.
+Holds `create`, `delete`, `disable`, `enable`, `get`, `list`, `resend` and `verify`.
+
+## `create`
+
+[Section titled “create”](#create)
+
+Have Proton watch an address you own elsewhere.
+
+Proton emails the address a code and watches nothing until you hand that code back with `breaches verify`.
+
+The addresses on your account and the aliases in your vaults are watched already; this is for the ones somewhere else.
+
+```plaintext
+proton pass breaches create EMAIL
+```
+
+```bash
+proton pass breaches create me@example.com
+```
+
+## `delete`
+
+[Section titled “delete”](#delete)
+
+Stop Proton watching an address you added, and forget its breach history.
+
+Only an address you added yourself can be removed. To stop Proton watching one of your own addresses or an alias, use `breaches disable`.
+
+```plaintext
+proton pass breaches delete REF
+```
+
+```bash
+proton pass breaches delete me@example.com
+```
+
+## `disable`
+
+[Section titled “disable”](#disable)
+
+Stop Proton watching an address.
+
+Works on an address on your account, on an alias in one of your vaults, and on an address you added once you have verified it.
+
+Pausing an alias also leaves it out of `items list --risk`, which is the same switch.
+
+```plaintext
+proton pass breaches disable REF
+```
+
+```bash
+proton pass breaches disable jane@proton.me
+```
+
+## `enable`
+
+[Section titled “enable”](#enable)
+
+Have Proton watch an address again.
+
+Works on an address on your account, on an alias in one of your vaults, and on an address you added once you have verified it.
+
+Pausing an alias also leaves it out of `items list --risk`, which is the same switch.
+
+```plaintext
+proton pass breaches enable REF
+```
+
+```bash
+proton pass breaches enable jane@proton.me
+```
 
 ## `get`
 
 [Section titled “get”](#get)
 
 Show the breaches one address has appeared in.
+
+Names each breach, when it happened, what it exposed, and the last few characters of the password if one leaked in the clear.
+
+An address you added is refused until you verify it: Proton is not watching it until then.
+
+The detail needs a plan that includes it. Without one the count is still right and the breaches are withheld, and the answer says how many.
 
 ```plaintext
 proton pass breaches get REF
@@ -9186,7 +9303,11 @@ proton pass breaches get jane@proton.me
 
 List the addresses Proton watches, and how many breaches each is in.
 
-Worst first. To see which breaches an address is in and what they exposed, run `breaches get` on it.
+Worst first. Three kinds of address are watched: the ones on your account, the hide-my-email aliases in your vaults, and the ones you added with `breaches create`. Listing the aliases reads your vaults, so this costs what `items list` costs.
+
+STATE is what has to happen next: an address you added is unverified until you hand back the code Proton emailed it, and paused means watching is off.
+
+To see which breaches an address is in and what they exposed, run `breaches get` on it.
 
 ```plaintext
 proton pass breaches list
@@ -9195,6 +9316,38 @@ proton pass breaches list
 ```bash
 proton pass breaches list
 ```
+
+## `resend`
+
+[Section titled “resend”](#resend)
+
+Send the confirmation code again.
+
+```plaintext
+proton pass breaches resend REF
+```
+
+```bash
+proton pass breaches resend me@example.com
+```
+
+## `verify`
+
+[Section titled “verify”](#verify)
+
+Confirm an address with the code Proton emailed it.
+
+```plaintext
+proton pass breaches verify REF
+```
+
+```bash
+proton pass breaches verify me@example.com --code 123456
+```
+
+| Flag            | Description                         |
+| --------------- | ----------------------------------- |
+| `--code string` | The code Proton emailed the address |
 
 ***
 
@@ -9492,6 +9645,16 @@ List items across your vaults.
 
 Takes the same filters as trash and delete, so you can preview a selection here before acting on it.
 
+–risk is Pass Monitor’s password health, and keeps only the logins that fail one check. A RISK column says what was found, numbering the logins that share one password so two pairs do not read as one group of four. Anything excluded from Proton’s security checks is left out of all of them.
+
+–risk weak is this program’s own reading: a password shorter than twelve characters, or shorter than sixteen and drawn from fewer than three of lowercase, uppercase, digits and symbols. Pass judges strength its own way, so the two can disagree.
+
+–risk missing-2fa names the logins for sites that offer a time-based code and have neither a code nor a passkey stored against them.
+
+–risk compromised asks a public corpus of leaked passwords whether yours are in it, one request per password you have stored. It is the only check that reaches the network, and it sends the first six hexadecimal characters of each password’s SHA-1 - one bucket in sixteen million - to credential-check.protonweb.com, never the password and never the whole hash.
+
+No check prints a password; `items get` is still the only command that does.
+
 ```plaintext
 proton pass items list
 ```
@@ -9500,6 +9663,10 @@ proton pass items list
 proton pass items list
 proton pass items list --vault Work
 proton pass items list --type login
+proton pass items list --risk reused
+proton pass items list --risk weak --vault Work
+proton pass items list --risk missing-2fa
+proton pass items list --risk compromised
 ```
 
 | Flag                  | Description                                                                                    |
@@ -9509,6 +9676,7 @@ proton pass items list --type login
 | `--older-than string` | Match items older than DURATION (e.g. 30d, 2w, 1h)                                             |
 | `--page int`          | Which page of results, counting from zero                                                      |
 | `--page-size int`     | How many items per page; 0 for all of them (default `50`)                                      |
+| `--risk string`       | Keep only the logins failing this password check: compromised, missing-2fa, reused, weak       |
 | `--sort string`       | Order by: name, type, modified, created (default `name`)                                       |
 | `--type string`       | Match only this kind of item: login, note, credit-card, wifi, ssh-key, identity, alias, custom |
 | `--vault string`      | Match only this vault, by name or ID                                                           |
