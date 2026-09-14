@@ -725,6 +725,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive items revisions list`](/drive/items/#revisions-list)                             | List a file’s earlier versions                                      |
 | [`proton drive items revisions restore`](/drive/items/#revisions-restore)                       | Restore a file to an earlier version                                |
 | [`proton drive items share add`](/drive/items/#share-add)                                       | Invite someone to a file or folder                                  |
+| [`proton drive items share confirm`](/drive/items/#share-confirm)                               | Let somebody in once they join Proton                               |
 | [`proton drive items share get`](/drive/items/#share-get)                                       | Show how a file or folder is shared                                 |
 | [`proton drive items share link`](/drive/items/#share-link)                                     | Create or update the public link for a file or folder               |
 | [`proton drive items share remove`](/drive/items/#share-remove)                                 | Revoke someone’s access, or cancel their invitation                 |
@@ -889,6 +890,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass items revisions list`](/pass/items/#revisions-list)                               | Show what an item used to be                                        |
 | [`proton pass items revisions restore`](/pass/items/#revisions-restore)                         | Put an item back to an earlier version                              |
 | [`proton pass items share add`](/pass/items/#share-add)                                         | Offer one item to somebody                                          |
+| [`proton pass items share confirm`](/pass/items/#share-confirm)                                 | Let somebody into an item once they join Proton                     |
 | [`proton pass items share get`](/pass/items/#share-get)                                         | Show how an item is shared                                          |
 | [`proton pass items share remove`](/pass/items/#share-remove)                                   | Take somebody’s access to an item away                              |
 | [`proton pass items share update`](/pass/items/#share-update)                                   | Change what somebody may do with an item                            |
@@ -923,6 +925,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass vaults get`](/pass/vaults/#get)                                                   | Show one vault in full                                              |
 | [`proton pass vaults list`](/pass/vaults/#list)                                                 | List your vaults                                                    |
 | [`proton pass vaults share add`](/pass/vaults/#share-add)                                       | Offer a vault to somebody                                           |
+| [`proton pass vaults share confirm`](/pass/vaults/#share-confirm)                               | Let somebody into a vault once they join Proton                     |
 | [`proton pass vaults share get`](/pass/vaults/#share-get)                                       | Show who can open a vault                                           |
 | [`proton pass vaults share remove`](/pass/vaults/#share-remove)                                 | Take somebody’s access to a vault away                              |
 | [`proton pass vaults share update`](/pass/vaults/#share-update)                                 | Change what somebody may do with a vault                            |
@@ -3797,9 +3800,35 @@ proton drive items share update /Reports jane@proton.me --edit=false
 proton drive items share remove /Documents/report.pdf bob@proton.me
 ```
 
-`share update` applies whether they have accepted yet or not. Nothing is re-encrypted: the key they hold still opens the share, and only what they may do with it changes.
+`share update` applies whether they have accepted yet or not. Only what they may do with it changes.
 
 `share resend` sends an unanswered invitation again rather than cancelling and inviting afresh.
+
+### With somebody who is not on Proton
+
+[Section titled “With somebody who is not on Proton”](#with-somebody-who-is-not-on-proton)
+
+Invite any address. Proton emails one without an account an invitation to create one.
+
+```bash
+proton drive items share add /Documents/project sam@example.com
+proton drive items share get /Documents/project
+proton drive items share confirm /Documents/project sam@example.com
+```
+
+Nothing reaches them until they have an account and you run `share confirm`. `share get` says which it is:
+
+```console
+$ proton drive items share get /Documents/project
+Path:     /Documents/project
+Type:     folder
+Invited:  sam@example.com (viewer, waiting for a Proton account)
+Invited:  kim@example.com (editor, ready to confirm)
+```
+
+`confirm` is refused while they read `waiting for a Proton account`. Nothing tells you when that changes, so check with `share get`.
+
+`update`, `resend` and `remove` work on these the way they work on any invitation.
 
 ### What is shared, and by whom
 
@@ -4398,13 +4427,15 @@ proton drive items revisions restore /Documents/report.pdf 5bH2mQxK
 
 Public links and the people you share with.
 
-Holds `add`, `get`, `link`, `remove`, `resend`, `unlink` and `update`.
+Holds `add`, `confirm`, `get`, `link`, `remove`, `resend`, `unlink` and `update`.
 
 ### `share add`
 
 [Section titled “share add”](#share-add)
 
 Invite someone to a file or folder.
+
+EMAIL may be an address outside Proton. Proton emails them an invitation to create an account, and nothing reaches them until they have one and you run `share confirm`.
 
 ```plaintext
 proton drive items share add PATH EMAIL
@@ -4420,6 +4451,27 @@ proton drive items share add /Documents jane@example.com --edit --message 'Have 
 | `--computer string` | Work inside this computer’s files, by name or ID   |
 | `--edit`            | Allow editing rather than only viewing             |
 | `--message string`  | Note to include in the invitation email            |
+| `--shared string`   | Work inside an item shared with you, by name or ID |
+
+### `share confirm`
+
+[Section titled “share confirm”](#share-confirm)
+
+Let somebody in once they join Proton.
+
+Use it for an address that had no Proton account when you invited it. It is refused until the account exists, and `share get` says who is ready. Afterwards they hold an ordinary invitation, which they still have to accept.
+
+```plaintext
+proton drive items share confirm PATH EMAIL
+```
+
+```bash
+proton drive items share confirm /Documents jane@example.com
+```
+
+| Flag                | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `--computer string` | Work inside this computer’s files, by name or ID   |
 | `--shared string`   | Work inside an item shared with you, by name or ID |
 
 ### `share get`
@@ -8784,11 +8836,35 @@ proton pass items share get github.com          # members, invitations and links
 proton pass items share remove github.com jane@proton.me
 ```
 
-**It only works with another Proton account.**
-
 Sharing a vault shares everything in it. Sharing one item lets the person open that item and nothing else in the vault.
 
 `--access` is `viewer`, `editor` or `manager`. `share get` shows the people who accepted as members and the rest as invited. `update` and `remove` act on the address whichever it turns out to be.
+
+### Share with somebody who is not on Proton
+
+[Section titled “Share with somebody who is not on Proton”](#share-with-somebody-who-is-not-on-proton)
+
+Offer it to any address. Proton emails one without an account an invitation to create one.
+
+```bash
+proton pass vaults share add Work sam@example.com
+proton pass vaults share get Work
+proton pass vaults share confirm Work sam@example.com
+```
+
+Nothing reaches them until they have an account and you run `share confirm`. `share get` says which it is:
+
+```console
+$ proton pass vaults share get Work
+Name:     Work
+Member:   you@proton.me (owner)
+Invited:  sam@example.com (viewer, waiting for a Proton account)
+Invited:  kim@example.com (editor, ready to confirm)
+```
+
+`confirm` is refused while they read `waiting for a Proton account`. Nothing tells you when that changes, so check with `share get`.
+
+`items share` takes the same three commands.
 
 ### Hand a vault over
 
@@ -9788,7 +9864,7 @@ proton pass items revisions restore github.com 3
 
 Who else can open an item.
 
-Holds `add`, `get`, `remove` and `update`.
+Holds `add`, `confirm`, `get`, `remove` and `update`.
 
 ### `share add`
 
@@ -9797,6 +9873,8 @@ Holds `add`, `get`, `remove` and `update`.
 Offer one item to somebody, leaving the vault around it alone.
 
 What travels is the item’s own key rather than the vault’s, so they can open that item and nothing else sealed under the same share.
+
+EMAIL may be an address outside Proton. Proton emails them an invitation to create an account, and nothing reaches them until they have one and you run `share confirm`.
 
 ```plaintext
 proton pass items share add REF EMAIL
@@ -9810,6 +9888,22 @@ proton pass items share add github.com jane@proton.me --access editor
 | Flag              | Description                                                          |
 | ----------------- | -------------------------------------------------------------------- |
 | `--access string` | What they may do with it: viewer, editor, manager (default `viewer`) |
+
+### `share confirm`
+
+[Section titled “share confirm”](#share-confirm)
+
+Let somebody into an item once they join Proton.
+
+Use it for an address that had no Proton account when you offered it. It is refused until the account exists, and `share get` says who is ready. Afterwards they hold an ordinary invitation, which they still have to accept.
+
+```plaintext
+proton pass items share confirm REF EMAIL
+```
+
+```bash
+proton pass items share confirm github.com jane@example.com
+```
 
 ### `share get`
 
@@ -10615,7 +10709,7 @@ proton pass vaults list
 
 Who else can open a vault.
 
-Holds `add`, `get`, `remove` and `update`.
+Holds `add`, `confirm`, `get`, `remove` and `update`.
 
 ### `share add`
 
@@ -10623,7 +10717,9 @@ Holds `add`, `get`, `remove` and `update`.
 
 Offer a vault to somebody.
 
-They are sent an invitation and see nothing until they take it. Only another Proton account can be invited.
+They are sent an invitation and see nothing until they take it.
+
+EMAIL may be an address outside Proton. Proton emails them an invitation to create an account, and nothing reaches them until they have one and you run `share confirm`.
 
 ```plaintext
 proton pass vaults share add REF EMAIL
@@ -10637,6 +10733,22 @@ proton pass vaults share add Work jane@proton.me --access editor
 | Flag              | Description                                                          |
 | ----------------- | -------------------------------------------------------------------- |
 | `--access string` | What they may do with it: viewer, editor, manager (default `viewer`) |
+
+### `share confirm`
+
+[Section titled “share confirm”](#share-confirm)
+
+Let somebody into a vault once they join Proton.
+
+Use it for an address that had no Proton account when you offered it. It is refused until the account exists, and `share get` says who is ready. Afterwards they hold an ordinary invitation, which they still have to accept.
+
+```plaintext
+proton pass vaults share confirm REF EMAIL
+```
+
+```bash
+proton pass vaults share confirm Work jane@example.com
+```
 
 ### `share get`
 
