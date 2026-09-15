@@ -217,7 +217,7 @@
 <p>–start and –end are whole days in your own zone, both included.</p>
 <p>A recurring series is written once, with its rule, so another client reads it back as the same series.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton calendar events export</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton calendar events export"><div></div></button></div></figure></div>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">export</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--start</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-01-01</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--end</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-12-31</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">year.ics</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">export</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Work</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">-</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#A0A0A0;--1:#CA212D">&gt;</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">work.ics</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton calendar events export --start 2026-01-01 --end 2026-12-31 --dest year.icsproton calendar events export --calendar Work --dest - > work.ics"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">export</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--after</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-01-01</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--before</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-12-31</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">year.ics</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">export</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Work</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">-</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#A0A0A0;--1:#CA212D">&gt;</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">work.ics</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton calendar events export --after 2026-01-01 --before 2026-12-31 --dest year.icsproton calendar events export --calendar Work --dest - > work.ics"><div></div></button></div></figure></div>
 <table>
 <thead>
 <tr>
@@ -226,6 +226,14 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code dir="auto">--after string</code></td>
+<td>First day to include (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Last day to include (YYYY-MM-DD)</td>
+</tr>
 <tr>
 <td><code dir="auto">--calendar string</code></td>
 <td>Which calendar, by name or ID (default: all of them)</td>
@@ -239,16 +247,8 @@
 <td>Write into this directory, keeping each item’s own name</td>
 </tr>
 <tr>
-<td><code dir="auto">--end string</code></td>
-<td>Last day to include (YYYY-MM-DD)</td>
-</tr>
-<tr>
 <td><code dir="auto">--force</code></td>
 <td>Overwrite a file that already exists</td>
-</tr>
-<tr>
-<td><code dir="auto">--start string</code></td>
-<td>First day to include (YYYY-MM-DD)</td>
 </tr>
 </tbody>
 </table>
@@ -283,7 +283,7 @@
 <p>Each occurrence of a recurring event is listed on its own day, with a reference that names that occurrence.</p>
 <p>Covers every calendar unless –calendar narrows it to one.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton calendar events list</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton calendar events list"><div></div></button></div></figure></div>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--start</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-04-15</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--end</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-04-30</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Work</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton calendar events listproton calendar events list --start 2026-04-15 --end 2026-04-30proton calendar events list --calendar Work"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--after</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-04-15</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--before</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-04-30</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">events</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--calendar</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Work</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton calendar events listproton calendar events list --after 2026-04-15 --before 2026-04-30proton calendar events list --calendar Work"><div></div></button></div></figure></div>
 <table>
 <thead>
 <tr>
@@ -293,16 +293,24 @@
 </thead>
 <tbody>
 <tr>
+<td><code dir="auto">--after string</code></td>
+<td>First day to include (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code dir="auto">--before string</code></td>
+<td>Last day to include (YYYY-MM-DD)</td>
+</tr>
+<tr>
 <td><code dir="auto">--calendar string</code></td>
 <td>Which calendar, by name or ID (default: all of them)</td>
 </tr>
 <tr>
-<td><code dir="auto">--end string</code></td>
-<td>Last day to include (YYYY-MM-DD)</td>
+<td><code dir="auto">--limit int</code></td>
+<td>How many events per page; 0 for all of them</td>
 </tr>
 <tr>
-<td><code dir="auto">--start string</code></td>
-<td>First day to include (YYYY-MM-DD)</td>
+<td><code dir="auto">--page int</code></td>
+<td>Which page of results, counting from zero</td>
 </tr>
 </tbody>
 </table>

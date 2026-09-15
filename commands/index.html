@@ -190,6 +190,10 @@
 <td>Answer an invitation</td>
 </tr>
 <tr>
+<td><code dir="auto">revoke</code></td>
+<td>Stop something working</td>
+</tr>
+<tr>
 <td><code dir="auto">set</code></td>
 <td>Write one setting</td>
 </tr>
@@ -223,15 +227,35 @@
 </tr>
 <tr>
 <td><code dir="auto">--force</code></td>
-<td>Overwrite a local file that already exists</td>
+<td>Overwrite what is already there</td>
 </tr>
 <tr>
 <td><code dir="auto">--all</code></td>
 <td>Everything in scope, rather than a subset</td>
 </tr>
+<tr>
+<td><code dir="auto">--limit</code></td>
+<td>How many an answer holds, or a verb acts on</td>
+</tr>
+<tr>
+<td><code dir="auto">--after</code> · <code dir="auto">--before</code></td>
+<td>The first and last day a selection includes</td>
+</tr>
+<tr>
+<td><code dir="auto">--access</code></td>
+<td>What somebody may do with a shared thing</td>
+</tr>
+<tr>
+<td><code dir="auto">--expires</code></td>
+<td>How long before it stops working, or <code dir="auto">never</code></td>
+</tr>
+<tr>
+<td><code dir="auto">--x-file</code></td>
+<td>Where to read a secret from; <code dir="auto">-</code> is standard input</td>
+</tr>
 </tbody>
 </table>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">alice@proton.me</span><span style="--0:#FFFFFF;--1:#1F2328">       </span><span style="--0:#8B8B8BFC;--1:#616972"># a recipient</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">alice@proton.me</span><span style="--0:#FFFFFF;--1:#1F2328">       </span><span style="--0:#8B8B8BFC;--1:#616972"># matching a recipient</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">REF</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span><span style="--0:#FFFFFF;--1:#1F2328">         </span><span style="--0:#8B8B8BFC;--1:#616972"># a container over there</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">drive</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">items</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">download</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">/report.pdf</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">.</span><span style="--0:#FFFFFF;--1:#1F2328">     </span><span style="--0:#8B8B8BFC;--1:#616972"># a path over here</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages send --to alice@proton.me       # a recipientproton mail messages list --to alice@proton.me       # matching a recipientproton mail messages move REF --into archive         # a container over thereproton drive items download /report.pdf --dest .     # a path over here"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">send</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">alice@proton.me</span><span style="--0:#FFFFFF;--1:#1F2328">       </span><span style="--0:#8B8B8BFC;--1:#616972"># a recipient</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--to</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">alice@proton.me</span><span style="--0:#FFFFFF;--1:#1F2328">       </span><span style="--0:#8B8B8BFC;--1:#616972"># matching a recipient</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">REF</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span><span style="--0:#FFFFFF;--1:#1F2328">         </span><span style="--0:#8B8B8BFC;--1:#616972"># a container over there</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">drive</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">items</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">download</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">/report.pdf</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--dest</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">.</span><span style="--0:#FFFFFF;--1:#1F2328">     </span><span style="--0:#8B8B8BFC;--1:#616972"># a path over here</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">pass</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">vaults</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">share</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">add</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">Work</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@proton.me</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--access</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">editor</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">account</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">login</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--user</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">me@proton.me</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--password-file</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">/run/secrets/proton</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages send --to alice@proton.me       # a recipientproton mail messages list --to alice@proton.me       # matching a recipientproton mail messages move REF --into archive         # a container over thereproton drive items download /report.pdf --dest .     # a path over hereproton pass vaults share add Work jane@proton.me --access editorproton account login --user me@proton.me --password-file /run/secrets/proton"><div></div></button></div></figure></div>
 <p>Five flags have a single-letter form: <code dir="auto">-p</code> profile, <code dir="auto">-o</code> output, <code dir="auto">-n</code> dry run, <code dir="auto">-q</code> quiet, <code dir="auto">-y</code> yes. They cluster, so <code dir="auto">-qn</code> is a quiet dry run.</p>
 <div class="sl-heading-wrapper level-h2"><h2 id="saying-none">Saying none</h2><a class="sl-anchor-link" href="#saying-none"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “Saying none”</span></a></div>
 <p>Removing an optional value takes one of three spellings, and each flag’s help says which:</p>
@@ -246,8 +270,8 @@
 <tbody>
 <tr>
 <td>The value itself</td>
-<td>The word is one the flag already prints</td>
-<td><code dir="auto">--expires never</code></td>
+<td>The word cannot be mistaken for a real value</td>
+<td><code dir="auto">--expires never</code>, <code dir="auto">--catch-all none</code></td>
 </tr>
 <tr>
 <td><code dir="auto">--no-x</code></td>
@@ -256,7 +280,7 @@
 </tr>
 <tr>
 <td><code dir="auto">--clear-x</code></td>
-<td>The value cannot carry the word: text, or a password read from a file</td>
+<td>The value cannot carry the word: text, or a secret read from a file</td>
 <td><code dir="auto">--clear-signature</code>, <code dir="auto">--clear-link-password</code></td>
 </tr>
 </tbody>

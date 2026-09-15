@@ -253,12 +253,16 @@
 <td>Give somebody a calendar</td>
 </tr>
 <tr>
-<td><a href="/calendar/settings/#calendars-share-list"><code dir="auto">proton calendar settings calendars share list</code></a></td>
-<td>List who has a calendar</td>
+<td><a href="/calendar/settings/#calendars-share-get"><code dir="auto">proton calendar settings calendars share get</code></a></td>
+<td>Show who has a calendar</td>
 </tr>
 <tr>
 <td><a href="/calendar/settings/#calendars-share-remove"><code dir="auto">proton calendar settings calendars share remove</code></a></td>
 <td>Take somebody’s access to a calendar away</td>
+</tr>
+<tr>
+<td><a href="/calendar/settings/#calendars-share-update"><code dir="auto">proton calendar settings calendars share update</code></a></td>
+<td>Change what somebody may do with a calendar</td>
 </tr>
 <tr>
 <td><a href="/calendar/settings/#calendars-update"><code dir="auto">proton calendar settings calendars update</code></a></td>
@@ -429,20 +433,12 @@
 <td>Show how a file or folder is shared</td>
 </tr>
 <tr>
-<td><a href="/drive/items/#share-link"><code dir="auto">proton drive items share link</code></a></td>
-<td>Create or update the public link for a file or folder</td>
-</tr>
-<tr>
 <td><a href="/drive/items/#share-remove"><code dir="auto">proton drive items share remove</code></a></td>
 <td>Revoke someone’s access, or cancel their invitation</td>
 </tr>
 <tr>
 <td><a href="/drive/items/#share-resend"><code dir="auto">proton drive items share resend</code></a></td>
 <td>Send an unanswered invitation again</td>
-</tr>
-<tr>
-<td><a href="/drive/items/#share-unlink"><code dir="auto">proton drive items share unlink</code></a></td>
-<td>Remove the public links for a file or folder</td>
 </tr>
 <tr>
 <td><a href="/drive/items/#share-update"><code dir="auto">proton drive items share update</code></a></td>
@@ -459,6 +455,22 @@
 <tr>
 <td><a href="/drive/items/#upload"><code dir="auto">proton drive items upload</code></a></td>
 <td>Upload a file or directory</td>
+</tr>
+<tr>
+<td><a href="/drive/links/#create"><code dir="auto">proton drive links create</code></a></td>
+<td>Make a link that opens a file or folder for anyone</td>
+</tr>
+<tr>
+<td><a href="/drive/links/#get"><code dir="auto">proton drive links get</code></a></td>
+<td>Show the link on a file or folder, URL and all</td>
+</tr>
+<tr>
+<td><a href="/drive/links/#list"><code dir="auto">proton drive links list</code></a></td>
+<td>List the links you have made</td>
+</tr>
+<tr>
+<td><a href="/drive/links/#revoke"><code dir="auto">proton drive links revoke</code></a></td>
+<td>Stop the link on a file or folder working</td>
 </tr>
 <tr>
 <td><a href="/drive/photos/#albums-add"><code dir="auto">proton drive photos albums add</code></a></td>
@@ -482,7 +494,7 @@
 </tr>
 <tr>
 <td><a href="/drive/photos/#albums-update"><code dir="auto">proton drive photos albums update</code></a></td>
-<td>Change an album’s cover</td>
+<td>Rename an album, or change its cover</td>
 </tr>
 <tr>
 <td><a href="/drive/photos/#delete"><code dir="auto">proton drive photos delete</code></a></td>
@@ -542,7 +554,7 @@
 </tr>
 <tr>
 <td><a href="/drive/sharing/#list"><code dir="auto">proton drive sharing list</code></a></td>
-<td>List what you have shared</td>
+<td>List what you have shared with other people</td>
 </tr>
 <tr>
 <td><a href="/drive/trash/#empty"><code dir="auto">proton drive trash empty</code></a></td>
@@ -677,10 +689,6 @@
 <td>Delete everything in a folder, permanently</td>
 </tr>
 <tr>
-<td><a href="/mail/messages/#expire"><code dir="auto">proton mail messages expire</code></a></td>
-<td>Make messages delete themselves after a while</td>
-</tr>
-<tr>
 <td><a href="/mail/messages/#export"><code dir="auto">proton mail messages export</code></a></td>
 <td>Write messages out as .eml or mbox files</td>
 </tr>
@@ -751,6 +759,10 @@
 <tr>
 <td><a href="/mail/messages/#unsubscribe"><code dir="auto">proton mail messages unsubscribe</code></a></td>
 <td>Ask a mailing list to stop</td>
+</tr>
+<tr>
+<td><a href="/mail/messages/#update"><code dir="auto">proton mail messages update</code></a></td>
+<td>Change when messages delete themselves</td>
 </tr>
 <tr>
 <td><a href="/mail/messages/#watch"><code dir="auto">proton mail messages watch</code></a></td>
@@ -945,12 +957,12 @@
 <td>Send someone’s mail straight to blocked</td>
 </tr>
 <tr>
-<td><a href="/mail/settings/#senders-forget"><code dir="auto">proton mail settings senders forget</code></a></td>
-<td>Drop a standing decision, letting the spam filter decide again</td>
-</tr>
-<tr>
 <td><a href="/mail/settings/#senders-list"><code dir="auto">proton mail settings senders list</code></a></td>
 <td>List every standing decision about a sender</td>
+</tr>
+<tr>
+<td><a href="/mail/settings/#senders-remove"><code dir="auto">proton mail settings senders remove</code></a></td>
+<td>Drop a standing decision, letting the spam filter decide again</td>
 </tr>
 <tr>
 <td><a href="/mail/settings/#senders-spam"><code dir="auto">proton mail settings senders spam</code></a></td>
@@ -995,10 +1007,6 @@
 <tr>
 <td><a href="/pass/aliases/#list"><code dir="auto">proton pass aliases list</code></a></td>
 <td>List your aliases</td>
-</tr>
-<tr>
-<td><a href="/pass/aliases/#options"><code dir="auto">proton pass aliases options</code></a></td>
-<td>List the suffixes and mailboxes an alias can use</td>
 </tr>
 <tr>
 <td><a href="/pass/breaches/#create"><code dir="auto">proton pass breaches create</code></a></td>
