@@ -665,7 +665,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton account login`](/account/account/#login)                                               | Sign in and save the session for this profile                       |
 | [`proton account logout`](/account/account/#logout)                                             | Discard the saved session for this profile                          |
 | [`proton account keys reactivate`](/account/keys/#reactivate)                                   | Bring back the keys a password reset locked                         |
-| [`proton account profiles delete`](/account/profiles/#delete)                                   | Remove saved sessions by profile name                               |
+| [`proton account profiles delete`](/account/profiles/#delete)                                   | Remove a profile and everything it keeps on this machine            |
 | [`proton account profiles list`](/account/profiles/#list)                                       | List the profiles with a saved session                              |
 | [`proton account sessions list`](/account/sessions/#list)                                       | List every signed-in session                                        |
 | [`proton account sessions revoke`](/account/sessions/#revoke)                                   | Invalidate sessions at Proton                                       |
@@ -773,6 +773,11 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive volumes delete`](/drive/volumes/#delete)                                         | Delete a locked volume and everything on it                         |
 | [`proton drive volumes list`](/drive/volumes/#list)                                             | List the volumes your files and photos are kept on                  |
 | [`proton drive volumes restore`](/drive/volumes/#restore)                                       | Put the files of a locked volume back                               |
+| [`proton index create`](/local-index/commands/#create)                                          | Index an app so its contents can be searched                        |
+| [`proton index delete`](/local-index/commands/#delete)                                          | Remove an index from this machine                                   |
+| [`proton index list`](/local-index/commands/#list)                                              | List what is indexed on this machine                                |
+| [`proton index update`](/local-index/commands/#update)                                          | Bring every index up to date                                        |
+| [`proton index watch`](/local-index/commands/#watch)                                            | Keep every index current until you stop it                          |
 | [`proton mail conversations attachments download`](/mail/conversations/#attachments-download)   | Download and decrypt attachments from a thread                      |
 | [`proton mail conversations attachments list`](/mail/conversations/#attachments-list)           | List every attachment in a thread                                   |
 | [`proton mail conversations delete`](/mail/conversations/#delete)                               | Delete threads permanently                                          |
@@ -1010,11 +1015,13 @@ There is no telemetry, and there is nothing to turn off. proton-cli never report
 
 [Section titled “What is stored on disk”](#what-is-stored-on-disk)
 
-The paths are listed under [Files on disk](/using/settings/#files-on-disk). Two of them hold something sensitive.
+The paths are listed under [Files on disk](/using/settings/#files-on-disk). Three of them hold something sensitive.
 
 **The session file**, one per profile, mode `0600`, holds the session tokens and your key password. The key password is stored encrypted with a key that Proton holds and hands out only to a live session, so it is never on disk in cleartext, and **revoking the session** - `proton account logout --revoke`, or from any Proton app - makes a leaked copy undecryptable. The file still holds the session’s refresh token, so it is not safe to share; revoking neutralises a leak, it does not excuse one.
 
 **The diagnostic log**, mode `0600`, holds what each run did, written so it can be handed to a stranger: addresses, IDs, paths, tokens, subjects, filenames, search terms and flag values never enter it. `--no-log` or `PROTON_NO_LOG` stops it being written ([Settings](/using/settings/#the-diagnostic-log)).
+
+**The local index**, mode `0600`, exists only after `proton index create` and holds a copy of what it indexed: for mail, every message with its subject, its addresses and its body as text. It is encrypted with AES-256-GCM under a key of its own, and that key is encrypted and signed to your account’s keys, so **revoking the session** makes a leaked copy unreadable the same way it does the session file. `proton index delete` removes it ([Local index](/local-index/)).
 
 ## A file downloaded from a public link
 
@@ -1528,7 +1535,7 @@ Holds `delete` and `list`.
 
 [Section titled “delete”](#delete)
 
-Remove saved sessions by profile name.
+Remove a profile and everything it keeps on this machine.
 
 ```plaintext
 proton account profiles delete REF...
@@ -1750,6 +1757,14 @@ Every calendar is included unless `--calendar` narrows it.
 `--after` and `--before` are the first and last **whole** days to include, read in your own zone, and both are included. Without them you get the next 30 days, starting today. Name one and the other is 30 days away from it, so `--after 2027-01-01` lists that January.
 
 An event is on a day when it touches any part of it, so a query for one day inside a three-day event returns it.
+
+`--keyword` matches the title, the location, the description, the organizer and the people invited. Without a date range it covers every event there has been and the next three years of every repeating one, which is how to find one whose date you do not know:
+
+```bash
+proton calendar events list --keyword dentist
+```
+
+Reading every event takes a moment. To have it answered from a copy on this machine instead, see [Local index](/local-index/).
 
 Each occurrence of a recurring event is listed on its own day, with a reference naming that occurrence:
 
@@ -2184,6 +2199,8 @@ List what is on your calendars between two dates.
 
 With neither –after nor –before it covers the next 30 days, starting today. With one of them, the other is 30 days away from it.
 
+–keyword matches the title, the location, the description, the organizer and the people invited. On its own it covers every event there has been and the next three years of every repeating one; with –after or –before it covers those days instead.
+
 Each occurrence of a recurring event is listed on its own day, with a reference that names that occurrence.
 
 Covers every calendar unless –calendar narrows it to one.
@@ -2196,15 +2213,17 @@ proton calendar events list
 proton calendar events list
 proton calendar events list --after 2026-04-15 --before 2026-04-30
 proton calendar events list --calendar Work
+proton calendar events list --keyword dentist
 ```
 
-| Flag                | Description                                          |
-| ------------------- | ---------------------------------------------------- |
-| `--after string`    | First day to include (YYYY-MM-DD)                    |
-| `--before string`   | Last day to include (YYYY-MM-DD)                     |
-| `--calendar string` | Which calendar, by name or ID (default: all of them) |
-| `--limit int`       | How many events per page; 0 for all of them          |
-| `--page int`        | Which page of results, counting from zero            |
+| Flag                | Description                                                            |
+| ------------------- | ---------------------------------------------------------------------- |
+| `--after string`    | First day to include (YYYY-MM-DD)                                      |
+| `--before string`   | Last day to include (YYYY-MM-DD)                                       |
+| `--calendar string` | Which calendar, by name or ID (default: all of them)                   |
+| `--keyword string`  | Match text in the title, location, description, organizer or attendees |
+| `--limit int`       | How many events per page; 0 for all of them                            |
+| `--page int`        | Which page of results, counting from zero                              |
 
 ## `respond`
 
@@ -3804,6 +3823,8 @@ proton drive items list /Documents
 proton drive items list /Build --pattern "*.tmp" --recursive
 proton drive items get /Documents/report.pdf  # type, size, checksum, sharing state
 ```
+
+A filter such as `--pattern` opens every folder in its scope, which takes a while over a large tree. `proton index create drive` keeps a copy of the tree on this machine and answers from it instead: [Local index](/local-index/).
 
 ## Upload and download
 
@@ -5503,7 +5524,7 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 **A recurring event needs a zone that can be named.** proton reads one from `TZ`, `/etc/localtime` or `/etc/timezone`, then from your Proton calendar settings. Where none of those answers, a recurring event drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure.
 
-**A Drive filter over a large tree is slow.** Narrow it with `--scope`.
+**A Drive filter over a large tree is slow.** Narrow it with `--scope`, or index the tree once with `proton index create drive` ([Local index](/local-index/)).
 
 ## Out of scope
 
@@ -6030,6 +6051,231 @@ go build ./cmd/proton
 
 [`proton` itself](/proton/) has the full reference for `update`, `uninstall`, `completion`, `changelog`, `report`, `skill` and `version`.
 
+# Local index
+
+> Search inside your messages, find a file without waiting for a walk, and find an event by what it says. Proton searches subjects, names and addresses; an index on this machine searches what your account holds.
+
+This page is what people actually do. For every command and flag, see the reference: [index](/local-index/commands/).
+
+Mail, Drive and Calendar can each be indexed. Building one downloads what it indexes and keeps an encrypted copy under `~/.config/proton-cli/index/`. Nothing in your account changes, and you can remove it at any time.
+
+## Search inside messages
+
+[Section titled “Search inside messages”](#search-inside-messages)
+
+Nothing has an index until you build one. Naming no app builds all three:
+
+```bash
+proton index create mail
+```
+
+```console
+$ proton index create mail
+Indexing mail  ━━━━━━━───────────────────────   26%  12400 / 48213 messages  8.2/s  1h12m left
+```
+
+A first build of a large mailbox takes hours. Stopping it with Ctrl+C is safe: it works newest first, and running it again carries on where it stopped.
+
+Afterwards `--keyword` searches bodies as well, everywhere it is taken:
+
+```bash
+proton mail messages list --keyword "parking permit" --folder all
+proton mail conversations list --keyword "parking permit" --folder all
+proton mail messages export --keyword "parking permit" --folder all --all --dest-dir ./trail
+```
+
+With an index, `--from` and `--to` match display names as well as addresses. Proton’s search operators - `invoice | receipt`, `book*`, `!word` - stop applying: every term is matched literally, and a quoted phrase is one term.
+
+While a build is unfinished, a search says what it did not reach:
+
+```console
+$ proton mail messages list --keyword "parking permit" --folder all
+No messages match.
+! Only 12400 of 48213 messages are indexed, newest first, so older mail was not searched. `proton index create mail` continues the download.
+```
+
+## Find a file without a walk
+
+[Section titled “Find a file without a walk”](#find-a-file-without-a-walk)
+
+A Drive filter opens every folder in its scope. With an index, the same listing is answered from the copy on this machine:
+
+```bash
+proton index create drive
+proton drive items list --pattern "*.pdf" --recursive
+```
+
+The rows are the rows the walk gives, and a file uploaded since the build is in them. Your own files are indexed; a public link, a share somebody sent you and a computer’s backup are read from Proton as before.
+
+## Find an event by what it says
+
+[Section titled “Find an event by what it says”](#find-an-event-by-what-it-says)
+
+`--keyword` matches the title, the location, the description, the organizer and the people invited. On its own it covers every event there has been and the next three years of every repeating one:
+
+```bash
+proton calendar events list --keyword dentist
+proton calendar events list --keyword "team offsite" --after 2026-01-01 --before 2026-12-31
+```
+
+It works without an index by reading your calendars first, which takes a moment. `proton index create calendar` makes it instant.
+
+## See what is indexed
+
+[Section titled “See what is indexed”](#see-what-is-indexed)
+
+```console
+$ proton index list
+APP       INDEXED                  UNREADABLE  UPDATED           SIZE
+────────  ───────────────────────  ──────────  ────────────────  ───────
+calendar  1342 events                          2026-04-15 14:30  812.0 KB
+drive     8120 items                           2026-04-15 14:31  1.9 MB
+mail      12400 of 48213 messages  31          2026-04-15 14:32  36.2 MB
+3 indexes.
+```
+
+`UNREADABLE` counts things whose contents would not open - a message body, an event’s text. They are searchable by everything else they carry.
+
+This reads files, so it works signed out.
+
+## Keep it current
+
+[Section titled “Keep it current”](#keep-it-current)
+
+A search brings the index up to date before it answers, so an answer is never older than the command. Two ways to have that done already:
+
+```bash
+proton index update
+proton index watch
+```
+
+`update` catches up once, for cron or a systemd timer. `watch` stays attached and applies changes as they land. Neither indexes an app that has no index; `create` does that. For running `watch` unattended, see [Scripting](/using/scripting/#run-a-watch-under-systemd).
+
+## Remove it
+
+[Section titled “Remove it”](#remove-it)
+
+```console
+$ proton index delete mail
+Would delete index "mail" (142.3 MB). This cannot be undone. Continue? [y/N] y
+✓ Deleted index "mail" (142.3 MB).
+```
+
+Searches go back to what Proton answers. `proton account profiles delete` and `proton uninstall --purge` remove indexes too.
+
+## What is on disk
+
+[Section titled “What is on disk”](#what-is-on-disk)
+
+The copy lives in `~/.config/proton-cli/index/`, one directory per profile, readable only by you. Everything it holds - a subject, a body, a file’s name, what an event says - is encrypted with your account’s keys. What that protects and what it does not: [Security](/about/security/#what-is-stored-on-disk).
+
+# proton index
+
+> An encrypted, searchable copy of your mail, files and events on this machine.
+
+Every command under `proton index`, with the arguments and flags it takes. For these commands in use, see [the index guide](/local-index/).
+
+Holds `create`, `delete`, `list`, `update` and `watch`.
+
+## `create`
+
+[Section titled “create”](#create)
+
+Index an app so its contents can be searched.
+
+Name the apps to index, or none for every app that can be. A first build of a large mailbox takes hours; stopping it and running it again carries on where it left off, newest first.
+
+What it writes is encrypted to your account’s keys, under \~/.config/proton-cli/index.
+
+```plaintext
+proton index create [REF...]
+```
+
+```bash
+proton index create
+proton index create mail
+proton index create drive calendar
+proton index create drive --dry-run
+```
+
+## `delete`
+
+[Section titled “delete”](#delete)
+
+Remove an index from this machine.
+
+Name the apps to remove, or none for all of them. Nothing in your account changes, and searches go back to what Proton can answer.
+
+Removing the last one removes the index key too; building again starts from nothing.
+
+```plaintext
+proton index delete [REF...]
+```
+
+```bash
+proton index delete
+proton index delete --yes mail
+```
+
+## `list`
+
+[Section titled “list”](#list)
+
+List what is indexed on this machine.
+
+Reads the files and nothing else, so it works signed out. INDEXED counts what a search would look through; a build that has not finished says how much of the app it has reached.
+
+```plaintext
+proton index list
+```
+
+```bash
+proton index list
+proton index list --output json
+```
+
+## `update`
+
+[Section titled “update”](#update)
+
+Bring every index up to date.
+
+Applies what has happened since the last run, and carries on a build that was interrupted. It creates nothing: an app with no index is left alone.
+
+A search catches up by itself, so this is for having it done already: run it from cron, or leave `index watch` attached.
+
+```plaintext
+proton index update
+```
+
+```bash
+proton index update
+proton index update --quiet
+```
+
+## `watch`
+
+[Section titled “watch”](#watch)
+
+Keep every index current until you stop it.
+
+Applies changes as they land, one line per batch, so a search answers without catching up first.
+
+It indexes nothing that is not indexed already; `index create` does that.
+
+```plaintext
+proton index watch
+```
+
+```bash
+proton index watch
+proton index watch --output json
+```
+
+***
+
+Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
 # Mail
 
 > Read, send, search and organize Proton Mail from your terminal. Bodies are decrypted on your machine, and outgoing mail is encrypted and signed with your address key.
@@ -6097,7 +6343,9 @@ proton mail messages list --from billing@example.com --after 2026-01-01 --folder
 proton mail messages list --subject "Q1 report" --folder archive
 ```
 
-`--from` and `--to` match addresses. `--keyword` also matches display names and body text.
+`--from` and `--to` match addresses. `--keyword` matches the subject, a display name and an address.
+
+Bodies are not searched. To search what a message says, build an index on this machine: [Local index](/local-index/). With one, `--keyword` covers bodies and `--from` covers display names.
 
 `--after` and `--before` are the first and last whole days to include, read in your own zone, and both are included.
 
@@ -6617,21 +6865,21 @@ proton mail conversations delete [REF...]
 proton mail conversations delete 5bH2mQxK
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `export`
 
@@ -6725,22 +6973,22 @@ proton mail conversations label [REF...]
 proton mail conversations label 'Quarterly numbers' --label Accounting
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--label string`      | The label to attach or detach, by name or ID            |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--label string`      | The label to attach or detach, by name or ID                                            |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `list`
 
@@ -6748,7 +6996,7 @@ proton mail conversations label 'Quarterly numbers' --label Accounting
 
 List threads in a folder.
 
-Takes the same filters as the verbs that organise threads, so you can preview a selection here before acting on it. Text filters go through Proton’s index, which lags a change by a few seconds.
+Takes the same filters as the verbs that organise threads, so you can preview a selection here before acting on it. A text filter goes through Proton’s own index, which lags a change by a few seconds, or through the copy `index create mail` builds, which also reads bodies.
 
 Looks in the inbox unless told otherwise. Use –folder all to search everything.
 
@@ -6762,21 +7010,21 @@ proton mail conversations list --unread --folder inbox
 proton mail conversations list --from jane@example.com --folder all
 ```
 
-| Flag                  | Description                                                 |
-| --------------------- | ----------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                           |
-| `--before string`     | Last day to include (YYYY-MM-DD)                            |
-| `--folder string`     | Folder or label to look in (default: inbox)                 |
-| `--from string`       | Match the sender’s address                                  |
-| `--keyword string`    | Match text anywhere, including display names and bodies     |
-| `--limit int`         | How many threads per page; 0 for all of them (default `25`) |
-| `--newer-than string` | Match messages newer than DURATION                          |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)       |
-| `--page int`          | Which page of results, counting from zero                   |
-| `--starred`           | Match starred messages                                      |
-| `--subject string`    | Match text in the subject                                   |
-| `--to string`         | Match a recipient’s address                                 |
-| `--unread`            | Match unread messages                                       |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: inbox)                                             |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | How many threads per page; 0 for all of them (default `25`)                             |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--page int`          | Which page of results, counting from zero                                               |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `mark`
 
@@ -6801,21 +7049,21 @@ proton mail conversations mark read 'Quarterly numbers'
 proton mail conversations mark read --folder inbox --all
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ### `mark unread`
 
@@ -6831,21 +7079,21 @@ proton mail conversations mark unread [REF...]
 proton mail conversations mark unread 'Quarterly numbers'
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `move`
 
@@ -6862,22 +7110,22 @@ proton mail conversations move 'Quarterly numbers' --into archive
 proton mail conversations move --older-than 90d --folder inbox --into archive
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--into string`       | Destination folder, by name or ID                       |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--into string`       | Destination folder, by name or ID                                                       |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `reply`
 
@@ -6930,22 +7178,22 @@ proton mail conversations snooze 5bH2mQxK --until 3d
 proton mail conversations snooze --unread --until 2026-04-17T09:00
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
-| `--until string`      | When they come back (e.g. 3d, or 2026-04-17T09:00)      |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
+| `--until string`      | When they come back (e.g. 3d, or 2026-04-17T09:00)                                      |
 
 ## `star`
 
@@ -6961,21 +7209,21 @@ proton mail conversations star [REF...]
 proton mail conversations star 'Quarterly numbers'
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `trash`
 
@@ -6992,21 +7240,21 @@ proton mail conversations trash 'Quarterly numbers'
 proton mail conversations trash --from newsletter@example.com --older-than 90d
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `unlabel`
 
@@ -7022,22 +7270,22 @@ proton mail conversations unlabel [REF...]
 proton mail conversations unlabel 'Quarterly numbers' --label Accounting
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--label string`      | The label to attach or detach, by name or ID            |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--label string`      | The label to attach or detach, by name or ID                                            |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `unsnooze`
 
@@ -7053,21 +7301,21 @@ proton mail conversations unsnooze [REF...]
 proton mail conversations unsnooze 5bH2mQxK
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `unstar`
 
@@ -7083,21 +7331,21 @@ proton mail conversations unstar [REF...]
 proton mail conversations unstar 'Quarterly numbers'
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ***
 
@@ -7307,21 +7555,21 @@ proton mail messages delete 5bH2mQxK
 proton mail messages delete --folder spam --all --yes
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `empty`
 
@@ -7364,26 +7612,26 @@ proton mail messages export --folder archive --all --dest-dir ./mail-backup
 proton mail messages export --folder archive --older-than 1y --format mbox --dest archive.mbox
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--dest string`       | Write to this path, or - for stdout                     |
-| `--dest-dir string`   | Write into this directory, keeping each item’s own name |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--force`             | Overwrite a file that already exists                    |
-| `--format string`     | How to lay the messages down: eml, mbox (default `eml`) |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--no-attachments`    | Skip attachments, which is much faster                  |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--dest string`       | Write to this path, or - for stdout                                                     |
+| `--dest-dir string`   | Write into this directory, keeping each item’s own name                                 |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--force`             | Overwrite a file that already exists                                                    |
+| `--format string`     | How to lay the messages down: eml, mbox (default `eml`)                                 |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--no-attachments`    | Skip attachments, which is much faster                                                  |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `forward`
 
@@ -7461,22 +7709,22 @@ proton mail messages label 'Invoice #2291' --label Accounting
 proton mail messages label --from billing@example.com --label Accounting
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--label string`      | The label to attach or detach, by name or ID            |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--label string`      | The label to attach or detach, by name or ID                                            |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `list`
 
@@ -7484,7 +7732,7 @@ proton mail messages label --from billing@example.com --label Accounting
 
 List messages in a folder.
 
-Takes the same filters as trash, move, label and export, so you can preview a selection here before acting on it. Text filters go through Proton’s index, which lags a change by a few seconds.
+Takes the same filters as trash, move, label and export, so you can preview a selection here before acting on it. A text filter goes through Proton’s own index, which lags a change by a few seconds and does not cover bodies, or through the copy `index create mail` builds, which does.
 
 Looks in the inbox unless told otherwise. Use –folder all to search everything.
 
@@ -7499,23 +7747,24 @@ proton mail messages list --folder archive --limit 50
 proton mail messages list --starred --output json
 proton mail messages list --from billing@example.com --folder all
 proton mail messages list --keyword invoice --after 2026-01-01 --folder all
+proton mail messages list --keyword 'parking permit' --folder all
 ```
 
-| Flag                  | Description                                                  |
-| --------------------- | ------------------------------------------------------------ |
-| `--after string`      | First day to include (YYYY-MM-DD)                            |
-| `--before string`     | Last day to include (YYYY-MM-DD)                             |
-| `--folder string`     | Folder or label to look in (default: inbox)                  |
-| `--from string`       | Match the sender’s address                                   |
-| `--keyword string`    | Match text anywhere, including display names and bodies      |
-| `--limit int`         | How many messages per page; 0 for all of them (default `25`) |
-| `--newer-than string` | Match messages newer than DURATION                           |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)        |
-| `--page int`          | Which page of results, counting from zero                    |
-| `--starred`           | Match starred messages                                       |
-| `--subject string`    | Match text in the subject                                    |
-| `--to string`         | Match a recipient’s address                                  |
-| `--unread`            | Match unread messages                                        |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: inbox)                                             |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | How many messages per page; 0 for all of them (default `25`)                            |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--page int`          | Which page of results, counting from zero                                               |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `mark`
 
@@ -7573,21 +7822,21 @@ proton mail messages mark read 'Invoice #2291'
 proton mail messages mark read --folder inbox --all
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ### `mark unread`
 
@@ -7603,21 +7852,21 @@ proton mail messages mark unread [REF...]
 proton mail messages mark unread 'Invoice #2291'
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `move`
 
@@ -7636,22 +7885,22 @@ proton mail messages move 'Invoice #2291' --into archive
 proton mail messages move --from newsletter@example.com --older-than 90d --into archive
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--into string`       | Destination folder, by name or ID                       |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--into string`       | Destination folder, by name or ID                                                       |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `reply`
 
@@ -7742,21 +7991,21 @@ proton mail messages star [REF...]
 proton mail messages star 'Invoice #2291'
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `trash`
 
@@ -7774,21 +8023,21 @@ proton mail messages trash --unread --older-than 30d
 proton mail messages trash --from newsletter@example.com --older-than 90d --dry-run
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `unlabel`
 
@@ -7804,22 +8053,22 @@ proton mail messages unlabel [REF...]
 proton mail messages unlabel 'Invoice #2291' --label Accounting
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--label string`      | The label to attach or detach, by name or ID            |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--label string`      | The label to attach or detach, by name or ID                                            |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `unschedule`
 
@@ -7856,21 +8105,21 @@ proton mail messages unstar [REF...]
 proton mail messages unstar 'Invoice #2291'
 ```
 
-| Flag                  | Description                                             |
-| --------------------- | ------------------------------------------------------- |
-| `--after string`      | First day to include (YYYY-MM-DD)                       |
-| `--all`               | Act on everything in scope, rather than a subset        |
-| `--before string`     | Last day to include (YYYY-MM-DD)                        |
-| `--folder string`     | Folder or label to look in (default: all)               |
-| `--from string`       | Match the sender’s address                              |
-| `--keyword string`    | Match text anywhere, including display names and bodies |
-| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string` | Match messages newer than DURATION                      |
-| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--starred`           | Match starred messages                                  |
-| `--subject string`    | Match text in the subject                               |
-| `--to string`         | Match a recipient’s address                             |
-| `--unread`            | Match unread messages                                   |
+| Flag                  | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `--after string`      | First day to include (YYYY-MM-DD)                                                       |
+| `--all`               | Act on everything in scope, rather than a subset                                        |
+| `--before string`     | Last day to include (YYYY-MM-DD)                                                        |
+| `--folder string`     | Folder or label to look in (default: all)                                               |
+| `--from string`       | Match the sender’s address                                                              |
+| `--keyword string`    | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`         | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string` | Match messages newer than DURATION                                                      |
+| `--older-than string` | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--starred`           | Match starred messages                                                                  |
+| `--subject string`    | Match text in the subject                                                               |
+| `--to string`         | Match a recipient’s address                                                             |
+| `--unread`            | Match unread messages                                                                   |
 
 ## `unsubscribe`
 
@@ -7906,24 +8155,24 @@ proton mail messages update --from newsletter@example.com --expires 30d
 proton mail messages update 5bH2mQxK --expires never
 ```
 
-| Flag                     | Description                                             |
-| ------------------------ | ------------------------------------------------------- |
-| `--after string`         | First day to include (YYYY-MM-DD)                       |
-| `--all`                  | Act on everything in scope, rather than a subset        |
-| `--before string`        | Last day to include (YYYY-MM-DD)                        |
-| `--expires string`       | Delete them after DURATION (e.g. 7d, 24h), or never     |
-| `--folder string`        | Folder or label to look in (default: all)               |
-| `--from string`          | Match the sender’s address                              |
-| `--keyword string`       | Match text anywhere, including display names and bodies |
-| `--limit int`            | Most messages to affect; 0 for no cap (default `150`)   |
-| `--newer-than string`    | Match messages newer than DURATION                      |
-| `--older-than string`    | Match messages older than DURATION (e.g. 30d, 2w, 1h)   |
-| `--password-file string` | Read the account password from a file, or - for stdin   |
-| `--starred`              | Match starred messages                                  |
-| `--subject string`       | Match text in the subject                               |
-| `--to string`            | Match a recipient’s address                             |
-| `--totp string`          | Two-factor code                                         |
-| `--unread`               | Match unread messages                                   |
+| Flag                     | Description                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------- |
+| `--after string`         | First day to include (YYYY-MM-DD)                                                       |
+| `--all`                  | Act on everything in scope, rather than a subset                                        |
+| `--before string`        | Last day to include (YYYY-MM-DD)                                                        |
+| `--expires string`       | Delete them after DURATION (e.g. 7d, 24h), or never                                     |
+| `--folder string`        | Folder or label to look in (default: all)                                               |
+| `--from string`          | Match the sender’s address                                                              |
+| `--keyword string`       | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`            | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string`    | Match messages newer than DURATION                                                      |
+| `--older-than string`    | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--password-file string` | Read the account password from a file, or - for stdin                                   |
+| `--starred`              | Match starred messages                                                                  |
+| `--subject string`       | Match text in the subject                                                               |
+| `--to string`            | Match a recipient’s address                                                             |
+| `--totp string`          | Two-factor code                                                                         |
+| `--unread`               | Match unread messages                                                                   |
 
 ## `watch`
 
@@ -11514,7 +11763,7 @@ Remove a proton binary installed with the curl or PowerShell installer, or downl
 
 A package-managed install (apt, dnf, apk, AUR, Homebrew, winget, npm, Nix) is refused, with the right command to use instead.
 
-Only the binary goes, under both names it answers to. –purge also deletes your saved sessions, the ID cache and the diagnostic log.
+Only the binary goes, under both names it answers to. –purge also deletes your saved sessions, the ID cache, the local indexes and the diagnostic log.
 
 ```plaintext
 proton uninstall
@@ -11526,9 +11775,9 @@ proton uninstall --yes
 proton uninstall --yes --purge
 ```
 
-| Flag      | Description                                                          |
-| --------- | -------------------------------------------------------------------- |
-| `--purge` | Also remove local data (saved sessions, ID cache and diagnostic log) |
+| Flag      | Description                                                                         |
+| --------- | ----------------------------------------------------------------------------------- |
+| `--purge` | Also remove local data (saved sessions, ID cache, local indexes and diagnostic log) |
 
 ## `update`
 
@@ -12276,6 +12525,27 @@ WantedBy=default.target
 
 `systemctl --user enable --now proton-mail-watch proton-reminders-watch` starts both. A watch stops cleanly on SIGTERM, so `systemctl --user stop` is not logged as a failure.
 
+The same unit shape keeps a [local index](/local-index/) current, so a search answers without catching up first:
+
+\~/.config/systemd/user/proton-index-watch.service
+
+```ini
+[Unit]
+Description=Proton local index
+
+
+[Service]
+Environment=PROTON_NO_INPUT=1
+ExecStart=/usr/local/bin/proton index watch --quiet
+Restart=always
+
+
+[Install]
+WantedBy=default.target
+```
+
+With a timer instead of a daemon, run `proton index update` on a schedule.
+
 Which folders count as an arrival is a setting of its own. `mail settings folders list` shows it per folder under NOTIFY, and `folders create` and `folders update` take `--notify`. Without `--folder`, the watch covers the inbox plus every folder marked that way.
 
 ### Nightly backup with cron
@@ -12546,13 +12816,14 @@ $ proton --quiet=false mail messages list
 
 [Section titled “Files on disk”](#files-on-disk)
 
-| Path                                           | What is in it                                                         |
-| ---------------------------------------------- | --------------------------------------------------------------------- |
-| `~/.config/proton-cli/config.yaml`             | Your settings and confirmation policy. You write this one             |
-| `~/.config/proton-cli/sessions/<profile>.json` | Session tokens and the encrypted key password (mode `0600`)           |
-| `~/.config/proton-cli/idcache/<profile>.json`  | Short-ID lookup table ([what that is](/using/naming/#short-ids))      |
-| `~/.config/proton-cli/update-check.json`       | When proton last looked for a new release ([why](/install/#updating)) |
-| `~/.config/proton-cli/logs/`                   | What every run did, one file per day ([below](#the-diagnostic-log))   |
+| Path                                           | What is in it                                                                                  |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `~/.config/proton-cli/config.yaml`             | Your settings and confirmation policy. You write this one                                      |
+| `~/.config/proton-cli/sessions/<profile>.json` | Session tokens and the encrypted key password (mode `0600`)                                    |
+| `~/.config/proton-cli/idcache/<profile>.json`  | Short-ID lookup table ([what that is](/using/naming/#short-ids))                               |
+| `~/.config/proton-cli/index/<profile>/`        | The encrypted copy `proton index create` builds (mode `0600`, [what it is for](/local-index/)) |
+| `~/.config/proton-cli/update-check.json`       | When proton last looked for a new release ([why](/install/#updating))                          |
+| `~/.config/proton-cli/logs/`                   | What every run did, one file per day ([below](#the-diagnostic-log))                            |
 
 Those are the Linux paths. macOS uses `~/Library/Application Support/proton-cli/`, and Windows uses `%APPDATA%\proton-cli\`. Nothing else is written.
 
