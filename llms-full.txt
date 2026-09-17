@@ -2683,6 +2683,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Adding a version section here is what publishes a release, so this file is the one place a version is decided: see [Releases](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md#releases). Versions that shipped before this file existed are on the [releases page](https://github.com/roman-16/proton-cli/releases).
 
+## \[4.2.1] - 2026-09-17
+
+[Section titled “\[4.2.1\] - 2026-09-17”](#421---2026-09-17)
+
+### Changed
+
+[Section titled “Changed”](#changed)
+
+* Mail is indexed in two passes: every message first, then the bodies newest first. A filtered listing such as `--unread`, `--from` or `--after` is answered from the index minutes into a build rather than after the hours the bodies take, and a `--keyword` search says how many bodies it has read while the rest arrive. `index list` names both counts, and `--output json` carries `bodies`.
+* `index watch` finishes a build that was interrupted, and reads an app again where Proton could not say what changed. It still indexes nothing that has no index.
+
+### Fixed
+
+[Section titled “Fixed”](#fixed)
+
+* Downloading from or uploading into a share link failed with `Path not found`. Proton retired the endpoints behind `--link` and `--shared`.
+* An index went on reporting itself complete after Proton could not describe what had changed, silently missing whatever happened in the gap. `index create` and `index update` read the app again and take out what is gone, and a search says the index has fallen behind until they do.
+* A message whose text changed, a draft being written among them, kept its old text in the index.
+* A file uploaded together with its folder was indexed at the top of Drive rather than inside it, and stayed there.
+* Items inside a trashed or deleted folder stayed in an indexed listing.
+* A calendar this account cannot open was missing from an indexed search without a word. Its events go in by their times and are counted under UNREADABLE, and a calendar that could not be read leaves the build unfinished rather than claiming to hold it.
+* A `--keyword` matched every message of a thread when one of them quoted the word.
+* A reference beginning with `-`, which about one ID in sixty-four does, was refused by the command that had just printed it.
+* `index update --output json` called one entry an `entrie`.
+
 ## \[4.2.0] - 2026-09-17
 
 [Section titled “\[4.2.0\] - 2026-09-17”](#420---2026-09-17)
@@ -2695,7 +2720,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed)
+[Section titled “Fixed”](#fixed-1)
 
 * `calendar events list` and `events export` take any date range. Proton refuses a window wider than a few months, so a semester failed outright; the range is fetched six weeks at a time and the answers joined.
 * A calendar that cannot be read is reported under the listing or export rather than leaving it short without a word, and an export says which events it could not decrypt.
@@ -2708,7 +2733,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed)
+[Section titled “Changed”](#changed-1)
 
 * **Breaking.** A calendar listing given one end of its range takes the other 30 days away from it, rather than always ending 30 days from today. `calendar events list --after 2027-01-01` lists that January instead of nothing, and `--after 2020-01-01` lists January 2020 rather than everything since. `events export` and `reminders list` read the same way.
 * **Breaking.** A mail listing refuses `--before` earlier than `--after`, as a calendar listing already did. It used to return an empty listing and exit `0`.
@@ -2716,7 +2741,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-1)
+[Section titled “Fixed”](#fixed-2)
 
 * `calendar events list` and `events export` said to narrow the range with `--start` and `--end`; the flags are `--after` and `--before`. All three calendar listings now state their default range as well.
 * `mail messages reply --help` described `--all`; the flag is `--everyone`.
@@ -2743,7 +2768,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-1)
+[Section titled “Changed”](#changed-2)
 
 * **Breaking.** One name per idea across the tree: `--page-size` is `--limit`, `--edit` is `--access viewer|editor`, `--move-to` is `--into`, `--plain` is `--html=false`, `--message` on `mail settings autoreply set` is `--body`, `--clear-catch-all` is `--catch-all none`, and `update`’s `--check` and `--reinstall` are `--dry-run` and `--force`.
 * **Breaking.** A Pass vault’s `--icon` and `--color` take Pass’s names rather than numbers: `--icon star --color teal`.
@@ -2760,7 +2785,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-2)
+[Section titled “Fixed”](#fixed-3)
 
 * A listing the CLI pages itself answers whole unless a page is asked for. `pass aliases list` reported fewer aliases than the account holds, which read as a short answer rather than a wrong one.
 * `curl … | sh -s -- --help` prints the help instead of failing with an awk error - the one flow the script’s own header documents.
@@ -2782,7 +2807,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-2)
+[Section titled “Changed”](#changed-3)
 
 * Data sealed to a key a password reset locked says so and names the remedy, instead of failing as a bug worth reporting.
 * A message that will not decrypt fails the read rather than printing `(decryption failed)` where the body goes. A thread drops that message and warns, an export keeps the armour, and a reply refuses rather than quoting ciphertext.
@@ -2792,7 +2817,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-3)
+[Section titled “Fixed”](#fixed-4)
 
 * A Pass backup restores with its dates, its trash and its alias addresses intact, and an export carries trashed items.
 * An archive too large to read says so, instead of being reported as a file some other password manager wrote.
@@ -2828,7 +2853,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-3)
+[Section titled “Changed”](#changed-4)
 
 * Forwarding one of your addresses outside Proton costs that address its end-to-end encryption. `forwarding create` says so before it acts, and taking the last one down turns encryption back on.
 * Every file uploaded to Drive now carries its own encrypted record of itself - size, block sizes, modification time and SHA-1 - so uploads report a checksum and other clients show the real modification date.
@@ -2841,7 +2866,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-4)
+[Section titled “Fixed”](#fixed-5)
 
 * Sending mail and creating Drive share links from an address that has ever accepted a forwarding. Everything leaving the address was encrypted to every key it holds, and a forwarding key carries no encryption key at all, so the send failed outright and told you to file a report. Affects any account whose address holds one, however the forwarding was accepted.
 * `mail settings forwarding create` was refused by Proton every time. The key it published was not shaped like the ones Proton’s own clients write.
@@ -2855,7 +2880,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-4)
+[Section titled “Changed”](#changed-5)
 
 * **Breaking.** `--page-size 0` on a mail listing returns the whole folder rather than the first 25, and a size above 150 is filled rather than cut short. Affects `mail messages list`, `mail conversations list` and `mail drafts list`.
 * **Breaking.** `--limit 0` on a mail bulk verb lifts the cap rather than acting on the first 25; the default is still 150.
@@ -2865,7 +2890,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-5)
+[Section titled “Fixed”](#fixed-6)
 
 * `pass items revisions list` and `revisions get` reached only an item’s 50 most recent revisions.
 
@@ -2894,7 +2919,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-5)
+[Section titled “Changed”](#changed-6)
 
 * **Breaking.** What you write decides whether a calendar event has a time of day. `events create --start 2026-07-01` needs `--all-day` to agree, and `--all-day` beside a time of day or a duration under a day is refused. `events update --start` with a bare day moves the event and keeps its time of day instead of dropping it to midnight; `--all-day=false` gives one back, with a `--start` saying which time.
 * **Breaking.** `--end` on an all-day event is the last day it runs through, not the midnight after it. A script that added a day to compensate now books one day too many.
@@ -2906,7 +2931,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-6)
+[Section titled “Fixed”](#fixed-7)
 
 * An all-day calendar event could not be given a time of day back: a `--start` naming one was accepted, discarded, and reported as a success.
 * Colour in a Windows console. Nothing there sets `TERM`, so every screen was drawn plain.
@@ -2919,7 +2944,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-7)
+[Section titled “Fixed”](#fixed-8)
 
 * `contacts create`, `update`, `import` and `merge` were refused with `Invalid PGP packets` on an account holding more than one user key. A contact card is now sealed to your primary user key alone, which is what Proton’s own clients send.
 * `contacts update` and `contacts merge` added a second copy of the address and of every pinned key each time they ran. `contacts export` and `contacts keys list` showed one copy per past edit; running `contacts update` on an affected contact once more clears it.
@@ -2937,7 +2962,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-6)
+[Section titled “Changed”](#changed-7)
 
 * An account or recipient using post-quantum encryption now works instead of exiting `8`. Signing in, sending, and sharing a calendar, file or vault all read Proton’s ML-DSA and ML-KEM keys. `proton` still never creates one.
 * Sharing with an address outside Proton exits `1` with a sentence naming the address, instead of `4` carrying Proton’s own error. Affects `calendar settings calendars share add`, `pass vaults share add` and `drive items share add`.
@@ -2952,7 +2977,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-8)
+[Section titled “Fixed”](#fixed-9)
 
 * Sharing with a Proton address whose key this build cannot read says so, instead of calling it an address outside Proton.
 * `proton report` carries the whole run. A report of a listing that made 750 requests held two lines. A run too large for an issue form is trimmed to its first and last records plus everything above debug between them, and says how many it left out; `--dest` writes all of it.
@@ -2971,7 +2996,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-7)
+[Section titled “Changed”](#changed-8)
 
 * A short ID printed by a `get` resolves in the next command. Only what a listing showed was remembered before.
 * An account or recipient whose keys use post-quantum encryption says so and exits `8`. Signing in to such an account failed as a wrong password, and sending to one as an unreadable key.
@@ -2990,7 +3015,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-8)
+[Section titled “Changed”](#changed-9)
 
 * A crash prints one line pointing at `proton report` instead of a Go stack trace.
 * Refusals that arrived as bare text now say what to do: a pinned key that does not match the recipient’s, an inline attachment with no `--html`, a reply to a message with no reply address, an unknown `pass items create --type`, an alias in a Pass import, and a `--remind` that is not a warning time.
@@ -2998,7 +3023,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-9)
+[Section titled “Fixed”](#fixed-10)
 
 * A listing that cannot decrypt something says how many are missing instead of dropping them in silence, and `--output json` carries a `skipped` count.
 * “Failed to unlock any address keys.” now says which of four things went wrong, and the log records it per key.
@@ -3028,7 +3053,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-9)
+[Section titled “Changed”](#changed-10)
 
 * **Breaking.** `--output` means the response format on every command. The commands that write bytes to disk take `--dest` and `--dest-dir` for where they go - every `download`, plus `mail messages export`, `contacts export`, `calendar events export` and `pass export`. A script passing a path to `--output` now fails, naming the three formats it accepts.
 * **Breaking.** A secret is never a flag value. `pass items create|update` no longer take `--password`, `--totp-uri`, `--totp-field`, `--hidden`, `--number`, `--cvv`, `--pin` or `--private-key`; use `--secret-file NAME=FILE`, `--secret-stdin NAME` or `--generate-password`. `drive items share link --password` is now `--link-password-file` / `--link-password-stdin`, with `--clear-link-password` to take one off. `--eo-password` on `mail messages send`, `reply`, `forward` and `drafts send` is now `--eo-password-file` / `--eo-password-stdin`.
@@ -3043,7 +3068,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-10)
+[Section titled “Fixed”](#fixed-11)
 
 * `drive trash list` shows everything `drive trash empty` deletes. Trashed photos sit on a volume of their own and were missing from the listing while `empty` destroyed them anyway, so the number you confirmed was not the number that went.
 * A filtered Drive command counts a folder and the files inside it once rather than twice - a folder is trashed, deleted, moved and copied whole - and names what Proton refused rather than reporting the count it hoped for.
@@ -3071,7 +3096,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-10)
+[Section titled “Changed”](#changed-11)
 
 * A CAPTCHA opens in your own browser rather than a window `proton` draws. Nothing to install on Linux: `libwebkit2gtk`, `libgtk-3` and `glib-networking` are no longer needed, the `.deb` and `.rpm` packages no longer depend on GTK or WebKit, and a `go install` build verifies exactly as a release binary does.
 
@@ -3095,7 +3120,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-11)
+[Section titled “Changed”](#changed-12)
 
 * A `--help` screen ends with a link to that command’s page instead of repeating the global flags, which are listed on `proton --help` alone.
 * A short ID starts after the dash an ID may begin with, so nothing a listing shortens can be read as a flag when it is pasted back. About one ID in sixty-four begins with one, and a short ID copied for such a thing before this release needs listing again.
@@ -3104,7 +3129,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-11)
+[Section titled “Fixed”](#fixed-12)
 
 * Installing an older version from the APT repository works again: it carries the last ten releases rather than only the newest, so `apt install proton-cli=2.8.0` and a rollback find something to install.
 * The key password kept with a session is a cache: one that has stopped opening the keys is worked out again instead of leaving a profile that decrypts nothing, which is what a password changed elsewhere used to leave behind. Signing in drops the one a previous session left, so `account get` no longer calls such a profile unlocked.
@@ -3122,13 +3147,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-12)
+[Section titled “Changed”](#changed-13)
 
 * `calendar reminders list` and `calendar reminders watch` report the event a reminder warns about in full - its location, description, attendees and the rest sit on the row beside `fires`, `remind` and `says`. `reminders list` gains a `LOCATION` column, so a script reading that text output by column position will shift.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-12)
+[Section titled “Fixed”](#fixed-13)
 
 * Signing in survives a bad moment at Proton’s edge: a 502 or a dropped connection is waited out and asked again, instead of coming out as a complaint about JSON and exit `1`. Only what spends nothing is ever asked twice - a two-factor code least of all.
 * A sign-in refused for a wrong password or two-factor code exits `2`, and one that outlasts the waiting - a rate limit included - exits `5`, so a scheduled job can tell “fix the password” from “come back later”.
@@ -3148,7 +3173,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-13)
+[Section titled “Changed”](#changed-14)
 
 * `mail settings folders list` shows a `NOTIFY` column, and a folder carries `notify` in JSON. A script reading that text output by column position will shift.
 
@@ -3188,7 +3213,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-14)
+[Section titled “Changed”](#changed-15)
 
 * **Breaking.** `mail messages search` and `mail conversations search` are gone. `mail messages list` and `mail conversations list` take the same filters; they were always one request to Proton.
 * **Breaking.** `drive folders create` is now `drive items create`, and `drive share ...` is now `drive items share ...`. Update any scripts that call them.
@@ -3196,7 +3221,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-13)
+[Section titled “Fixed”](#fixed-14)
 
 * `contacts create` reports Proton’s refusal instead of exiting `0` having written nothing. Proton answers inside a successful response, and only the response was being read.
 * `contacts groups add` puts every one of a contact’s addresses in the group, as it always said it would, and `--email` acts on the address you named rather than one that happens to belong to another contact.
@@ -3217,13 +3242,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-15)
+[Section titled “Changed”](#changed-16)
 
 * `update --dry-run` and `uninstall --dry-run` no longer ask you to sign in: they change this machine, not your account.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-14)
+[Section titled “Fixed”](#fixed-15)
 
 * Tab completion answers again - every shell’s completion script was being refused as a mistyped command.
 
@@ -3233,13 +3258,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-16)
+[Section titled “Changed”](#changed-17)
 
 * `drive items upload --recursive` sends a deep tree in fewer round trips.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-15)
+[Section titled “Fixed”](#fixed-16)
 
 * `drive folders create /a/b/c` makes the folders above `c` instead of failing, and says how many it made.
 * `drive folders create` names the file standing in the path instead of failing with `Link has no hash key`.
@@ -3250,7 +3275,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-17)
+[Section titled “Changed”](#changed-18)
 
 * The command is `proton`. `proton-cli` stays on your `PATH` as a second name, so nothing already written breaks and upgrading does not sign you out.
 * **Breaking.** `go install github.com/roman-16/proton-cli/cmd/proton@latest` - the path gained `/cmd/proton`. Every other way of installing is unchanged.
@@ -3275,7 +3300,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-18)
+[Section titled “Changed”](#changed-19)
 
 * **Breaking.** An unrecognised reference exits `3` (not found) rather than `1`. Update scripts that read `1` as “no such thing”.
 * **Breaking.** A bad command line exits `1` (user error) rather than `2` (authentication), even when signed out.
@@ -3296,7 +3321,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-16)
+[Section titled “Fixed”](#fixed-17)
 
 * IDs that begin with `-` are no longer read as flags, in full, short and `SHARE/ITEM` references.
 * `drive items revisions restore` reports success instead of an error when Proton accepts it.
@@ -6090,12 +6115,15 @@ proton index create mail
 
 ```console
 $ proton index create mail
-Indexing mail  ━━━━━━━───────────────────────   26%  12400 / 48213 messages  8.2/s  1h12m left
+Indexing mail         ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  100%  48213 / 48213 messages  in 3m
+Indexing mail bodies  ━━━━━━━───────────────────────   26%  12400 / 48213 bodies  8.2/s  1h12m left
 ```
 
-A first build of a large mailbox takes hours. Stopping it with Ctrl+C is safe: it works newest first, and running it again carries on where it stopped.
+Mail is indexed in two passes. The first takes minutes and holds every message; from then on a filtered listing such as `--unread`, `--from` or `--after` is answered from this machine. The second downloads the bodies newest first, and for a large mailbox takes hours.
 
-Afterwards `--keyword` searches bodies as well, everywhere it is taken:
+Stopping it with Ctrl+C is safe: running it again carries on where it stopped.
+
+Once a body is indexed `--keyword` searches it, everywhere the flag is taken:
 
 ```bash
 proton mail messages list --keyword "parking permit" --folder all
@@ -6105,12 +6133,14 @@ proton mail messages export --keyword "parking permit" --folder all --all --dest
 
 With an index, `--from` and `--to` match display names as well as addresses. Proton’s search operators - `invoice | receipt`, `book*`, `!word` - stop applying: every term is matched literally, and a quoted phrase is one term.
 
-While a build is unfinished, a search says what it did not reach:
+A quoted reply is indexed without the history it quotes, so a keyword matches the message that says it rather than every later message in the thread.
+
+While bodies are still downloading, a keyword search says what it did not read:
 
 ```console
 $ proton mail messages list --keyword "parking permit" --folder all
 No messages match.
-! Only 12400 of 48213 messages are indexed, newest first, so older mail was not searched. `proton index create mail` continues the download.
+! Only 12400 of 48213 message bodies are indexed, newest first, so older mail was searched by everything but its text. `proton index create mail` continues the download.
 ```
 
 ## Find a file without a walk
@@ -6145,13 +6175,15 @@ It works without an index by reading your calendars first, which takes a moment.
 
 ```console
 $ proton index list
-APP       INDEXED                  UNREADABLE  UPDATED           SIZE
-────────  ───────────────────────  ──────────  ────────────────  ───────
-calendar  1342 events                          2026-04-15 14:30  812.0 KB
-drive     8120 items                           2026-04-15 14:31  1.9 MB
-mail      12400 of 48213 messages  31          2026-04-15 14:32  36.2 MB
+APP       INDEXED                        UNREADABLE  UPDATED           SIZE
+────────  ─────────────────────────────  ──────────  ────────────────  ───────
+calendar  1342 events                                2026-04-15 14:30  812.0 KB
+drive     8120 items                                 2026-04-15 14:31  1.9 MB
+mail      48213 messages, 12400 bodies   31          2026-04-15 14:32  36.2 MB
 3 indexes.
 ```
+
+For mail, INDEXED names both passes: every message is indexed, and 12400 of them hold the body a keyword reads. A first pass that has not finished reads `12400 of 48213 messages` instead.
 
 `UNREADABLE` counts things whose contents would not open - a message body, an event’s text. They are searchable by everything else they carry.
 
@@ -6161,14 +6193,21 @@ This reads files, so it works signed out.
 
 [Section titled “Keep it current”](#keep-it-current)
 
-A search brings the index up to date before it answers, so an answer is never older than the command. Two ways to have that done already:
+A search brings the index up to date before it answers. Two ways to have that done already:
 
 ```bash
 proton index update
 proton index watch
 ```
 
-`update` catches up once, for cron or a systemd timer. `watch` stays attached and applies changes as they land. Neither indexes an app that has no index; `create` does that. For running `watch` unattended, see [Scripting](/using/scripting/#run-a-watch-under-systemd).
+`update` catches up once, for cron or a systemd timer. `watch` stays attached and applies changes as they land; while it runs, a search reads the copy as of the last poll, at most 30 seconds old. Prefer `watch` when searches are frequent, and `update` on a timer when they are not. Both finish a build that was interrupted, and neither indexes an app that has no index; `create` does that. For running `watch` unattended, see [Scripting](/using/scripting/#run-a-watch-under-systemd).
+
+When Proton cannot say what has changed since the last catch-up - after a long gap, or a change across the whole account - the next `create` or `update` reads the app again and settles it. Until then a search says so:
+
+```console
+$ proton mail messages list --unread --folder all
+! The mail index has fallen behind Proton and was searched as it stands. `proton index update` catches it up.
+```
 
 ## Remove it
 
@@ -6202,7 +6241,7 @@ Holds `create`, `delete`, `list`, `update` and `watch`.
 
 Index an app so its contents can be searched.
 
-Name the apps to index, or none for every app that can be. A first build of a large mailbox takes hours; stopping it and running it again carries on where it left off, newest first.
+Name the apps to index, or none for every app that can be. Mail is indexed in two passes: every message first, which takes minutes and answers a filtered listing, then the bodies newest first, which for a large mailbox takes hours. Stopping it and running it again carries on where it left off.
 
 What it writes is encrypted to your account’s keys, under \~/.config/proton-cli/index.
 
@@ -6242,7 +6281,7 @@ proton index delete --yes mail
 
 List what is indexed on this machine.
 
-Reads the files and nothing else, so it works signed out. INDEXED counts what a search would look through; a build that has not finished says how much of the app it has reached.
+Reads the files and nothing else, so it works signed out. INDEXED counts what a search would look through; a build that has not finished says how much of the app it has reached, and mail says how many message bodies it holds while they are still downloading.
 
 ```plaintext
 proton index list
@@ -6259,7 +6298,7 @@ proton index list --output json
 
 Bring every index up to date.
 
-Applies what has happened since the last run, and carries on a build that was interrupted. It creates nothing: an app with no index is left alone.
+Applies what has happened since the last run, carries on a build that was interrupted, and reads an app again where Proton could not say what changed. It creates nothing: an app with no index is left alone.
 
 A search catches up by itself, so this is for having it done already: run it from cron, or leave `index watch` attached.
 
@@ -6278,9 +6317,9 @@ proton index update --quiet
 
 Keep every index current until you stop it.
 
-Applies changes as they land, one line per batch, so a search answers without catching up first.
+Applies changes as they land, one line per batch, and finishes a build that was interrupted. It creates nothing: an app with no index is left alone.
 
-It indexes nothing that is not indexed already; `index create` does that.
+While it runs, a search reads the copy as of the last poll, at most 30 seconds old. Prefer it when searches are frequent; run `index update` on a timer when they are not.
 
 ```plaintext
 proton index watch
@@ -12060,6 +12099,13 @@ PROTON_CONFIRM='mutations, drive:default'
 PROTON_CONFIRM='reads, mail messages list:default'
 ```
 
+An exception to a `deny` is written as a `deny` of its own, since `default` only takes a command out of an `ask`:
+
+```bash
+# nothing in the index may be changed, except listing what is there
+PROTON_CONFIRM='index:all=deny, index list:default=deny'
+```
+
 That holds **within** one place a policy is written. Between the file, the variable and the flag it does not: each is weighed on its own and the strictest wins. An exception written in one of them cannot stand down a rule written in another.
 
 ## Ask
@@ -12544,7 +12590,7 @@ WantedBy=default.target
 
 `systemctl --user enable --now proton-mail-watch proton-reminders-watch` starts both. A watch stops cleanly on SIGTERM, so `systemctl --user stop` is not logged as a failure.
 
-The same unit shape keeps a [local index](/local-index/) current, so a search answers without catching up first:
+The same unit shape keeps a [local index](/local-index/) current, so a search answers without catching up first. While a watch runs, a search reads the copy as of its last poll, at most 30 seconds old:
 
 \~/.config/systemd/user/proton-index-watch.service
 
@@ -12563,7 +12609,7 @@ Restart=always
 WantedBy=default.target
 ```
 
-With a timer instead of a daemon, run `proton index update` on a schedule.
+With a timer instead of a daemon, run `proton index update` on a schedule. A search then catches the index up itself, so it answers from the account as of the command.
 
 Which folders count as an arrival is a setting of its own. `mail settings folders list` shows it per folder under NOTIFY, and `folders create` and `folders update` take `--notify`. Without `--folder`, the watch covers the inbox plus every folder marked that way.
 
