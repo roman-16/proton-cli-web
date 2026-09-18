@@ -2683,13 +2683,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Adding a version section here is what publishes a release, so this file is the one place a version is decided: see [Releases](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md#releases). Versions that shipped before this file existed are on the [releases page](https://github.com/roman-16/proton-cli/releases).
 
+## \[4.2.3] - 2026-09-18
+
+[Section titled “\[4.2.3\] - 2026-09-18”](#423---2026-09-18)
+
+### Fixed
+
+[Section titled “Fixed”](#fixed)
+
+* A calendar this account cannot open stopped taking in changes after the first one, so a search over it answered as of the build. It keeps up now, each event indexed by the day and time Proton keeps in the clear.
+* `index list` counted a calendar’s unreadable events again every time the calendar was read, so the number grew past what the index holds. It counts what is in the index.
+
 ## \[4.2.2] - 2026-09-17
 
 [Section titled “\[4.2.2\] - 2026-09-17”](#422---2026-09-17)
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed)
+[Section titled “Fixed”](#fixed-1)
 
 * A message that arrived or was edited while its body could not be fetched was missing from every indexed listing until the mailbox was read again. It is indexed by its envelope, and the next run fetches the body.
 * A page of changes the index could not apply was skipped for good - by `index watch`, and on disk by `index update` for a calendar. It is asked for again.
@@ -2714,7 +2725,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-1)
+[Section titled “Fixed”](#fixed-2)
 
 * Downloading from or uploading into a share link failed with `Path not found`. Proton retired the endpoints behind `--link` and `--shared`.
 * An index went on reporting itself complete after Proton could not describe what had changed, silently missing whatever happened in the gap. `index create` and `index update` read the app again and take out what is gone, and a search says the index has fallen behind until they do.
@@ -2738,7 +2749,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-2)
+[Section titled “Fixed”](#fixed-3)
 
 * `calendar events list` and `events export` take any date range. Proton refuses a window wider than a few months, so a semester failed outright; the range is fetched six weeks at a time and the answers joined.
 * A calendar that cannot be read is reported under the listing or export rather than leaving it short without a word, and an export says which events it could not decrypt.
@@ -2759,7 +2770,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-3)
+[Section titled “Fixed”](#fixed-4)
 
 * `calendar events list` and `events export` said to narrow the range with `--start` and `--end`; the flags are `--after` and `--before`. All three calendar listings now state their default range as well.
 * `mail messages reply --help` described `--all`; the flag is `--everyone`.
@@ -2803,7 +2814,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-4)
+[Section titled “Fixed”](#fixed-5)
 
 * A listing the CLI pages itself answers whole unless a page is asked for. `pass aliases list` reported fewer aliases than the account holds, which read as a short answer rather than a wrong one.
 * `curl … | sh -s -- --help` prints the help instead of failing with an awk error - the one flow the script’s own header documents.
@@ -2835,7 +2846,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-5)
+[Section titled “Fixed”](#fixed-6)
 
 * A Pass backup restores with its dates, its trash and its alias addresses intact, and an export carries trashed items.
 * An archive too large to read says so, instead of being reported as a file some other password manager wrote.
@@ -2884,7 +2895,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-6)
+[Section titled “Fixed”](#fixed-7)
 
 * Sending mail and creating Drive share links from an address that has ever accepted a forwarding. Everything leaving the address was encrypted to every key it holds, and a forwarding key carries no encryption key at all, so the send failed outright and told you to file a report. Affects any account whose address holds one, however the forwarding was accepted.
 * `mail settings forwarding create` was refused by Proton every time. The key it published was not shaped like the ones Proton’s own clients write.
@@ -2908,7 +2919,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-7)
+[Section titled “Fixed”](#fixed-8)
 
 * `pass items revisions list` and `revisions get` reached only an item’s 50 most recent revisions.
 
@@ -2949,7 +2960,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-8)
+[Section titled “Fixed”](#fixed-9)
 
 * An all-day calendar event could not be given a time of day back: a `--start` naming one was accepted, discarded, and reported as a success.
 * Colour in a Windows console. Nothing there sets `TERM`, so every screen was drawn plain.
@@ -2962,7 +2973,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-9)
+[Section titled “Fixed”](#fixed-10)
 
 * `contacts create`, `update`, `import` and `merge` were refused with `Invalid PGP packets` on an account holding more than one user key. A contact card is now sealed to your primary user key alone, which is what Proton’s own clients send.
 * `contacts update` and `contacts merge` added a second copy of the address and of every pinned key each time they ran. `contacts export` and `contacts keys list` showed one copy per past edit; running `contacts update` on an affected contact once more clears it.
@@ -2995,7 +3006,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-10)
+[Section titled “Fixed”](#fixed-11)
 
 * Sharing with a Proton address whose key this build cannot read says so, instead of calling it an address outside Proton.
 * `proton report` carries the whole run. A report of a listing that made 750 requests held two lines. A run too large for an issue form is trimmed to its first and last records plus everything above debug between them, and says how many it left out; `--dest` writes all of it.
@@ -3041,7 +3052,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-11)
+[Section titled “Fixed”](#fixed-12)
 
 * A listing that cannot decrypt something says how many are missing instead of dropping them in silence, and `--output json` carries a `skipped` count.
 * “Failed to unlock any address keys.” now says which of four things went wrong, and the log records it per key.
@@ -3086,7 +3097,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-12)
+[Section titled “Fixed”](#fixed-13)
 
 * `drive trash list` shows everything `drive trash empty` deletes. Trashed photos sit on a volume of their own and were missing from the listing while `empty` destroyed them anyway, so the number you confirmed was not the number that went.
 * A filtered Drive command counts a folder and the files inside it once rather than twice - a folder is trashed, deleted, moved and copied whole - and names what Proton refused rather than reporting the count it hoped for.
@@ -3147,7 +3158,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-13)
+[Section titled “Fixed”](#fixed-14)
 
 * Installing an older version from the APT repository works again: it carries the last ten releases rather than only the newest, so `apt install proton-cli=2.8.0` and a rollback find something to install.
 * The key password kept with a session is a cache: one that has stopped opening the keys is worked out again instead of leaving a profile that decrypts nothing, which is what a password changed elsewhere used to leave behind. Signing in drops the one a previous session left, so `account get` no longer calls such a profile unlocked.
@@ -3171,7 +3182,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-14)
+[Section titled “Fixed”](#fixed-15)
 
 * Signing in survives a bad moment at Proton’s edge: a 502 or a dropped connection is waited out and asked again, instead of coming out as a complaint about JSON and exit `1`. Only what spends nothing is ever asked twice - a two-factor code least of all.
 * A sign-in refused for a wrong password or two-factor code exits `2`, and one that outlasts the waiting - a rate limit included - exits `5`, so a scheduled job can tell “fix the password” from “come back later”.
@@ -3239,7 +3250,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-15)
+[Section titled “Fixed”](#fixed-16)
 
 * `contacts create` reports Proton’s refusal instead of exiting `0` having written nothing. Proton answers inside a successful response, and only the response was being read.
 * `contacts groups add` puts every one of a contact’s addresses in the group, as it always said it would, and `--email` acts on the address you named rather than one that happens to belong to another contact.
@@ -3266,7 +3277,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-16)
+[Section titled “Fixed”](#fixed-17)
 
 * Tab completion answers again - every shell’s completion script was being refused as a mistyped command.
 
@@ -3282,7 +3293,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-17)
+[Section titled “Fixed”](#fixed-18)
 
 * `drive folders create /a/b/c` makes the folders above `c` instead of failing, and says how many it made.
 * `drive folders create` names the file standing in the path instead of failing with `Link has no hash key`.
@@ -3339,7 +3350,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-18)
+[Section titled “Fixed”](#fixed-19)
 
 * IDs that begin with `-` are no longer read as flags, in full, short and `SHARE/ITEM` references.
 * `drive items revisions restore` reports success instead of an error when Proton accepts it.
