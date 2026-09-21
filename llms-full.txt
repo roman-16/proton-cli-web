@@ -725,7 +725,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive items copy`](/drive/items/#copy)                                                 | Copy files into another folder                                      |
 | [`proton drive items create`](/drive/items/#create)                                             | Create a folder, and any missing folder above it                    |
 | [`proton drive items delete`](/drive/items/#delete)                                             | Delete files or folders permanently                                 |
-| [`proton drive items download`](/drive/items/#download)                                         | Download a file                                                     |
+| [`proton drive items download`](/drive/items/#download)                                         | Download a file or folder                                           |
 | [`proton drive items get`](/drive/items/#get)                                                   | Show a file or folder’s details                                     |
 | [`proton drive items list`](/drive/items/#list)                                                 | List what is in a folder                                            |
 | [`proton drive items move`](/drive/items/#move)                                                 | Move files or folders into another folder                           |
@@ -1021,7 +1021,7 @@ The paths are listed under [Files on disk](/using/settings/#files-on-disk). Thre
 
 **The diagnostic log**, mode `0600`, holds what each run did, written so it can be handed to a stranger: addresses, IDs, paths, tokens, subjects, filenames, search terms and flag values never enter it. `--no-log` or `PROTON_NO_LOG` stops it being written ([Settings](/using/settings/#the-diagnostic-log)).
 
-**The local index**, mode `0600`, exists only after `proton index create` and holds a copy of what it indexed: for mail, every message with its subject, its addresses and its body as text. It is encrypted with AES-256-GCM under a key of its own, and that key is encrypted and signed to your account’s keys, so **revoking the session** makes a leaked copy unreadable the same way it does the session file. `proton index delete` removes it ([Local index](/local-index/)).
+**The local index**, mode `0600`, exists only after `proton index create` and holds a copy of what it indexed: for mail, every message with its subject, its addresses and its body as text; for Drive, the tree and the text of your text files up to 1 MB each. It is encrypted with AES-256-GCM under a key of its own, and that key is encrypted and signed to your account’s keys, so **revoking the session** makes a leaked copy unreadable the same way it does the session file. `proton index delete` removes it ([Local index](/local-index/)).
 
 ## A file downloaded from a public link
 
@@ -3894,10 +3894,13 @@ This page is what people actually do. For every command and flag, see the refere
 proton drive items list                       # the root
 proton drive items list /Documents
 proton drive items list /Build --pattern "*.tmp" --recursive
+proton drive items list /Notes --keyword "parking permit" --recursive
 proton drive items get /Documents/report.pdf  # type, size, checksum, sharing state
 ```
 
-A filter such as `--pattern` opens every folder in its scope, which takes a while over a large tree. `proton index create drive` keeps a copy of the tree on this machine and answers from it instead: [Local index](/local-index/).
+A filtered listing shows each item’s full path.
+
+A filter such as `--pattern` opens every folder in its scope, which takes a while over a large tree. `proton index create drive` keeps a copy of the tree on this machine and answers from it instead, and `--keyword` then matches what your text files say as well as what they are called: [Local index](/local-index/).
 
 ## Upload and download
 
@@ -3910,10 +3913,13 @@ pg_dump mydb | proton drive items upload - /Backups/db.sql
 
 
 proton drive items download /Documents/report.pdf --dest-dir ./downloads/
+proton drive items download /Documents --recursive --dest-dir ./downloads/
 proton drive items download /Documents/report.pdf --dest - | less
 ```
 
-Uploads show progress on stderr.
+A folder needs `--recursive`, and lands as a directory of its own name inside `--dest-dir`. `--dest` names one file, so it is refused for a folder.
+
+Transfers show progress on stderr.
 
 **A name already taken is refused.** `--if-exists` answers instead:
 
@@ -3965,7 +3971,7 @@ The trash is one list however many volumes it is spread over. Photos are kept on
 
 `trash list` pages and sorts like any other listing, and says how many items there are in total. `trash empty` deletes exactly that many.
 
-`trash`, `delete`, `move` and `copy` all take filters instead of paths: `--pattern`, `--larger-than`, `--smaller-than`, `--older-than`, `--newer-than`, `--scope`, `--recursive` and `--all`. Try them with `list` or `--dry-run` first:
+`trash`, `delete`, `move` and `copy` all take filters instead of paths: `--keyword`, `--pattern`, `--larger-than`, `--smaller-than`, `--older-than`, `--newer-than`, `--scope`, `--recursive` and `--all`. Try them with `list` or `--dry-run` first:
 
 ```bash
 proton drive items list /Build --pattern "*.tmp" --recursive          # see what matches
@@ -4379,20 +4385,21 @@ proton drive items copy /Documents/report.pdf --into /Archive
 proton drive items copy --pattern '*.pdf' --scope /Documents --into /Backup
 ```
 
-| Flag                    | Description                                             |
-| ----------------------- | ------------------------------------------------------- |
-| `--all`                 | Act on everything in scope, rather than a subset        |
-| `--computer string`     | Work inside this computer’s files, by name or ID        |
-| `--into string`         | Destination folder                                      |
-| `--larger-than string`  | Match files above SIZE (e.g. 100MB, 2GB)                |
-| `--limit int`           | Most items to affect; 0 for no cap (default `150`)      |
-| `--newer-than string`   | Match files newer than DURATION                         |
-| `--older-than string`   | Match files older than DURATION (e.g. 30d, 2w, 1h)      |
-| `--pattern string`      | Match names against a shell glob, e.g. \*.tmp           |
-| `--recursive`           | Descend into subfolders when filtering                  |
-| `--scope string`        | Look only inside this folder (default: the whole drive) |
-| `--shared string`       | Work inside an item shared with you, by name or ID      |
-| `--smaller-than string` | Match files below SIZE                                  |
+| Flag                    | Description                                                                |
+| ----------------------- | -------------------------------------------------------------------------- |
+| `--all`                 | Act on everything in scope, rather than a subset                           |
+| `--computer string`     | Work inside this computer’s files, by name or ID                           |
+| `--into string`         | Destination folder                                                         |
+| `--keyword string`      | Match text in the name, and in a file’s contents once a drive index exists |
+| `--larger-than string`  | Match files above SIZE (e.g. 100MB, 2GB)                                   |
+| `--limit int`           | Most items to affect; 0 for no cap (default `150`)                         |
+| `--newer-than string`   | Match files newer than DURATION                                            |
+| `--older-than string`   | Match files older than DURATION (e.g. 30d, 2w, 1h)                         |
+| `--pattern string`      | Match names against a shell glob, e.g. \*.tmp                              |
+| `--recursive`           | Descend into subfolders when filtering                                     |
+| `--scope string`        | Look only inside this folder (default: the whole drive)                    |
+| `--shared string`       | Work inside an item shared with you, by name or ID                         |
+| `--smaller-than string` | Match files below SIZE                                                     |
 
 ## `create`
 
@@ -4436,27 +4443,30 @@ proton drive items delete --pattern '*.tmp' --scope /Build --recursive --yes
 proton drive items delete /photo.jpg --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 ```
 
-| Flag                          | Description                                                 |
-| ----------------------------- | ----------------------------------------------------------- |
-| `--all`                       | Act on everything in scope, rather than a subset            |
-| `--computer string`           | Work inside this computer’s files, by name or ID            |
-| `--larger-than string`        | Match files above SIZE (e.g. 100MB, 2GB)                    |
-| `--limit int`                 | Most items to affect; 0 for no cap (default `150`)          |
-| `--link string`               | Work inside a public link somebody sent you, by URL         |
-| `--link-password-file string` | Read the public link’s password from a file, or - for stdin |
-| `--newer-than string`         | Match files newer than DURATION                             |
-| `--older-than string`         | Match files older than DURATION (e.g. 30d, 2w, 1h)          |
-| `--pattern string`            | Match names against a shell glob, e.g. \*.tmp               |
-| `--recursive`                 | Descend into subfolders when filtering                      |
-| `--scope string`              | Look only inside this folder (default: the whole drive)     |
-| `--shared string`             | Work inside an item shared with you, by name or ID          |
-| `--smaller-than string`       | Match files below SIZE                                      |
+| Flag                          | Description                                                                |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `--all`                       | Act on everything in scope, rather than a subset                           |
+| `--computer string`           | Work inside this computer’s files, by name or ID                           |
+| `--keyword string`            | Match text in the name, and in a file’s contents once a drive index exists |
+| `--larger-than string`        | Match files above SIZE (e.g. 100MB, 2GB)                                   |
+| `--limit int`                 | Most items to affect; 0 for no cap (default `150`)                         |
+| `--link string`               | Work inside a public link somebody sent you, by URL                        |
+| `--link-password-file string` | Read the public link’s password from a file, or - for stdin                |
+| `--newer-than string`         | Match files newer than DURATION                                            |
+| `--older-than string`         | Match files older than DURATION (e.g. 30d, 2w, 1h)                         |
+| `--pattern string`            | Match names against a shell glob, e.g. \*.tmp                              |
+| `--recursive`                 | Descend into subfolders when filtering                                     |
+| `--scope string`              | Look only inside this folder (default: the whole drive)                    |
+| `--shared string`             | Work inside an item shared with you, by name or ID                         |
+| `--smaller-than string`       | Match files below SIZE                                                     |
 
 ## `download`
 
 [Section titled “download”](#download)
 
-Download a file.
+Download a file or folder.
+
+A folder is refused without –recursive. With it, the folder lands as a directory of its own name inside –dest-dir, subfolders and all, and –dest is refused: one path cannot take a tree.
 
 Behind a public link, a file is / when the link points at the file itself, and a path inside the folder when it points at a folder. A link with a password takes it from –link-password-file, which takes - for stdin.
 
@@ -4466,6 +4476,7 @@ proton drive items download PATH
 
 ```bash
 proton drive items download /Documents/report.pdf --dest-dir .
+proton drive items download /Documents --recursive --dest-dir .
 proton drive items download /Documents/report.pdf --dest - > report.pdf
 proton drive items download /report.pdf --shared Project --dest-dir .
 proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --dest-dir .
@@ -4480,6 +4491,7 @@ proton drive items download / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ
 | `--force`                     | Overwrite a file that already exists                        |
 | `--link string`               | Work inside a public link somebody sent you, by URL         |
 | `--link-password-file string` | Read the public link’s password from a file, or - for stdin |
+| `--recursive`                 | Download a folder and everything under it                   |
 | `--shared string`             | Work inside an item shared with you, by name or ID          |
 
 ## `get`
@@ -4512,7 +4524,9 @@ proton drive items get / --shared Q3-report.pdf
 
 List what is in a folder.
 
-Takes the same filters as move, copy, trash and delete, so you can preview a selection here before acting on it. What PATH is here, those commands call –scope.
+Takes the same filters as move, copy, trash and delete, so you can preview a selection here before acting on it. What PATH is here, those commands call –scope. A filtered listing shows each item’s full path.
+
+–keyword matches names, and the contents of your text files once `proton index create drive` has downloaded them. Elsewhere - a computer, a share, a link - it matches names alone, and says so.
 
 PATH is in your own files. –computer REF lists inside a computer instead, –shared REF inside something somebody shared with you, and –link URL inside a public link somebody sent you. In the last two, / is the item itself.
 
@@ -4523,27 +4537,29 @@ proton drive items list [PATH]
 ```bash
 proton drive items list
 proton drive items list /Documents
+proton drive items list /Notes --keyword 'parking permit' --recursive
 proton drive items list / --computer 'Work laptop'
 proton drive items list / --shared Project
 proton drive items list / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
 ```
 
-| Flag                          | Description                                                 |
-| ----------------------------- | ----------------------------------------------------------- |
-| `--computer string`           | Work inside this computer’s files, by name or ID            |
-| `--desc`                      | Reverse the order                                           |
-| `--larger-than string`        | Match files above SIZE (e.g. 100MB, 2GB)                    |
-| `--limit int`                 | How many items per page; 0 for all of them (default `50`)   |
-| `--link string`               | Work inside a public link somebody sent you, by URL         |
-| `--link-password-file string` | Read the public link’s password from a file, or - for stdin |
-| `--newer-than string`         | Match files newer than DURATION                             |
-| `--older-than string`         | Match files older than DURATION (e.g. 30d, 2w, 1h)          |
-| `--page int`                  | Which page of results, counting from zero                   |
-| `--pattern string`            | Match names against a shell glob, e.g. \*.tmp               |
-| `--recursive`                 | Descend into subfolders when filtering                      |
-| `--shared string`             | Work inside an item shared with you, by name or ID          |
-| `--smaller-than string`       | Match files below SIZE                                      |
-| `--sort string`               | Order by: name, size, modified (default `name`)             |
+| Flag                          | Description                                                                |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `--computer string`           | Work inside this computer’s files, by name or ID                           |
+| `--desc`                      | Reverse the order                                                          |
+| `--keyword string`            | Match text in the name, and in a file’s contents once a drive index exists |
+| `--larger-than string`        | Match files above SIZE (e.g. 100MB, 2GB)                                   |
+| `--limit int`                 | How many items per page; 0 for all of them (default `50`)                  |
+| `--link string`               | Work inside a public link somebody sent you, by URL                        |
+| `--link-password-file string` | Read the public link’s password from a file, or - for stdin                |
+| `--newer-than string`         | Match files newer than DURATION                                            |
+| `--older-than string`         | Match files older than DURATION (e.g. 30d, 2w, 1h)                         |
+| `--page int`                  | Which page of results, counting from zero                                  |
+| `--pattern string`            | Match names against a shell glob, e.g. \*.tmp                              |
+| `--recursive`                 | Descend into subfolders when filtering                                     |
+| `--shared string`             | Work inside an item shared with you, by name or ID                         |
+| `--smaller-than string`       | Match files below SIZE                                                     |
+| `--sort string`               | Order by: name, size, modified (default `name`)                            |
 
 ## `move`
 
@@ -4560,20 +4576,21 @@ proton drive items move /Documents/report.pdf --into /Archive
 proton drive items move --pattern '*.log' --scope /Build --recursive --into /Archive
 ```
 
-| Flag                    | Description                                             |
-| ----------------------- | ------------------------------------------------------- |
-| `--all`                 | Act on everything in scope, rather than a subset        |
-| `--computer string`     | Work inside this computer’s files, by name or ID        |
-| `--into string`         | Destination folder                                      |
-| `--larger-than string`  | Match files above SIZE (e.g. 100MB, 2GB)                |
-| `--limit int`           | Most items to affect; 0 for no cap (default `150`)      |
-| `--newer-than string`   | Match files newer than DURATION                         |
-| `--older-than string`   | Match files older than DURATION (e.g. 30d, 2w, 1h)      |
-| `--pattern string`      | Match names against a shell glob, e.g. \*.tmp           |
-| `--recursive`           | Descend into subfolders when filtering                  |
-| `--scope string`        | Look only inside this folder (default: the whole drive) |
-| `--shared string`       | Work inside an item shared with you, by name or ID      |
-| `--smaller-than string` | Match files below SIZE                                  |
+| Flag                    | Description                                                                |
+| ----------------------- | -------------------------------------------------------------------------- |
+| `--all`                 | Act on everything in scope, rather than a subset                           |
+| `--computer string`     | Work inside this computer’s files, by name or ID                           |
+| `--into string`         | Destination folder                                                         |
+| `--keyword string`      | Match text in the name, and in a file’s contents once a drive index exists |
+| `--larger-than string`  | Match files above SIZE (e.g. 100MB, 2GB)                                   |
+| `--limit int`           | Most items to affect; 0 for no cap (default `150`)                         |
+| `--newer-than string`   | Match files newer than DURATION                                            |
+| `--older-than string`   | Match files older than DURATION (e.g. 30d, 2w, 1h)                         |
+| `--pattern string`      | Match names against a shell glob, e.g. \*.tmp                              |
+| `--recursive`           | Descend into subfolders when filtering                                     |
+| `--scope string`        | Look only inside this folder (default: the whole drive)                    |
+| `--shared string`       | Work inside an item shared with you, by name or ID                         |
+| `--smaller-than string` | Match files below SIZE                                                     |
 
 ## `revisions`
 
@@ -4817,19 +4834,20 @@ proton drive items trash --pattern '*.tmp' --scope /Build --recursive
 proton drive items trash --older-than 1y --scope /Downloads --dry-run
 ```
 
-| Flag                    | Description                                             |
-| ----------------------- | ------------------------------------------------------- |
-| `--all`                 | Act on everything in scope, rather than a subset        |
-| `--computer string`     | Work inside this computer’s files, by name or ID        |
-| `--larger-than string`  | Match files above SIZE (e.g. 100MB, 2GB)                |
-| `--limit int`           | Most items to affect; 0 for no cap (default `150`)      |
-| `--newer-than string`   | Match files newer than DURATION                         |
-| `--older-than string`   | Match files older than DURATION (e.g. 30d, 2w, 1h)      |
-| `--pattern string`      | Match names against a shell glob, e.g. \*.tmp           |
-| `--recursive`           | Descend into subfolders when filtering                  |
-| `--scope string`        | Look only inside this folder (default: the whole drive) |
-| `--shared string`       | Work inside an item shared with you, by name or ID      |
-| `--smaller-than string` | Match files below SIZE                                  |
+| Flag                    | Description                                                                |
+| ----------------------- | -------------------------------------------------------------------------- |
+| `--all`                 | Act on everything in scope, rather than a subset                           |
+| `--computer string`     | Work inside this computer’s files, by name or ID                           |
+| `--keyword string`      | Match text in the name, and in a file’s contents once a drive index exists |
+| `--larger-than string`  | Match files above SIZE (e.g. 100MB, 2GB)                                   |
+| `--limit int`           | Most items to affect; 0 for no cap (default `150`)                         |
+| `--newer-than string`   | Match files newer than DURATION                                            |
+| `--older-than string`   | Match files older than DURATION (e.g. 30d, 2w, 1h)                         |
+| `--pattern string`      | Match names against a shell glob, e.g. \*.tmp                              |
+| `--recursive`           | Descend into subfolders when filtering                                     |
+| `--scope string`        | Look only inside this folder (default: the whole drive)                    |
+| `--shared string`       | Work inside an item shared with you, by name or ID                         |
+| `--smaller-than string` | Match files below SIZE                                                     |
 
 ## `update`
 
@@ -6183,7 +6201,41 @@ proton index create drive
 proton drive items list --pattern "*.pdf" --recursive
 ```
 
-The rows are the rows the walk gives, and a file uploaded since the build is in them. Your own files are indexed; a public link, a share somebody sent you and a computer’s backup are read from Proton as before.
+The rows are the rows the walk gives, and a file uploaded since the build is in them. A filtered listing shows each item’s full path. Your own files are indexed; a public link, a share somebody sent you and a computer’s backup are read from Proton as before.
+
+## Search inside files
+
+[Section titled “Search inside files”](#search-inside-files)
+
+Drive is indexed in two passes. The first takes the tree, which is minutes. The second downloads the text of your text files, most recently changed first:
+
+```console
+$ proton index create drive
+Indexing drive        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  100%  8120 items  in 41s
+Indexing drive texts  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━  100%  1240 / 1240 texts  in 4m
+✓ Indexed 8120 items.
+```
+
+Text files are the ones Drive opens as text: `.txt`, `.md`, `.csv`, `.json`, `.html`, `.xml`, and source code, up to 1 MB each. A PDF, an image, an SVG, an archive and anything larger are indexed by name alone. Files in the trash are left out.
+
+`--keyword` then matches names and contents, everywhere the Drive filters are taken:
+
+```bash
+proton drive items list /Notes --keyword "parking permit" --recursive
+proton drive items trash --scope /Notes --keyword DRAFT --recursive --dry-run
+```
+
+Every term has to appear, case and accents are ignored, and a quoted phrase is one term.
+
+A keyword says what it was not able to read:
+
+```console
+$ proton drive items list /Notes --keyword "parking permit" --recursive
+No items match.
+! Only 512 of 1240 files have their text indexed, newest first, so the rest were searched by name alone. `proton index create drive` continues the download.
+```
+
+Without a drive index, and inside `--computer`, `--shared` or `--link`, a keyword matches names and says so.
 
 ## Find an event by what it says
 
@@ -6204,17 +6256,17 @@ It works without an index by reading your calendars first, which takes a moment.
 
 ```console
 $ proton index list
-APP       INDEXED                        UNREADABLE  UPDATED           SIZE
-────────  ─────────────────────────────  ──────────  ────────────────  ───────
-calendar  1342 events                                2026-04-15 14:30  812.0 KB
-drive     8120 items                                 2026-04-15 14:31  1.9 MB
-mail      48213 messages, 12400 bodies   31          2026-04-15 14:32  36.2 MB
+APP       INDEXED                         UNREADABLE  UPDATED           SIZE
+────────  ──────────────────────────────  ──────────  ────────────────  ───────
+calendar  1342 events                                 2026-04-15 14:30  812.0 KB
+drive     8120 items, 512 of 1240 texts               2026-04-15 14:31  3.4 MB
+mail      48213 messages, 12400 bodies    31          2026-04-15 14:32  36.2 MB
 3 indexes.
 ```
 
-For mail, INDEXED names both passes: every message is indexed, and 12400 of them hold the body a keyword reads. A first pass that has not finished reads `12400 of 48213 messages` instead.
+For mail and drive, INDEXED names both passes: every message is indexed, and 12400 of them hold the body a keyword reads; the whole tree is indexed, and 512 of the 1240 files that are text hold their text. A first pass that has not finished reads `12400 of 48213 messages` instead.
 
-`UNREADABLE` counts things whose contents would not open - a message body, an event’s text. They are searchable by everything else they carry.
+`UNREADABLE` counts things whose contents would not open - a message body, an event’s text, a file’s name or bytes. They are searchable by everything else they carry.
 
 This reads files, so it works signed out.
 
@@ -6270,7 +6322,7 @@ Holds `create`, `delete`, `list`, `update` and `watch`.
 
 Index an app so its contents can be searched.
 
-Name the apps to index, or none for every app that can be. Mail is indexed in two passes: every message first, which takes minutes and answers a filtered listing, then the bodies newest first, which for a large mailbox takes hours. Stopping it and running it again carries on where it left off.
+Name the apps to index, or none for every app that can be. Mail and Drive are indexed in two passes. Mail takes every message first, which takes minutes and answers a filtered listing, then the bodies newest first, which for a large mailbox takes hours. Drive takes the tree first, then the text of your text files up to 1 MB each, most recently changed first; a PDF, an image or anything larger is indexed by name alone. Stopping it and running it again carries on where it left off.
 
 What it writes is encrypted to your account’s keys, under \~/.config/proton-cli/index.
 
@@ -6310,7 +6362,7 @@ proton index delete --yes mail
 
 List what is indexed on this machine.
 
-Reads the files and nothing else, so it works signed out. INDEXED counts what a search would look through; a build that has not finished says how much of the app it has reached, and mail says how many message bodies it holds while they are still downloading.
+Reads the files and nothing else, so it works signed out. INDEXED counts what a search would look through; a build that has not finished says how much of the app it has reached, and mail and drive say how many bodies and file texts they hold while those are still downloading.
 
 ```plaintext
 proton index list
@@ -12182,17 +12234,20 @@ proton mail messages trash 5bH2mQxK --unread --folder spam                  # bo
 
 [Section titled “The filters”](#the-filters)
 
-| Filter                              | What it matches                                     |
-| ----------------------------------- | --------------------------------------------------- |
-| `--folder` · `--scope` · `--vault`  | Where to look                                       |
-| `--older-than` · `--newer-than`     | By age                                              |
-| `--larger-than` · `--smaller-than`  | By size                                             |
-| `--pattern`                         | The name, against a glob                            |
-| `--unread` · `--starred` · `--type` | By state or kind                                    |
-| `--all`                             | Everything in scope, rather than a subset           |
-| `--limit`                           | How many a bulk verb may affect, or a listing holds |
+| Filter                              | What it matches                                         |
+| ----------------------------------- | ------------------------------------------------------- |
+| `--folder` · `--scope` · `--vault`  | Where to look                                           |
+| `--older-than` · `--newer-than`     | By age                                                  |
+| `--larger-than` · `--smaller-than`  | By size                                                 |
+| `--pattern`                         | The name, against a glob                                |
+| `--keyword`                         | Text in what a thing says, as well as what it is called |
+| `--unread` · `--starred` · `--type` | By state or kind                                        |
+| `--all`                             | Everything in scope, rather than a subset               |
+| `--limit`                           | How many a bulk verb may affect, or a listing holds     |
 
-Each command’s own page lists the filters it takes. Mail adds `--from`, `--to`, `--subject`, `--keyword`, `--after` and `--before`.
+Each command’s own page lists the filters it takes. Mail adds `--from`, `--to`, `--subject`, `--after` and `--before`.
+
+What `--keyword` reads inside things - a message body, a file’s text - is what an index on this machine holds: [Local index](/local-index/).
 
 ## Check a selection before acting on it
 
@@ -12232,7 +12287,9 @@ Bulk verbs act on the IDs the selection resolved to, in batches of fifty, and re
 
 A filter that matches a folder and the files inside it selects the folder alone.
 
-**Drive filters walk the tree.** `--pattern` and the size and age filters visit every folder under the scope, so over a large tree narrow it with `--scope`.
+**Drive filters walk the tree.** `--pattern`, `--keyword` and the size and age filters visit every folder under the scope, so over a large tree narrow it with `--scope`. With a drive index they are answered from this machine instead.
+
+A filtered Drive listing shows each item’s full path.
 
 # Naming what to act on
 
