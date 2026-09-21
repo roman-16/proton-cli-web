@@ -659,333 +659,343 @@ proton <app> <collection> <verb> [TARGET...] [--flags]
 
 Where a command shows `REF`, pass a full ID, the eight-character short ID a list printed, or something you already know: a subject, a name, a path, an email address. See [Naming what to act on](/using/naming/).
 
-| Command                                                                                         | What it does                                                        |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| [`proton account get`](/account/account/#get)                                                   | Show the account, its storage and this machine’s session            |
-| [`proton account login`](/account/account/#login)                                               | Sign in and save the session for this profile                       |
-| [`proton account logout`](/account/account/#logout)                                             | Discard the saved session for this profile                          |
-| [`proton account keys reactivate`](/account/keys/#reactivate)                                   | Bring back the keys a password reset locked                         |
-| [`proton account profiles delete`](/account/profiles/#delete)                                   | Remove a profile and everything it keeps on this machine            |
-| [`proton account profiles list`](/account/profiles/#list)                                       | List the profiles with a saved session                              |
-| [`proton account sessions list`](/account/sessions/#list)                                       | List every signed-in session                                        |
-| [`proton account sessions revoke`](/account/sessions/#revoke)                                   | Invalidate sessions at Proton                                       |
-| [`proton account settings get`](/account/settings/#get)                                         | Show the account settings now in effect                             |
-| [`proton account settings list`](/account/settings/#list)                                       | List the account settings that can be changed                       |
-| [`proton account settings password set`](/account/settings/#password-set)                       | Change your password                                                |
-| [`proton account settings recovery-email disable`](/account/settings/#recovery-email-disable)   | Stop allowing password resets by email                              |
-| [`proton account settings recovery-email enable`](/account/settings/#recovery-email-enable)     | Allow password resets by email                                      |
-| [`proton account settings recovery-email get`](/account/settings/#recovery-email-get)           | Show the recovery address and what it may do                        |
-| [`proton account settings recovery-email set`](/account/settings/#recovery-email-set)           | Set the recovery address                                            |
-| [`proton account settings recovery-email verify`](/account/settings/#recovery-email-verify)     | Send a verification email to the recovery address                   |
-| [`proton account settings recovery-phone disable`](/account/settings/#recovery-phone-disable)   | Stop allowing password resets by SMS                                |
-| [`proton account settings recovery-phone enable`](/account/settings/#recovery-phone-enable)     | Allow password resets by SMS                                        |
-| [`proton account settings recovery-phone get`](/account/settings/#recovery-phone-get)           | Show the recovery number and what it may do                         |
-| [`proton account settings recovery-phone set`](/account/settings/#recovery-phone-set)           | Set the recovery number                                             |
-| [`proton account settings recovery-phone verify`](/account/settings/#recovery-phone-verify)     | Confirm the recovery number with a code sent by SMS                 |
-| [`proton account settings recovery-phrase disable`](/account/settings/#recovery-phrase-disable) | Remove the recovery phrase                                          |
-| [`proton account settings recovery-phrase get`](/account/settings/#recovery-phrase-get)         | Show whether a recovery phrase is set                               |
-| [`proton account settings recovery-phrase set`](/account/settings/#recovery-phrase-set)         | Make a recovery phrase and print it                                 |
-| [`proton account settings second-password disable`](/account/settings/#second-password-disable) | Leave two-password mode                                             |
-| [`proton account settings second-password enable`](/account/settings/#second-password-enable)   | Lock your keys with a second password                               |
-| [`proton account settings second-password get`](/account/settings/#second-password-get)         | Show whether this account uses two-password mode                    |
-| [`proton account settings second-password set`](/account/settings/#second-password-set)         | Change your second password                                         |
-| [`proton account settings security-keys create`](/account/settings/#security-keys-create)       | Register a security key with the account                            |
-| [`proton account settings security-keys delete`](/account/settings/#security-keys-delete)       | Remove a security key from the account                              |
-| [`proton account settings security-keys list`](/account/settings/#security-keys-list)           | List the security keys registered with the account                  |
-| [`proton account settings security-keys update`](/account/settings/#security-keys-update)       | Rename a security key                                               |
-| [`proton account settings set`](/account/settings/#set)                                         | Change one account setting                                          |
-| [`proton account settings two-factor disable`](/account/settings/#two-factor-disable)           | Stop asking for an authenticator app code                           |
-| [`proton account settings two-factor enable`](/account/settings/#two-factor-enable)             | Ask for an authenticator app code at every sign-in                  |
-| [`proton account settings two-factor generate`](/account/settings/#two-factor-generate)         | Make a two-factor secret for an authenticator app                   |
-| [`proton account settings two-factor get`](/account/settings/#two-factor-get)                   | Show what this account is asked for at sign-in                      |
-| [`proton api`](/api/api/)                                                                       | Send a raw authenticated request to the Proton API                  |
-| [`proton calendar events create`](/calendar/events/#create)                                     | Create an event                                                     |
-| [`proton calendar events delete`](/calendar/events/#delete)                                     | Delete events                                                       |
-| [`proton calendar events export`](/calendar/events/#export)                                     | Write events out as an .ics file                                    |
-| [`proton calendar events get`](/calendar/events/#get)                                           | Show one event, decrypted                                           |
-| [`proton calendar events import`](/calendar/events/#import)                                     | Read events in from an .ics file                                    |
-| [`proton calendar events list`](/calendar/events/#list)                                         | List events in a date range                                         |
-| [`proton calendar events respond`](/calendar/events/#respond)                                   | Answer an invitation, telling the organizer                         |
-| [`proton calendar events update`](/calendar/events/#update)                                     | Change an event’s title, time, location, description or recurrence  |
-| [`proton calendar invitations accept`](/calendar/invitations/#accept)                           | Take a calendar somebody offered you                                |
-| [`proton calendar invitations decline`](/calendar/invitations/#decline)                         | Turn down a calendar somebody offered you                           |
-| [`proton calendar invitations list`](/calendar/invitations/#list)                               | List calendars other people have offered you                        |
-| [`proton calendar reminders list`](/calendar/reminders/#list)                                   | List the reminders due in a date range                              |
-| [`proton calendar reminders watch`](/calendar/reminders/#watch)                                 | Print each reminder as it comes due                                 |
-| [`proton calendar settings calendars create`](/calendar/settings/#calendars-create)             | Create a calendar, or subscribe to one published elsewhere          |
-| [`proton calendar settings calendars delete`](/calendar/settings/#calendars-delete)             | Delete calendars, and every event in them                           |
-| [`proton calendar settings calendars get`](/calendar/settings/#calendars-get)                   | Show one calendar, with the defaults it gives new events            |
-| [`proton calendar settings calendars list`](/calendar/settings/#calendars-list)                 | List your calendars                                                 |
-| [`proton calendar settings calendars share add`](/calendar/settings/#calendars-share-add)       | Give somebody a calendar                                            |
-| [`proton calendar settings calendars share get`](/calendar/settings/#calendars-share-get)       | Show who has a calendar                                             |
-| [`proton calendar settings calendars share remove`](/calendar/settings/#calendars-share-remove) | Take somebody’s access to a calendar away                           |
-| [`proton calendar settings calendars share update`](/calendar/settings/#calendars-share-update) | Change what somebody may do with a calendar                         |
-| [`proton calendar settings calendars update`](/calendar/settings/#calendars-update)             | Rename or recolor a calendar, or change what it gives new events    |
-| [`proton calendar settings get`](/calendar/settings/#get)                                       | Show the calendar settings now in effect                            |
-| [`proton calendar settings list`](/calendar/settings/#list)                                     | List the calendar settings that can be changed                      |
-| [`proton calendar settings set`](/calendar/settings/#set)                                       | Change one calendar setting                                         |
-| [`proton contacts create`](/contacts/contacts/#create)                                          | Create a contact                                                    |
-| [`proton contacts delete`](/contacts/contacts/#delete)                                          | Delete contacts                                                     |
-| [`proton contacts export`](/contacts/contacts/#export)                                          | Write contacts out as vCards                                        |
-| [`proton contacts get`](/contacts/contacts/#get)                                                | Show one contact in full                                            |
-| [`proton contacts import`](/contacts/contacts/#import)                                          | Read contacts in from a .vcf file                                   |
-| [`proton contacts list`](/contacts/contacts/#list)                                              | List contacts                                                       |
-| [`proton contacts merge`](/contacts/contacts/#merge)                                            | Fold duplicate contacts into one                                    |
-| [`proton contacts update`](/contacts/contacts/#update)                                          | Change a contact’s details                                          |
-| [`proton contacts groups add`](/contacts/groups/#add)                                           | Add contacts to a group                                             |
-| [`proton contacts groups create`](/contacts/groups/#create)                                     | Create a contact group                                              |
-| [`proton contacts groups delete`](/contacts/groups/#delete)                                     | Delete contact groups                                               |
-| [`proton contacts groups get`](/contacts/groups/#get)                                           | Show one group and the addresses in it                              |
-| [`proton contacts groups list`](/contacts/groups/#list)                                         | List contact groups                                                 |
-| [`proton contacts groups remove`](/contacts/groups/#remove)                                     | Remove contacts from a group                                        |
-| [`proton contacts groups update`](/contacts/groups/#update)                                     | Rename or recolor a contact group                                   |
-| [`proton contacts keys list`](/contacts/keys/#list)                                             | List the keys pinned to a contact                                   |
-| [`proton contacts keys pin`](/contacts/keys/#pin)                                               | Pin a public key so mail to a contact is encrypted to it            |
-| [`proton contacts keys unpin`](/contacts/keys/#unpin)                                           | Remove the keys pinned to a contact                                 |
-| [`proton drive computers delete`](/drive/computers/#delete)                                     | Remove computers from Drive                                         |
-| [`proton drive computers list`](/drive/computers/#list)                                         | List the computers syncing to Drive                                 |
-| [`proton drive computers update`](/drive/computers/#update)                                     | Rename a computer                                                   |
-| [`proton drive invitations accept`](/drive/invitations/#accept)                                 | Accept invitations                                                  |
-| [`proton drive invitations decline`](/drive/invitations/#decline)                               | Decline invitations                                                 |
-| [`proton drive invitations list`](/drive/invitations/#list)                                     | List invitations waiting for an answer                              |
-| [`proton drive items copy`](/drive/items/#copy)                                                 | Copy files into another folder                                      |
-| [`proton drive items create`](/drive/items/#create)                                             | Create a folder, and any missing folder above it                    |
-| [`proton drive items delete`](/drive/items/#delete)                                             | Delete files or folders permanently                                 |
-| [`proton drive items download`](/drive/items/#download)                                         | Download a file or folder                                           |
-| [`proton drive items get`](/drive/items/#get)                                                   | Show a file or folder’s details                                     |
-| [`proton drive items list`](/drive/items/#list)                                                 | List what is in a folder                                            |
-| [`proton drive items move`](/drive/items/#move)                                                 | Move files or folders into another folder                           |
-| [`proton drive items revisions delete`](/drive/items/#revisions-delete)                         | Delete an earlier version permanently                               |
-| [`proton drive items revisions download`](/drive/items/#revisions-download)                     | Download an earlier version of a file                               |
-| [`proton drive items revisions list`](/drive/items/#revisions-list)                             | List a file’s earlier versions                                      |
-| [`proton drive items revisions restore`](/drive/items/#revisions-restore)                       | Restore a file to an earlier version                                |
-| [`proton drive items share add`](/drive/items/#share-add)                                       | Invite someone to a file or folder                                  |
-| [`proton drive items share confirm`](/drive/items/#share-confirm)                               | Let somebody in once they join Proton                               |
-| [`proton drive items share get`](/drive/items/#share-get)                                       | Show how a file or folder is shared                                 |
-| [`proton drive items share remove`](/drive/items/#share-remove)                                 | Revoke someone’s access, or cancel their invitation                 |
-| [`proton drive items share resend`](/drive/items/#share-resend)                                 | Send an unanswered invitation again                                 |
-| [`proton drive items share update`](/drive/items/#share-update)                                 | Change what somebody may do with a file or folder                   |
-| [`proton drive items trash`](/drive/items/#trash)                                               | Move files or folders to the trash                                  |
-| [`proton drive items update`](/drive/items/#update)                                             | Rename a file or folder                                             |
-| [`proton drive items upload`](/drive/items/#upload)                                             | Upload a file or directory                                          |
-| [`proton drive links create`](/drive/links/#create)                                             | Make a link that opens a file or folder for anyone                  |
-| [`proton drive links get`](/drive/links/#get)                                                   | Show the link on a file or folder, URL and all                      |
-| [`proton drive links list`](/drive/links/#list)                                                 | List the links you have made                                        |
-| [`proton drive links revoke`](/drive/links/#revoke)                                             | Stop the link on a file or folder working                           |
-| [`proton drive photos albums add`](/drive/photos/#albums-add)                                   | Put photos into an album                                            |
-| [`proton drive photos albums create`](/drive/photos/#albums-create)                             | Create an album                                                     |
-| [`proton drive photos albums delete`](/drive/photos/#albums-delete)                             | Delete albums                                                       |
-| [`proton drive photos albums list`](/drive/photos/#albums-list)                                 | List albums                                                         |
-| [`proton drive photos albums remove`](/drive/photos/#albums-remove)                             | Take photos out of an album                                         |
-| [`proton drive photos albums update`](/drive/photos/#albums-update)                             | Rename an album, or change its cover                                |
-| [`proton drive photos delete`](/drive/photos/#delete)                                           | Delete photos permanently                                           |
-| [`proton drive photos download`](/drive/photos/#download)                                       | Download a photo                                                    |
-| [`proton drive photos favorite`](/drive/photos/#favorite)                                       | Mark photos as favourites                                           |
-| [`proton drive photos list`](/drive/photos/#list)                                               | List photos                                                         |
-| [`proton drive photos trash`](/drive/photos/#trash)                                             | Move photos to the trash                                            |
-| [`proton drive photos unfavorite`](/drive/photos/#unfavorite)                                   | Remove photos from favourites                                       |
-| [`proton drive photos upload`](/drive/photos/#upload)                                           | Upload a photo to the library                                       |
-| [`proton drive settings get`](/drive/settings/#get)                                             | Show the drive settings now in effect                               |
-| [`proton drive settings list`](/drive/settings/#list)                                           | List the drive settings that can be changed                         |
-| [`proton drive settings set`](/drive/settings/#set)                                             | Change one drive setting                                            |
-| [`proton drive shared add`](/drive/shared/#add)                                                 | Add a public link to what is shared with you                        |
-| [`proton drive shared leave`](/drive/shared/#leave)                                             | Give up an item somebody shared with you                            |
-| [`proton drive shared list`](/drive/shared/#list)                                               | List what other people have shared with you                         |
-| [`proton drive shared remove`](/drive/shared/#remove)                                           | Forget a public link you saved                                      |
-| [`proton drive sharing list`](/drive/sharing/#list)                                             | List what you have shared with other people                         |
-| [`proton drive trash empty`](/drive/trash/#empty)                                               | Delete everything in the trash, permanently                         |
-| [`proton drive trash list`](/drive/trash/#list)                                                 | List what is in the trash                                           |
-| [`proton drive trash restore`](/drive/trash/#restore)                                           | Put items back where they came from                                 |
-| [`proton drive volumes delete`](/drive/volumes/#delete)                                         | Delete a locked volume and everything on it                         |
-| [`proton drive volumes list`](/drive/volumes/#list)                                             | List the volumes your files and photos are kept on                  |
-| [`proton drive volumes restore`](/drive/volumes/#restore)                                       | Put the files of a locked volume back                               |
-| [`proton index create`](/local-index/commands/#create)                                          | Index an app so its contents can be searched                        |
-| [`proton index delete`](/local-index/commands/#delete)                                          | Remove an index from this machine                                   |
-| [`proton index list`](/local-index/commands/#list)                                              | List what is indexed on this machine                                |
-| [`proton index update`](/local-index/commands/#update)                                          | Bring every index up to date                                        |
-| [`proton index watch`](/local-index/commands/#watch)                                            | Keep every index current until you stop it                          |
-| [`proton mail conversations attachments download`](/mail/conversations/#attachments-download)   | Download and decrypt attachments from a thread                      |
-| [`proton mail conversations attachments list`](/mail/conversations/#attachments-list)           | List every attachment in a thread                                   |
-| [`proton mail conversations delete`](/mail/conversations/#delete)                               | Delete threads permanently                                          |
-| [`proton mail conversations export`](/mail/conversations/#export)                               | Write a whole thread out as .eml files or one mbox                  |
-| [`proton mail conversations forward`](/mail/conversations/#forward)                             | Forward the newest message in a thread                              |
-| [`proton mail conversations get`](/mail/conversations/#get)                                     | Show a whole thread, decrypted                                      |
-| [`proton mail conversations label`](/mail/conversations/#label)                                 | Attach a label to threads                                           |
-| [`proton mail conversations list`](/mail/conversations/#list)                                   | List threads in a folder                                            |
-| [`proton mail conversations mark read`](/mail/conversations/#mark-read)                         | Mark threads as read                                                |
-| [`proton mail conversations mark unread`](/mail/conversations/#mark-unread)                     | Mark threads as unread                                              |
-| [`proton mail conversations move`](/mail/conversations/#move)                                   | Move threads to a folder                                            |
-| [`proton mail conversations reply`](/mail/conversations/#reply)                                 | Reply to the newest message in a thread                             |
-| [`proton mail conversations snooze`](/mail/conversations/#snooze)                               | Take threads out of the inbox until later                           |
-| [`proton mail conversations star`](/mail/conversations/#star)                                   | Star threads                                                        |
-| [`proton mail conversations trash`](/mail/conversations/#trash)                                 | Move threads to the trash                                           |
-| [`proton mail conversations unlabel`](/mail/conversations/#unlabel)                             | Detach a label from threads                                         |
-| [`proton mail conversations unsnooze`](/mail/conversations/#unsnooze)                           | Bring snoozed threads back to the inbox now                         |
-| [`proton mail conversations unstar`](/mail/conversations/#unstar)                               | Remove the star from threads                                        |
-| [`proton mail drafts create`](/mail/drafts/#create)                                             | Save a draft without sending it                                     |
-| [`proton mail drafts delete`](/mail/drafts/#delete)                                             | Delete drafts                                                       |
-| [`proton mail drafts list`](/mail/drafts/#list)                                                 | List drafts                                                         |
-| [`proton mail drafts send`](/mail/drafts/#send)                                                 | Send a draft as it stands                                           |
-| [`proton mail drafts update`](/mail/drafts/#update)                                             | Change a draft’s recipients, subject, body or attachments           |
-| [`proton mail messages attachments download`](/mail/messages/#attachments-download)             | Download and decrypt attachments                                    |
-| [`proton mail messages attachments list`](/mail/messages/#attachments-list)                     | List a message’s attachments                                        |
-| [`proton mail messages delete`](/mail/messages/#delete)                                         | Delete messages permanently                                         |
-| [`proton mail messages empty`](/mail/messages/#empty)                                           | Delete everything in a folder, permanently                          |
-| [`proton mail messages export`](/mail/messages/#export)                                         | Write messages out as .eml or mbox files                            |
-| [`proton mail messages forward`](/mail/messages/#forward)                                       | Forward a message                                                   |
-| [`proton mail messages get`](/mail/messages/#get)                                               | Show one message, decrypted                                         |
-| [`proton mail messages label`](/mail/messages/#label)                                           | Attach a label to messages                                          |
-| [`proton mail messages list`](/mail/messages/#list)                                             | List messages in a folder                                           |
-| [`proton mail messages mark legitimate`](/mail/messages/#mark-legitimate)                       | Mark a message Proton flagged as legitimate                         |
-| [`proton mail messages mark phishing`](/mail/messages/#mark-phishing)                           | Report a message to Proton as phishing                              |
-| [`proton mail messages mark read`](/mail/messages/#mark-read)                                   | Mark messages as read                                               |
-| [`proton mail messages mark unread`](/mail/messages/#mark-unread)                               | Mark messages as unread                                             |
-| [`proton mail messages move`](/mail/messages/#move)                                             | Move messages to a folder                                           |
-| [`proton mail messages reply`](/mail/messages/#reply)                                           | Reply to a message                                                  |
-| [`proton mail messages send`](/mail/messages/#send)                                             | Compose and send a message                                          |
-| [`proton mail messages star`](/mail/messages/#star)                                             | Star messages                                                       |
-| [`proton mail messages trash`](/mail/messages/#trash)                                           | Move messages to the trash                                          |
-| [`proton mail messages unlabel`](/mail/messages/#unlabel)                                       | Detach a label from messages                                        |
-| [`proton mail messages unschedule`](/mail/messages/#unschedule)                                 | Cancel a scheduled send, returning the message to drafts            |
-| [`proton mail messages unstar`](/mail/messages/#unstar)                                         | Remove the star from messages                                       |
-| [`proton mail messages unsubscribe`](/mail/messages/#unsubscribe)                               | Ask a mailing list to stop                                          |
-| [`proton mail messages update`](/mail/messages/#update)                                         | Change when messages delete themselves                              |
-| [`proton mail messages watch`](/mail/messages/#watch)                                           | Print each message as it arrives                                    |
-| [`proton mail settings addresses create`](/mail/settings/#addresses-create)                     | Add an address to the account                                       |
-| [`proton mail settings addresses delete`](/mail/settings/#addresses-delete)                     | Delete addresses                                                    |
-| [`proton mail settings addresses disable`](/mail/settings/#addresses-disable)                   | Stop an address sending and receiving                               |
-| [`proton mail settings addresses enable`](/mail/settings/#addresses-enable)                     | Let a disabled address send and receive again                       |
-| [`proton mail settings addresses get`](/mail/settings/#addresses-get)                           | Show one address, including its signature                           |
-| [`proton mail settings addresses list`](/mail/settings/#addresses-list)                         | List the addresses on the account                                   |
-| [`proton mail settings addresses reorder`](/mail/settings/#addresses-reorder)                   | Make an address the default, or set their order                     |
-| [`proton mail settings addresses update`](/mail/settings/#addresses-update)                     | Set an address’s display name or signature                          |
-| [`proton mail settings autoreply disable`](/mail/settings/#autoreply-disable)                   | Turn the auto-reply off, keeping its schedule                       |
-| [`proton mail settings autoreply enable`](/mail/settings/#autoreply-enable)                     | Turn the auto-reply on, keeping its schedule                        |
-| [`proton mail settings autoreply get`](/mail/settings/#autoreply-get)                           | Show the auto-reply and its schedule                                |
-| [`proton mail settings autoreply set`](/mail/settings/#autoreply-set)                           | Configure the auto-reply and turn it on                             |
-| [`proton mail settings domains create`](/mail/settings/#domains-create)                         | Add a custom domain to the account                                  |
-| [`proton mail settings domains delete`](/mail/settings/#domains-delete)                         | Remove a custom domain                                              |
-| [`proton mail settings domains get`](/mail/settings/#domains-get)                               | Show a domain’s DNS entries and their status                        |
-| [`proton mail settings domains list`](/mail/settings/#domains-list)                             | List the custom domains on the account                              |
-| [`proton mail settings domains update`](/mail/settings/#domains-update)                         | Set the address that catches stray mail                             |
-| [`proton mail settings filters apply`](/mail/settings/#filters-apply)                           | Run filters over mail that is already in the mailbox                |
-| [`proton mail settings filters create`](/mail/settings/#filters-create)                         | Create a filter                                                     |
-| [`proton mail settings filters delete`](/mail/settings/#filters-delete)                         | Delete filters                                                      |
-| [`proton mail settings filters disable`](/mail/settings/#filters-disable)                       | Disable filters                                                     |
-| [`proton mail settings filters enable`](/mail/settings/#filters-enable)                         | Enable filters                                                      |
-| [`proton mail settings filters get`](/mail/settings/#filters-get)                               | Show what a filter matches and does                                 |
-| [`proton mail settings filters list`](/mail/settings/#filters-list)                             | List your filters                                                   |
-| [`proton mail settings filters reorder`](/mail/settings/#filters-reorder)                       | Set the order filters run in                                        |
-| [`proton mail settings filters update`](/mail/settings/#filters-update)                         | Change what a filter is called, matches, or does                    |
-| [`proton mail settings folders create`](/mail/settings/#folders-create)                         | Create a folder                                                     |
-| [`proton mail settings folders delete`](/mail/settings/#folders-delete)                         | Delete folders                                                      |
-| [`proton mail settings folders list`](/mail/settings/#folders-list)                             | List your folders                                                   |
-| [`proton mail settings folders update`](/mail/settings/#folders-update)                         | Rename or recolor a folder                                          |
-| [`proton mail settings forwarding accept`](/mail/settings/#forwarding-accept)                   | Accept forwardings sent to you                                      |
-| [`proton mail settings forwarding create`](/mail/settings/#forwarding-create)                   | Forward one of your addresses to another address                    |
-| [`proton mail settings forwarding decline`](/mail/settings/#forwarding-decline)                 | Decline forwardings sent to you                                     |
-| [`proton mail settings forwarding delete`](/mail/settings/#forwarding-delete)                   | Stop forwardings, in either direction                               |
-| [`proton mail settings forwarding disable`](/mail/settings/#forwarding-disable)                 | Pause forwardings without taking them down                          |
-| [`proton mail settings forwarding enable`](/mail/settings/#forwarding-enable)                   | Resume paused forwardings                                           |
-| [`proton mail settings forwarding get`](/mail/settings/#forwarding-get)                         | Show one forwarding                                                 |
-| [`proton mail settings forwarding list`](/mail/settings/#forwarding-list)                       | List forwardings in both directions                                 |
-| [`proton mail settings forwarding resend`](/mail/settings/#forwarding-resend)                   | Ask the forwardee again                                             |
-| [`proton mail settings get`](/mail/settings/#get)                                               | Show the mail settings now in effect                                |
-| [`proton mail settings labels create`](/mail/settings/#labels-create)                           | Create a label                                                      |
-| [`proton mail settings labels delete`](/mail/settings/#labels-delete)                           | Delete labels                                                       |
-| [`proton mail settings labels list`](/mail/settings/#labels-list)                               | List your labels                                                    |
-| [`proton mail settings labels update`](/mail/settings/#labels-update)                           | Rename or recolor a label                                           |
-| [`proton mail settings list`](/mail/settings/#list)                                             | List the mail settings that can be changed                          |
-| [`proton mail settings senders allow`](/mail/settings/#senders-allow)                           | Always let someone reach the inbox                                  |
-| [`proton mail settings senders block`](/mail/settings/#senders-block)                           | Send someone’s mail straight to blocked                             |
-| [`proton mail settings senders list`](/mail/settings/#senders-list)                             | List every standing decision about a sender                         |
-| [`proton mail settings senders remove`](/mail/settings/#senders-remove)                         | Drop a standing decision, letting the spam filter decide again      |
-| [`proton mail settings senders spam`](/mail/settings/#senders-spam)                             | Send someone’s mail straight to spam                                |
-| [`proton mail settings set`](/mail/settings/#set)                                               | Change one mail setting                                             |
-| [`proton pass aliases contacts allow`](/pass/aliases/#contacts-allow)                           | Let a contact’s mail reach you again                                |
-| [`proton pass aliases contacts block`](/pass/aliases/#contacts-block)                           | Stop a contact’s mail reaching you                                  |
-| [`proton pass aliases contacts create`](/pass/aliases/#contacts-create)                         | Make an address that writes to somebody as the alias                |
-| [`proton pass aliases contacts delete`](/pass/aliases/#contacts-delete)                         | Remove an address an alias can write to                             |
-| [`proton pass aliases contacts list`](/pass/aliases/#contacts-list)                             | List the addresses an alias can write to                            |
-| [`proton pass aliases create`](/pass/aliases/#create)                                           | Create an alias                                                     |
-| [`proton pass aliases disable`](/pass/aliases/#disable)                                         | Stop receiving mail sent to an alias                                |
-| [`proton pass aliases enable`](/pass/aliases/#enable)                                           | Start receiving mail sent to an alias                               |
-| [`proton pass aliases list`](/pass/aliases/#list)                                               | List your aliases                                                   |
-| [`proton pass breaches create`](/pass/breaches/#create)                                         | Have Proton watch an address you own elsewhere                      |
-| [`proton pass breaches delete`](/pass/breaches/#delete)                                         | Stop Proton watching an address you added                           |
-| [`proton pass breaches disable`](/pass/breaches/#disable)                                       | Stop Proton watching an address                                     |
-| [`proton pass breaches enable`](/pass/breaches/#enable)                                         | Have Proton watch an address again                                  |
-| [`proton pass breaches get`](/pass/breaches/#get)                                               | Show the breaches one address has appeared in                       |
-| [`proton pass breaches list`](/pass/breaches/#list)                                             | List the addresses Proton watches, and how many breaches each is in |
-| [`proton pass breaches resend`](/pass/breaches/#resend)                                         | Send the confirmation code again                                    |
-| [`proton pass breaches verify`](/pass/breaches/#verify)                                         | Confirm an address with the code Proton emailed it                  |
-| [`proton pass invitations accept`](/pass/invitations/#accept)                                   | Take what somebody offered you                                      |
-| [`proton pass invitations decline`](/pass/invitations/#decline)                                 | Turn down what somebody offered you                                 |
-| [`proton pass invitations list`](/pass/invitations/#list)                                       | List what other people have offered you                             |
-| [`proton pass items attachments download`](/pass/items/#attachments-download)                   | Download and decrypt attachments                                    |
-| [`proton pass items attachments list`](/pass/items/#attachments-list)                           | List an item’s attachments                                          |
-| [`proton pass items attachments restore`](/pass/items/#attachments-restore)                     | Put a removed attachment back on an item                            |
-| [`proton pass items attachments update`](/pass/items/#attachments-update)                       | Rename an attachment                                                |
-| [`proton pass items create`](/pass/items/#create)                                               | Create an item                                                      |
-| [`proton pass items delete`](/pass/items/#delete)                                               | Delete items permanently                                            |
-| [`proton pass items get`](/pass/items/#get)                                                     | Show one item, decrypted                                            |
-| [`proton pass items list`](/pass/items/#list)                                                   | List items across your vaults                                       |
-| [`proton pass items move`](/pass/items/#move)                                                   | Put an item in another vault                                        |
-| [`proton pass items passkeys list`](/pass/items/#passkeys-list)                                 | List the passkeys stored against a login                            |
-| [`proton pass items passkeys remove`](/pass/items/#passkeys-remove)                             | Take a passkey off a login                                          |
-| [`proton pass items pin`](/pass/items/#pin)                                                     | Keep items at the top of the list                                   |
-| [`proton pass items revisions get`](/pass/items/#revisions-get)                                 | Show one earlier version, decrypted                                 |
-| [`proton pass items revisions list`](/pass/items/#revisions-list)                               | Show what an item used to be                                        |
-| [`proton pass items revisions restore`](/pass/items/#revisions-restore)                         | Put an item back to an earlier version                              |
-| [`proton pass items share add`](/pass/items/#share-add)                                         | Offer one item to somebody                                          |
-| [`proton pass items share confirm`](/pass/items/#share-confirm)                                 | Let somebody into an item once they join Proton                     |
-| [`proton pass items share get`](/pass/items/#share-get)                                         | Show how an item is shared                                          |
-| [`proton pass items share remove`](/pass/items/#share-remove)                                   | Take somebody’s access to an item away                              |
-| [`proton pass items share update`](/pass/items/#share-update)                                   | Change what somebody may do with an item                            |
-| [`proton pass items totp`](/pass/items/#totp)                                                   | Print the current two-factor code for an item                       |
-| [`proton pass items trash`](/pass/items/#trash)                                                 | Move items to the trash                                             |
-| [`proton pass items unpin`](/pass/items/#unpin)                                                 | Stop keeping items at the top                                       |
-| [`proton pass items update`](/pass/items/#update)                                               | Change an item’s fields                                             |
-| [`proton pass links create`](/pass/links/#create)                                               | Make a link that shows one item                                     |
-| [`proton pass links get`](/pass/links/#get)                                                     | Show one link, URL and all                                          |
-| [`proton pass links list`](/pass/links/#list)                                                   | List the links you have made                                        |
-| [`proton pass links revoke`](/pass/links/#revoke)                                               | Stop a link working                                                 |
-| [`proton pass export`](/pass/pass/#export)                                                      | Write the vaults you own out to a file                              |
-| [`proton pass generate`](/pass/pass/#generate)                                                  | Make a password                                                     |
-| [`proton pass import`](/pass/pass/#import)                                                      | Read items in from a password manager’s export                      |
-| [`proton pass settings domains list`](/pass/settings/#domains-list)                             | List the domains an alias can be made on                            |
-| [`proton pass settings extra-password disable`](/pass/settings/#extra-password-disable)         | Remove the extra password from Pass                                 |
-| [`proton pass settings extra-password enable`](/pass/settings/#extra-password-enable)           | Protect Pass with an extra password                                 |
-| [`proton pass settings extra-password get`](/pass/settings/#extra-password-get)                 | Show whether Pass has an extra password                             |
-| [`proton pass settings mailboxes create`](/pass/settings/#mailboxes-create)                     | Add an address for aliases to forward to                            |
-| [`proton pass settings mailboxes delete`](/pass/settings/#mailboxes-delete)                     | Remove an address aliases forward to                                |
-| [`proton pass settings mailboxes list`](/pass/settings/#mailboxes-list)                         | List the addresses your aliases forward to                          |
-| [`proton pass settings mailboxes resend`](/pass/settings/#mailboxes-resend)                     | Send the confirmation code again                                    |
-| [`proton pass settings mailboxes update`](/pass/settings/#mailboxes-update)                     | Change a mailbox                                                    |
-| [`proton pass settings mailboxes verify`](/pass/settings/#mailboxes-verify)                     | Confirm an address with the code Proton emailed it                  |
-| [`proton pass shared list`](/pass/shared/#list)                                                 | List the items other people have shared with you                    |
-| [`proton pass sharing list`](/pass/sharing/#list)                                               | List the items you have shared                                      |
-| [`proton pass trash empty`](/pass/trash/#empty)                                                 | Delete everything in the trash, permanently                         |
-| [`proton pass trash list`](/pass/trash/#list)                                                   | List what is in the trash                                           |
-| [`proton pass trash restore`](/pass/trash/#restore)                                             | Put items back where they came from                                 |
-| [`proton pass vaults create`](/pass/vaults/#create)                                             | Create a vault                                                      |
-| [`proton pass vaults delete`](/pass/vaults/#delete)                                             | Delete vaults, and everything in them                               |
-| [`proton pass vaults get`](/pass/vaults/#get)                                                   | Show one vault in full                                              |
-| [`proton pass vaults list`](/pass/vaults/#list)                                                 | List your vaults                                                    |
-| [`proton pass vaults share add`](/pass/vaults/#share-add)                                       | Offer a vault to somebody                                           |
-| [`proton pass vaults share confirm`](/pass/vaults/#share-confirm)                               | Let somebody into a vault once they join Proton                     |
-| [`proton pass vaults share get`](/pass/vaults/#share-get)                                       | Show who can open a vault                                           |
-| [`proton pass vaults share remove`](/pass/vaults/#share-remove)                                 | Take somebody’s access to a vault away                              |
-| [`proton pass vaults share update`](/pass/vaults/#share-update)                                 | Change what somebody may do with a vault                            |
-| [`proton pass vaults transfer`](/pass/vaults/#transfer)                                         | Make somebody else the owner of a vault                             |
-| [`proton pass vaults update`](/pass/vaults/#update)                                             | Rename a vault, or change how it looks                              |
-| [`proton changelog`](/proton/#changelog)                                                        | Print what each release changed                                     |
-| [`proton completion`](/proton/#completion)                                                      | Generate a shell completion script                                  |
-| [`proton report`](/proton/#report)                                                              | Collect what a bug report needs                                     |
-| [`proton skill`](/proton/#skill)                                                                | Print the skill that teaches an AI agent to use proton              |
-| [`proton uninstall`](/proton/#uninstall)                                                        | Remove a curl/PowerShell-installed proton                           |
-| [`proton update`](/proton/#update)                                                              | Update proton to the latest release                                 |
-| [`proton version`](/proton/#version)                                                            | Print the version and build information                             |
+| Command                                                                                           | What it does                                                        |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [`proton account get`](/account/account/#get)                                                     | Show the account, its storage and this machine’s session            |
+| [`proton account login`](/account/account/#login)                                                 | Sign in and save the session for this profile                       |
+| [`proton account logout`](/account/account/#logout)                                               | Discard the saved session for this profile                          |
+| [`proton account keys reactivate`](/account/keys/#reactivate)                                     | Bring back the keys a password reset locked                         |
+| [`proton account profiles delete`](/account/profiles/#delete)                                     | Remove a profile and everything it keeps on this machine            |
+| [`proton account profiles list`](/account/profiles/#list)                                         | List the profiles with a saved session                              |
+| [`proton account sessions list`](/account/sessions/#list)                                         | List every signed-in session                                        |
+| [`proton account sessions revoke`](/account/sessions/#revoke)                                     | Invalidate sessions at Proton                                       |
+| [`proton account settings get`](/account/settings/#get)                                           | Show the account settings now in effect                             |
+| [`proton account settings list`](/account/settings/#list)                                         | List the account settings that can be changed                       |
+| [`proton account settings password set`](/account/settings/#password-set)                         | Change your password                                                |
+| [`proton account settings recovery-email disable`](/account/settings/#recovery-email-disable)     | Stop allowing password resets by email                              |
+| [`proton account settings recovery-email enable`](/account/settings/#recovery-email-enable)       | Allow password resets by email                                      |
+| [`proton account settings recovery-email get`](/account/settings/#recovery-email-get)             | Show the recovery address and what it may do                        |
+| [`proton account settings recovery-email set`](/account/settings/#recovery-email-set)             | Set the recovery address                                            |
+| [`proton account settings recovery-email verify`](/account/settings/#recovery-email-verify)       | Send a verification email to the recovery address                   |
+| [`proton account settings recovery-phone disable`](/account/settings/#recovery-phone-disable)     | Stop allowing password resets by SMS                                |
+| [`proton account settings recovery-phone enable`](/account/settings/#recovery-phone-enable)       | Allow password resets by SMS                                        |
+| [`proton account settings recovery-phone get`](/account/settings/#recovery-phone-get)             | Show the recovery number and what it may do                         |
+| [`proton account settings recovery-phone set`](/account/settings/#recovery-phone-set)             | Set the recovery number                                             |
+| [`proton account settings recovery-phone verify`](/account/settings/#recovery-phone-verify)       | Confirm the recovery number with a code sent by SMS                 |
+| [`proton account settings recovery-phrase disable`](/account/settings/#recovery-phrase-disable)   | Remove the recovery phrase                                          |
+| [`proton account settings recovery-phrase get`](/account/settings/#recovery-phrase-get)           | Show whether a recovery phrase is set                               |
+| [`proton account settings recovery-phrase set`](/account/settings/#recovery-phrase-set)           | Make a recovery phrase and print it                                 |
+| [`proton account settings second-password disable`](/account/settings/#second-password-disable)   | Leave two-password mode                                             |
+| [`proton account settings second-password enable`](/account/settings/#second-password-enable)     | Lock your keys with a second password                               |
+| [`proton account settings second-password get`](/account/settings/#second-password-get)           | Show whether this account uses two-password mode                    |
+| [`proton account settings second-password set`](/account/settings/#second-password-set)           | Change your second password                                         |
+| [`proton account settings security-keys create`](/account/settings/#security-keys-create)         | Register a security key with the account                            |
+| [`proton account settings security-keys delete`](/account/settings/#security-keys-delete)         | Remove a security key from the account                              |
+| [`proton account settings security-keys list`](/account/settings/#security-keys-list)             | List the security keys registered with the account                  |
+| [`proton account settings security-keys update`](/account/settings/#security-keys-update)         | Rename a security key                                               |
+| [`proton account settings set`](/account/settings/#set)                                           | Change one account setting                                          |
+| [`proton account settings two-factor disable`](/account/settings/#two-factor-disable)             | Stop asking for an authenticator app code                           |
+| [`proton account settings two-factor enable`](/account/settings/#two-factor-enable)               | Ask for an authenticator app code at every sign-in                  |
+| [`proton account settings two-factor generate`](/account/settings/#two-factor-generate)           | Make a two-factor secret for an authenticator app                   |
+| [`proton account settings two-factor get`](/account/settings/#two-factor-get)                     | Show what this account is asked for at sign-in                      |
+| [`proton api`](/api/api/)                                                                         | Send a raw authenticated request to the Proton API                  |
+| [`proton calendar events create`](/calendar/events/#create)                                       | Create an event                                                     |
+| [`proton calendar events delete`](/calendar/events/#delete)                                       | Delete events                                                       |
+| [`proton calendar events export`](/calendar/events/#export)                                       | Write events out as an .ics file                                    |
+| [`proton calendar events get`](/calendar/events/#get)                                             | Show one event, decrypted                                           |
+| [`proton calendar events import`](/calendar/events/#import)                                       | Read events in from an .ics file                                    |
+| [`proton calendar events list`](/calendar/events/#list)                                           | List events in a date range                                         |
+| [`proton calendar events respond`](/calendar/events/#respond)                                     | Answer an invitation, telling the organizer                         |
+| [`proton calendar events update`](/calendar/events/#update)                                       | Change an event’s title, time, location, description or recurrence  |
+| [`proton calendar invitations accept`](/calendar/invitations/#accept)                             | Take a calendar somebody offered you                                |
+| [`proton calendar invitations decline`](/calendar/invitations/#decline)                           | Turn down a calendar somebody offered you                           |
+| [`proton calendar invitations list`](/calendar/invitations/#list)                                 | List calendars other people have offered you                        |
+| [`proton calendar reminders list`](/calendar/reminders/#list)                                     | List the reminders due in a date range                              |
+| [`proton calendar reminders watch`](/calendar/reminders/#watch)                                   | Print each reminder as it comes due                                 |
+| [`proton calendar settings calendars create`](/calendar/settings/#calendars-create)               | Create a calendar, or subscribe to one published elsewhere          |
+| [`proton calendar settings calendars delete`](/calendar/settings/#calendars-delete)               | Delete calendars, and every event in them                           |
+| [`proton calendar settings calendars get`](/calendar/settings/#calendars-get)                     | Show one calendar, with the defaults it gives new events            |
+| [`proton calendar settings calendars list`](/calendar/settings/#calendars-list)                   | List your calendars                                                 |
+| [`proton calendar settings calendars share add`](/calendar/settings/#calendars-share-add)         | Give somebody a calendar                                            |
+| [`proton calendar settings calendars share get`](/calendar/settings/#calendars-share-get)         | Show who has a calendar                                             |
+| [`proton calendar settings calendars share remove`](/calendar/settings/#calendars-share-remove)   | Take somebody’s access to a calendar away                           |
+| [`proton calendar settings calendars share update`](/calendar/settings/#calendars-share-update)   | Change what somebody may do with a calendar                         |
+| [`proton calendar settings calendars update`](/calendar/settings/#calendars-update)               | Rename or recolor a calendar, or change what it gives new events    |
+| [`proton calendar settings get`](/calendar/settings/#get)                                         | Show the calendar settings now in effect                            |
+| [`proton calendar settings list`](/calendar/settings/#list)                                       | List the calendar settings that can be changed                      |
+| [`proton calendar settings set`](/calendar/settings/#set)                                         | Change one calendar setting                                         |
+| [`proton contacts create`](/contacts/contacts/#create)                                            | Create a contact                                                    |
+| [`proton contacts delete`](/contacts/contacts/#delete)                                            | Delete contacts                                                     |
+| [`proton contacts export`](/contacts/contacts/#export)                                            | Write contacts out as vCards                                        |
+| [`proton contacts get`](/contacts/contacts/#get)                                                  | Show one contact in full                                            |
+| [`proton contacts import`](/contacts/contacts/#import)                                            | Read contacts in from a .vcf file                                   |
+| [`proton contacts list`](/contacts/contacts/#list)                                                | List contacts                                                       |
+| [`proton contacts merge`](/contacts/contacts/#merge)                                              | Fold duplicate contacts into one                                    |
+| [`proton contacts update`](/contacts/contacts/#update)                                            | Change a contact’s details                                          |
+| [`proton contacts groups add`](/contacts/groups/#add)                                             | Add contacts to a group                                             |
+| [`proton contacts groups create`](/contacts/groups/#create)                                       | Create a contact group                                              |
+| [`proton contacts groups delete`](/contacts/groups/#delete)                                       | Delete contact groups                                               |
+| [`proton contacts groups get`](/contacts/groups/#get)                                             | Show one group and the addresses in it                              |
+| [`proton contacts groups list`](/contacts/groups/#list)                                           | List contact groups                                                 |
+| [`proton contacts groups remove`](/contacts/groups/#remove)                                       | Remove contacts from a group                                        |
+| [`proton contacts groups update`](/contacts/groups/#update)                                       | Rename or recolor a contact group                                   |
+| [`proton contacts keys list`](/contacts/keys/#list)                                               | List the keys pinned to a contact                                   |
+| [`proton contacts keys pin`](/contacts/keys/#pin)                                                 | Pin a public key so mail to a contact is encrypted to it            |
+| [`proton contacts keys unpin`](/contacts/keys/#unpin)                                             | Remove the keys pinned to a contact                                 |
+| [`proton drive computers delete`](/drive/computers/#delete)                                       | Remove computers from Drive                                         |
+| [`proton drive computers list`](/drive/computers/#list)                                           | List the computers syncing to Drive                                 |
+| [`proton drive computers update`](/drive/computers/#update)                                       | Rename a computer                                                   |
+| [`proton drive invitations accept`](/drive/invitations/#accept)                                   | Accept invitations                                                  |
+| [`proton drive invitations decline`](/drive/invitations/#decline)                                 | Decline invitations                                                 |
+| [`proton drive invitations list`](/drive/invitations/#list)                                       | List invitations waiting for an answer                              |
+| [`proton drive items copy`](/drive/items/#copy)                                                   | Copy files into another folder                                      |
+| [`proton drive items create`](/drive/items/#create)                                               | Create a folder, and any missing folder above it                    |
+| [`proton drive items delete`](/drive/items/#delete)                                               | Delete files or folders permanently                                 |
+| [`proton drive items download`](/drive/items/#download)                                           | Download a file or folder                                           |
+| [`proton drive items get`](/drive/items/#get)                                                     | Show a file or folder’s details                                     |
+| [`proton drive items list`](/drive/items/#list)                                                   | List what is in a folder                                            |
+| [`proton drive items move`](/drive/items/#move)                                                   | Move files or folders into another folder                           |
+| [`proton drive items revisions delete`](/drive/items/#revisions-delete)                           | Delete an earlier version permanently                               |
+| [`proton drive items revisions download`](/drive/items/#revisions-download)                       | Download an earlier version of a file                               |
+| [`proton drive items revisions list`](/drive/items/#revisions-list)                               | List a file’s earlier versions                                      |
+| [`proton drive items revisions restore`](/drive/items/#revisions-restore)                         | Restore a file to an earlier version                                |
+| [`proton drive items share add`](/drive/items/#share-add)                                         | Invite someone to a file or folder                                  |
+| [`proton drive items share confirm`](/drive/items/#share-confirm)                                 | Let somebody in once they join Proton                               |
+| [`proton drive items share get`](/drive/items/#share-get)                                         | Show how a file or folder is shared                                 |
+| [`proton drive items share remove`](/drive/items/#share-remove)                                   | Revoke someone’s access, or cancel their invitation                 |
+| [`proton drive items share resend`](/drive/items/#share-resend)                                   | Send an unanswered invitation again                                 |
+| [`proton drive items share update`](/drive/items/#share-update)                                   | Change what somebody may do with a file or folder                   |
+| [`proton drive items trash`](/drive/items/#trash)                                                 | Move files or folders to the trash                                  |
+| [`proton drive items update`](/drive/items/#update)                                               | Rename a file or folder                                             |
+| [`proton drive items upload`](/drive/items/#upload)                                               | Upload a file or directory                                          |
+| [`proton drive links create`](/drive/links/#create)                                               | Make a link that opens a file or folder for anyone                  |
+| [`proton drive links get`](/drive/links/#get)                                                     | Show the link on a file or folder, URL and all                      |
+| [`proton drive links list`](/drive/links/#list)                                                   | List the links you have made                                        |
+| [`proton drive links revoke`](/drive/links/#revoke)                                               | Stop the link on a file or folder working                           |
+| [`proton drive photos albums add`](/drive/photos/#albums-add)                                     | Put photos into an album                                            |
+| [`proton drive photos albums create`](/drive/photos/#albums-create)                               | Create an album                                                     |
+| [`proton drive photos albums delete`](/drive/photos/#albums-delete)                               | Delete albums                                                       |
+| [`proton drive photos albums list`](/drive/photos/#albums-list)                                   | List albums                                                         |
+| [`proton drive photos albums remove`](/drive/photos/#albums-remove)                               | Take photos out of an album                                         |
+| [`proton drive photos albums update`](/drive/photos/#albums-update)                               | Rename an album, or change its cover                                |
+| [`proton drive photos delete`](/drive/photos/#delete)                                             | Delete photos permanently                                           |
+| [`proton drive photos download`](/drive/photos/#download)                                         | Download a photo                                                    |
+| [`proton drive photos favorite`](/drive/photos/#favorite)                                         | Mark photos as favourites                                           |
+| [`proton drive photos list`](/drive/photos/#list)                                                 | List photos                                                         |
+| [`proton drive photos trash`](/drive/photos/#trash)                                               | Move photos to the trash                                            |
+| [`proton drive photos unfavorite`](/drive/photos/#unfavorite)                                     | Remove photos from favourites                                       |
+| [`proton drive photos upload`](/drive/photos/#upload)                                             | Upload a photo to the library                                       |
+| [`proton drive settings get`](/drive/settings/#get)                                               | Show the drive settings now in effect                               |
+| [`proton drive settings list`](/drive/settings/#list)                                             | List the drive settings that can be changed                         |
+| [`proton drive settings set`](/drive/settings/#set)                                               | Change one drive setting                                            |
+| [`proton drive shared add`](/drive/shared/#add)                                                   | Add a public link to what is shared with you                        |
+| [`proton drive shared leave`](/drive/shared/#leave)                                               | Give up an item somebody shared with you                            |
+| [`proton drive shared list`](/drive/shared/#list)                                                 | List what other people have shared with you                         |
+| [`proton drive shared remove`](/drive/shared/#remove)                                             | Forget a public link you saved                                      |
+| [`proton drive sharing list`](/drive/sharing/#list)                                               | List what you have shared with other people                         |
+| [`proton drive trash empty`](/drive/trash/#empty)                                                 | Delete everything in the trash, permanently                         |
+| [`proton drive trash list`](/drive/trash/#list)                                                   | List what is in the trash                                           |
+| [`proton drive trash restore`](/drive/trash/#restore)                                             | Put items back where they came from                                 |
+| [`proton drive volumes delete`](/drive/volumes/#delete)                                           | Delete a locked volume and everything on it                         |
+| [`proton drive volumes list`](/drive/volumes/#list)                                               | List the volumes your files and photos are kept on                  |
+| [`proton drive volumes restore`](/drive/volumes/#restore)                                         | Put the files of a locked volume back                               |
+| [`proton index create`](/local-index/commands/#create)                                            | Index an app so its contents can be searched                        |
+| [`proton index delete`](/local-index/commands/#delete)                                            | Remove an index from this machine                                   |
+| [`proton index list`](/local-index/commands/#list)                                                | List what is indexed on this machine                                |
+| [`proton index update`](/local-index/commands/#update)                                            | Bring every index up to date                                        |
+| [`proton index watch`](/local-index/commands/#watch)                                              | Keep every index current until you stop it                          |
+| [`proton mail conversations attachments download`](/mail/conversations/#attachments-download)     | Download and decrypt attachments from a thread                      |
+| [`proton mail conversations attachments list`](/mail/conversations/#attachments-list)             | List every attachment in a thread                                   |
+| [`proton mail conversations delete`](/mail/conversations/#delete)                                 | Delete threads permanently                                          |
+| [`proton mail conversations export`](/mail/conversations/#export)                                 | Write a whole thread out as .eml files or one mbox                  |
+| [`proton mail conversations forward`](/mail/conversations/#forward)                               | Forward the newest message in a thread                              |
+| [`proton mail conversations get`](/mail/conversations/#get)                                       | Show a whole thread, decrypted                                      |
+| [`proton mail conversations label`](/mail/conversations/#label)                                   | Attach a label to threads                                           |
+| [`proton mail conversations list`](/mail/conversations/#list)                                     | List threads in a folder                                            |
+| [`proton mail conversations mark read`](/mail/conversations/#mark-read)                           | Mark threads as read                                                |
+| [`proton mail conversations mark unread`](/mail/conversations/#mark-unread)                       | Mark threads as unread                                              |
+| [`proton mail conversations move`](/mail/conversations/#move)                                     | Move threads to a folder                                            |
+| [`proton mail conversations reply`](/mail/conversations/#reply)                                   | Reply to the newest message in a thread                             |
+| [`proton mail conversations snooze`](/mail/conversations/#snooze)                                 | Take threads out of the inbox until later                           |
+| [`proton mail conversations star`](/mail/conversations/#star)                                     | Star threads                                                        |
+| [`proton mail conversations trash`](/mail/conversations/#trash)                                   | Move threads to the trash                                           |
+| [`proton mail conversations unlabel`](/mail/conversations/#unlabel)                               | Detach a label from threads                                         |
+| [`proton mail conversations unsnooze`](/mail/conversations/#unsnooze)                             | Bring snoozed threads back to the inbox now                         |
+| [`proton mail conversations unstar`](/mail/conversations/#unstar)                                 | Remove the star from threads                                        |
+| [`proton mail drafts create`](/mail/drafts/#create)                                               | Save a draft without sending it                                     |
+| [`proton mail drafts delete`](/mail/drafts/#delete)                                               | Delete drafts                                                       |
+| [`proton mail drafts list`](/mail/drafts/#list)                                                   | List drafts                                                         |
+| [`proton mail drafts send`](/mail/drafts/#send)                                                   | Send a draft as it stands                                           |
+| [`proton mail drafts update`](/mail/drafts/#update)                                               | Change a draft’s recipients, subject, body or attachments           |
+| [`proton mail messages attachments download`](/mail/messages/#attachments-download)               | Download and decrypt attachments                                    |
+| [`proton mail messages attachments list`](/mail/messages/#attachments-list)                       | List a message’s attachments                                        |
+| [`proton mail messages delete`](/mail/messages/#delete)                                           | Delete messages permanently                                         |
+| [`proton mail messages empty`](/mail/messages/#empty)                                             | Delete everything in a folder, permanently                          |
+| [`proton mail messages export`](/mail/messages/#export)                                           | Write messages out as .eml or mbox files                            |
+| [`proton mail messages forward`](/mail/messages/#forward)                                         | Forward a message                                                   |
+| [`proton mail messages get`](/mail/messages/#get)                                                 | Show one message, decrypted                                         |
+| [`proton mail messages label`](/mail/messages/#label)                                             | Attach a label to messages                                          |
+| [`proton mail messages list`](/mail/messages/#list)                                               | List messages in a folder                                           |
+| [`proton mail messages mark legitimate`](/mail/messages/#mark-legitimate)                         | Mark a message Proton flagged as legitimate                         |
+| [`proton mail messages mark phishing`](/mail/messages/#mark-phishing)                             | Report a message to Proton as phishing                              |
+| [`proton mail messages mark read`](/mail/messages/#mark-read)                                     | Mark messages as read                                               |
+| [`proton mail messages mark unread`](/mail/messages/#mark-unread)                                 | Mark messages as unread                                             |
+| [`proton mail messages move`](/mail/messages/#move)                                               | Move messages to a folder                                           |
+| [`proton mail messages reply`](/mail/messages/#reply)                                             | Reply to a message                                                  |
+| [`proton mail messages send`](/mail/messages/#send)                                               | Compose and send a message                                          |
+| [`proton mail messages star`](/mail/messages/#star)                                               | Star messages                                                       |
+| [`proton mail messages trash`](/mail/messages/#trash)                                             | Move messages to the trash                                          |
+| [`proton mail messages unlabel`](/mail/messages/#unlabel)                                         | Detach a label from messages                                        |
+| [`proton mail messages unschedule`](/mail/messages/#unschedule)                                   | Cancel a scheduled send, returning the message to drafts            |
+| [`proton mail messages unstar`](/mail/messages/#unstar)                                           | Remove the star from messages                                       |
+| [`proton mail messages unsubscribe`](/mail/messages/#unsubscribe)                                 | Ask a mailing list to stop                                          |
+| [`proton mail messages update`](/mail/messages/#update)                                           | Change when messages delete themselves                              |
+| [`proton mail messages watch`](/mail/messages/#watch)                                             | Print each message as it arrives                                    |
+| [`proton mail settings addresses create`](/mail/settings/#addresses-create)                       | Add an address to the account                                       |
+| [`proton mail settings addresses delete`](/mail/settings/#addresses-delete)                       | Delete addresses                                                    |
+| [`proton mail settings addresses disable`](/mail/settings/#addresses-disable)                     | Stop an address sending and receiving                               |
+| [`proton mail settings addresses enable`](/mail/settings/#addresses-enable)                       | Let a disabled address send and receive again                       |
+| [`proton mail settings addresses get`](/mail/settings/#addresses-get)                             | Show one address, including its signature                           |
+| [`proton mail settings addresses list`](/mail/settings/#addresses-list)                           | List the addresses on the account                                   |
+| [`proton mail settings addresses reorder`](/mail/settings/#addresses-reorder)                     | Make an address the default, or set their order                     |
+| [`proton mail settings addresses update`](/mail/settings/#addresses-update)                       | Set an address’s display name or signature                          |
+| [`proton mail settings autoreply disable`](/mail/settings/#autoreply-disable)                     | Turn the auto-reply off, keeping its schedule                       |
+| [`proton mail settings autoreply enable`](/mail/settings/#autoreply-enable)                       | Turn the auto-reply on, keeping its schedule                        |
+| [`proton mail settings autoreply get`](/mail/settings/#autoreply-get)                             | Show the auto-reply and its schedule                                |
+| [`proton mail settings autoreply set`](/mail/settings/#autoreply-set)                             | Configure the auto-reply and turn it on                             |
+| [`proton mail settings domains create`](/mail/settings/#domains-create)                           | Add a custom domain to the account                                  |
+| [`proton mail settings domains delete`](/mail/settings/#domains-delete)                           | Remove a custom domain                                              |
+| [`proton mail settings domains get`](/mail/settings/#domains-get)                                 | Show a domain’s DNS entries and their status                        |
+| [`proton mail settings domains list`](/mail/settings/#domains-list)                               | List the custom domains on the account                              |
+| [`proton mail settings domains update`](/mail/settings/#domains-update)                           | Set the address that catches stray mail                             |
+| [`proton mail settings filters apply`](/mail/settings/#filters-apply)                             | Run filters over mail that is already in the mailbox                |
+| [`proton mail settings filters create`](/mail/settings/#filters-create)                           | Create a filter                                                     |
+| [`proton mail settings filters delete`](/mail/settings/#filters-delete)                           | Delete filters                                                      |
+| [`proton mail settings filters disable`](/mail/settings/#filters-disable)                         | Disable filters                                                     |
+| [`proton mail settings filters enable`](/mail/settings/#filters-enable)                           | Enable filters                                                      |
+| [`proton mail settings filters get`](/mail/settings/#filters-get)                                 | Show what a filter matches and does                                 |
+| [`proton mail settings filters list`](/mail/settings/#filters-list)                               | List your filters                                                   |
+| [`proton mail settings filters reorder`](/mail/settings/#filters-reorder)                         | Set the order filters run in                                        |
+| [`proton mail settings filters update`](/mail/settings/#filters-update)                           | Change what a filter is called, matches, or does                    |
+| [`proton mail settings folders create`](/mail/settings/#folders-create)                           | Create a folder                                                     |
+| [`proton mail settings folders delete`](/mail/settings/#folders-delete)                           | Delete folders                                                      |
+| [`proton mail settings folders list`](/mail/settings/#folders-list)                               | List your folders                                                   |
+| [`proton mail settings folders update`](/mail/settings/#folders-update)                           | Rename or recolor a folder                                          |
+| [`proton mail settings forwarding accept`](/mail/settings/#forwarding-accept)                     | Accept forwardings sent to you                                      |
+| [`proton mail settings forwarding create`](/mail/settings/#forwarding-create)                     | Forward one of your addresses to another address                    |
+| [`proton mail settings forwarding decline`](/mail/settings/#forwarding-decline)                   | Decline forwardings sent to you                                     |
+| [`proton mail settings forwarding delete`](/mail/settings/#forwarding-delete)                     | Stop forwardings, in either direction                               |
+| [`proton mail settings forwarding disable`](/mail/settings/#forwarding-disable)                   | Pause forwardings without taking them down                          |
+| [`proton mail settings forwarding enable`](/mail/settings/#forwarding-enable)                     | Resume paused forwardings                                           |
+| [`proton mail settings forwarding get`](/mail/settings/#forwarding-get)                           | Show one forwarding                                                 |
+| [`proton mail settings forwarding list`](/mail/settings/#forwarding-list)                         | List forwardings in both directions                                 |
+| [`proton mail settings forwarding resend`](/mail/settings/#forwarding-resend)                     | Ask the forwardee again                                             |
+| [`proton mail settings get`](/mail/settings/#get)                                                 | Show the mail settings now in effect                                |
+| [`proton mail settings labels create`](/mail/settings/#labels-create)                             | Create a label                                                      |
+| [`proton mail settings labels delete`](/mail/settings/#labels-delete)                             | Delete labels                                                       |
+| [`proton mail settings labels list`](/mail/settings/#labels-list)                                 | List your labels                                                    |
+| [`proton mail settings labels update`](/mail/settings/#labels-update)                             | Rename or recolor a label                                           |
+| [`proton mail settings list`](/mail/settings/#list)                                               | List the mail settings that can be changed                          |
+| [`proton mail settings senders allow`](/mail/settings/#senders-allow)                             | Always let someone reach the inbox                                  |
+| [`proton mail settings senders block`](/mail/settings/#senders-block)                             | Send someone’s mail straight to blocked                             |
+| [`proton mail settings senders list`](/mail/settings/#senders-list)                               | List every standing decision about a sender                         |
+| [`proton mail settings senders remove`](/mail/settings/#senders-remove)                           | Drop a standing decision, letting the spam filter decide again      |
+| [`proton mail settings senders spam`](/mail/settings/#senders-spam)                               | Send someone’s mail straight to spam                                |
+| [`proton mail settings set`](/mail/settings/#set)                                                 | Change one mail setting                                             |
+| [`proton pass aliases contacts allow`](/pass/aliases/#contacts-allow)                             | Let a contact’s mail reach you again                                |
+| [`proton pass aliases contacts block`](/pass/aliases/#contacts-block)                             | Stop a contact’s mail reaching you                                  |
+| [`proton pass aliases contacts create`](/pass/aliases/#contacts-create)                           | Make an address that writes to somebody as the alias                |
+| [`proton pass aliases contacts delete`](/pass/aliases/#contacts-delete)                           | Remove an address an alias can write to                             |
+| [`proton pass aliases contacts list`](/pass/aliases/#contacts-list)                               | List the addresses an alias can write to                            |
+| [`proton pass aliases create`](/pass/aliases/#create)                                             | Create an alias                                                     |
+| [`proton pass aliases disable`](/pass/aliases/#disable)                                           | Stop receiving mail sent to an alias                                |
+| [`proton pass aliases enable`](/pass/aliases/#enable)                                             | Start receiving mail sent to an alias                               |
+| [`proton pass aliases list`](/pass/aliases/#list)                                                 | List your aliases                                                   |
+| [`proton pass breaches create`](/pass/breaches/#create)                                           | Have Proton watch an address you own elsewhere                      |
+| [`proton pass breaches delete`](/pass/breaches/#delete)                                           | Stop Proton watching an address you added                           |
+| [`proton pass breaches disable`](/pass/breaches/#disable)                                         | Stop Proton watching an address                                     |
+| [`proton pass breaches enable`](/pass/breaches/#enable)                                           | Have Proton watch an address again                                  |
+| [`proton pass breaches get`](/pass/breaches/#get)                                                 | Show the breaches one address has appeared in                       |
+| [`proton pass breaches list`](/pass/breaches/#list)                                               | List the addresses Proton watches, and how many breaches each is in |
+| [`proton pass breaches resend`](/pass/breaches/#resend)                                           | Send the confirmation code again                                    |
+| [`proton pass breaches verify`](/pass/breaches/#verify)                                           | Confirm an address with the code Proton emailed it                  |
+| [`proton pass invitations accept`](/pass/invitations/#accept)                                     | Take what somebody offered you                                      |
+| [`proton pass invitations decline`](/pass/invitations/#decline)                                   | Turn down what somebody offered you                                 |
+| [`proton pass invitations list`](/pass/invitations/#list)                                         | List what other people have offered you                             |
+| [`proton pass items attachments download`](/pass/items/#attachments-download)                     | Download and decrypt attachments                                    |
+| [`proton pass items attachments list`](/pass/items/#attachments-list)                             | List an item’s attachments                                          |
+| [`proton pass items attachments restore`](/pass/items/#attachments-restore)                       | Put a removed attachment back on an item                            |
+| [`proton pass items attachments update`](/pass/items/#attachments-update)                         | Rename an attachment                                                |
+| [`proton pass items create`](/pass/items/#create)                                                 | Create an item                                                      |
+| [`proton pass items delete`](/pass/items/#delete)                                                 | Delete items permanently                                            |
+| [`proton pass items get`](/pass/items/#get)                                                       | Show one item, decrypted                                            |
+| [`proton pass items list`](/pass/items/#list)                                                     | List items across your vaults                                       |
+| [`proton pass items move`](/pass/items/#move)                                                     | Put an item in another vault                                        |
+| [`proton pass items passkeys list`](/pass/items/#passkeys-list)                                   | List the passkeys stored against a login                            |
+| [`proton pass items passkeys remove`](/pass/items/#passkeys-remove)                               | Take a passkey off a login                                          |
+| [`proton pass items pin`](/pass/items/#pin)                                                       | Keep items at the top of the list                                   |
+| [`proton pass items revisions get`](/pass/items/#revisions-get)                                   | Show one earlier version, decrypted                                 |
+| [`proton pass items revisions list`](/pass/items/#revisions-list)                                 | Show what an item used to be                                        |
+| [`proton pass items revisions restore`](/pass/items/#revisions-restore)                           | Put an item back to an earlier version                              |
+| [`proton pass items share add`](/pass/items/#share-add)                                           | Offer one item to somebody                                          |
+| [`proton pass items share confirm`](/pass/items/#share-confirm)                                   | Let somebody into an item once they join Proton                     |
+| [`proton pass items share get`](/pass/items/#share-get)                                           | Show how an item is shared                                          |
+| [`proton pass items share remove`](/pass/items/#share-remove)                                     | Take somebody’s access to an item away                              |
+| [`proton pass items share update`](/pass/items/#share-update)                                     | Change what somebody may do with an item                            |
+| [`proton pass items totp`](/pass/items/#totp)                                                     | Print the current two-factor code for an item                       |
+| [`proton pass items trash`](/pass/items/#trash)                                                   | Move items to the trash                                             |
+| [`proton pass items unpin`](/pass/items/#unpin)                                                   | Stop keeping items at the top                                       |
+| [`proton pass items update`](/pass/items/#update)                                                 | Change an item’s fields                                             |
+| [`proton pass links create`](/pass/links/#create)                                                 | Make a link that shows one item                                     |
+| [`proton pass links get`](/pass/links/#get)                                                       | Show one link, URL and all                                          |
+| [`proton pass links list`](/pass/links/#list)                                                     | List the links you have made                                        |
+| [`proton pass links revoke`](/pass/links/#revoke)                                                 | Stop a link working                                                 |
+| [`proton pass export`](/pass/pass/#export)                                                        | Write the vaults you own out to a file                              |
+| [`proton pass generate`](/pass/pass/#generate)                                                    | Make a password                                                     |
+| [`proton pass import`](/pass/pass/#import)                                                        | Read items in from a password manager’s export                      |
+| [`proton pass settings access-tokens activity list`](/pass/settings/#access-tokens-activity-list) | List what a token has done                                          |
+| [`proton pass settings access-tokens create`](/pass/settings/#access-tokens-create)               | Make a token for a program to use                                   |
+| [`proton pass settings access-tokens delete`](/pass/settings/#access-tokens-delete)               | Stop a token working                                                |
+| [`proton pass settings access-tokens get`](/pass/settings/#access-tokens-get)                     | Show a token and the vaults it reads                                |
+| [`proton pass settings access-tokens list`](/pass/settings/#access-tokens-list)                   | List the tokens, expired ones included                              |
+| [`proton pass settings access-tokens update`](/pass/settings/#access-tokens-update)               | Change which vaults a token reads                                   |
+| [`proton pass settings domains create`](/pass/settings/#domains-create)                           | Add a domain of your own for aliases                                |
+| [`proton pass settings domains delete`](/pass/settings/#domains-delete)                           | Remove a domain of your own                                         |
+| [`proton pass settings domains get`](/pass/settings/#domains-get)                                 | Show a domain, with the DNS entries a custom one needs              |
+| [`proton pass settings domains list`](/pass/settings/#domains-list)                               | List the domains an alias can be made on                            |
+| [`proton pass settings domains update`](/pass/settings/#domains-update)                           | Change a domain: the default, catch-all or names                    |
+| [`proton pass settings extra-password disable`](/pass/settings/#extra-password-disable)           | Remove the extra password from Pass                                 |
+| [`proton pass settings extra-password enable`](/pass/settings/#extra-password-enable)             | Protect Pass with an extra password                                 |
+| [`proton pass settings extra-password get`](/pass/settings/#extra-password-get)                   | Show whether Pass has an extra password                             |
+| [`proton pass settings mailboxes create`](/pass/settings/#mailboxes-create)                       | Add an address for aliases to forward to                            |
+| [`proton pass settings mailboxes delete`](/pass/settings/#mailboxes-delete)                       | Remove an address aliases forward to                                |
+| [`proton pass settings mailboxes list`](/pass/settings/#mailboxes-list)                           | List the addresses your aliases forward to                          |
+| [`proton pass settings mailboxes resend`](/pass/settings/#mailboxes-resend)                       | Send the confirmation code again                                    |
+| [`proton pass settings mailboxes update`](/pass/settings/#mailboxes-update)                       | Change a mailbox                                                    |
+| [`proton pass settings mailboxes verify`](/pass/settings/#mailboxes-verify)                       | Confirm an address with the code Proton emailed it                  |
+| [`proton pass shared list`](/pass/shared/#list)                                                   | List the items other people have shared with you                    |
+| [`proton pass sharing list`](/pass/sharing/#list)                                                 | List the items you have shared                                      |
+| [`proton pass trash empty`](/pass/trash/#empty)                                                   | Delete everything in the trash, permanently                         |
+| [`proton pass trash list`](/pass/trash/#list)                                                     | List what is in the trash                                           |
+| [`proton pass trash restore`](/pass/trash/#restore)                                               | Put items back where they came from                                 |
+| [`proton pass vaults create`](/pass/vaults/#create)                                               | Create a vault                                                      |
+| [`proton pass vaults delete`](/pass/vaults/#delete)                                               | Delete vaults, and everything in them                               |
+| [`proton pass vaults get`](/pass/vaults/#get)                                                     | Show one vault in full                                              |
+| [`proton pass vaults list`](/pass/vaults/#list)                                                   | List your vaults                                                    |
+| [`proton pass vaults share add`](/pass/vaults/#share-add)                                         | Offer a vault to somebody                                           |
+| [`proton pass vaults share confirm`](/pass/vaults/#share-confirm)                                 | Let somebody into a vault once they join Proton                     |
+| [`proton pass vaults share get`](/pass/vaults/#share-get)                                         | Show who can open a vault                                           |
+| [`proton pass vaults share remove`](/pass/vaults/#share-remove)                                   | Take somebody’s access to a vault away                              |
+| [`proton pass vaults share update`](/pass/vaults/#share-update)                                   | Change what somebody may do with a vault                            |
+| [`proton pass vaults transfer`](/pass/vaults/#transfer)                                           | Make somebody else the owner of a vault                             |
+| [`proton pass vaults update`](/pass/vaults/#update)                                               | Rename a vault, or change how it looks                              |
+| [`proton changelog`](/proton/#changelog)                                                          | Print what each release changed                                     |
+| [`proton completion`](/proton/#completion)                                                        | Generate a shell completion script                                  |
+| [`proton report`](/proton/#report)                                                                | Collect what a bug report needs                                     |
+| [`proton skill`](/proton/#skill)                                                                  | Print the skill that teaches an AI agent to use proton              |
+| [`proton uninstall`](/proton/#uninstall)                                                          | Remove a curl/PowerShell-installed proton                           |
+| [`proton update`](/proton/#update)                                                                | Update proton to the latest release                                 |
+| [`proton version`](/proton/#version)                                                              | Print the version and build information                             |
 
 ## Flags that work on every command
 
@@ -10478,6 +10488,35 @@ A new mailbox receives nothing until it answers. Proton emails it a code, and `v
 
 Deleting a mailbox needs somewhere for its aliases to go, which is what `--transfer-to` names. It is required: without it, those aliases would stop receiving mail.
 
+### Your own domain for aliases
+
+[Section titled “Your own domain for aliases”](#your-own-domain-for-aliases)
+
+On a paid Pass plan, aliases can be made on a domain you own.
+
+```bash
+proton pass settings domains create example.com
+proton pass settings domains get example.com           # the DNS entries, and which ones Proton sees
+proton pass settings domains update example.com --default
+```
+
+A new domain carries no alias until its DNS entries are in place. `get` shows every entry the domain needs, checks them again each time it runs, and says what it found where an entry is wrong. Ownership and MX are what a domain needs to carry aliases; SPF, DKIM and DMARC keep its mail out of spam. `list` shows each custom domain with its STATUS: `unverified`, `unconfigured`, or `active`.
+
+Once the domain is verified, three things can be set on it:
+
+```bash
+proton pass settings domains update example.com --catch-all me@proton.me --catch-all work@proton.me
+proton pass settings domains update example.com --catch-all none
+proton pass settings domains update example.com --display-name "Jane Roe"
+proton pass settings domains update example.com --random-prefix
+```
+
+With a catch-all, mail sent to any name at the domain makes an alias for that name as it arrives, forwarding to the mailboxes named. `--display-name` is what recipients see on mail from the domain’s aliases, and `--clear-display-name` takes it off.
+
+`--default` makes new aliases take a domain when nothing names another, and works for Proton’s domains too. `--default=false` leaves none chosen.
+
+Deleting a domain deletes every alias made on it. The command names the count and asks first.
+
 ## Sharing
 
 [Section titled “Sharing”](#sharing)
@@ -10694,6 +10733,39 @@ proton pass settings extra-password disable
 `disable` asks for the password first. Pass then opens with your account password alone, on every device, and this session goes on working.
 
 To change it, turn it off and on again.
+
+## Access tokens
+
+[Section titled “Access tokens”](#access-tokens)
+
+On a paid Pass plan, a token lets a program into Pass without your password: Proton’s [pass-cli](https://protonpass.github.io/pass-cli/), or an AI agent working through it.
+
+```bash
+proton pass settings access-tokens create --name ci --expires 30d --vault Work
+proton pass settings access-tokens list
+proton pass settings access-tokens get ci
+proton pass settings access-tokens update ci --vault Work --vault Personal
+proton pass settings access-tokens delete ci
+```
+
+A token reads the vaults it is handed and nothing else. `--name`, `--expires` and at least one `--vault` are required; `--expires` is between `1h` and `1y`. `update` names the whole set of vaults, so one left out is taken back.
+
+**The token is shown once**, when it is made. Copy it then: `get` shows the token’s name and vaults and never the token itself, and one you have lost is deleted and made again. Under `--output json` it is the `secret` field:
+
+```bash
+TOKEN=$(proton pass settings access-tokens create --name ci --expires 30d --vault Work --output json | jq -r .secret)
+```
+
+### A token for an AI agent
+
+[Section titled “A token for an AI agent”](#a-token-for-an-ai-agent)
+
+```bash
+proton pass settings access-tokens create --name agent --expires 1d --vault Work --agent
+proton pass settings access-tokens activity list agent
+```
+
+`--agent` marks a token for an AI agent, which then has to give a reason for every action it takes. `activity list` shows them, newest first: what was done, to which item, and why.
 
 ## History
 
@@ -12024,7 +12096,154 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton pass settings`, with the arguments and flags it takes. For these commands in use, see [the pass guide](/pass/).
 
-Holds `domains`, `extra-password` and `mailboxes`.
+Holds `access-tokens`, `domains`, `extra-password` and `mailboxes`.
+
+## `access-tokens`
+
+[Section titled “access-tokens”](#access-tokens)
+
+Tokens that let a program into Pass without your password.
+
+A token is for Proton’s pass-cli, or for an AI agent working through it. It reads the vaults you hand it and nothing else, and it stops working when it expires. Making one needs a paid Pass plan.
+
+The token itself is shown once, when it is made.
+
+Holds `activity`, `create`, `delete`, `get`, `list` and `update`.
+
+### `access-tokens activity`
+
+[Section titled “access-tokens activity”](#access-tokens-activity)
+
+What a token has been used for.
+
+Holds `list`.
+
+### `access-tokens activity list`
+
+[Section titled “access-tokens activity list”](#access-tokens-activity-list)
+
+List what a token has done, newest first.
+
+Each action is Proton’s record of it. The item, vault and reason are what the program wrote down, which a token made with `access-tokens create --agent` has to do for every action; one made without has actions and no reasons.
+
+```plaintext
+proton pass settings access-tokens activity list REF
+```
+
+```bash
+proton pass settings access-tokens activity list agent
+proton pass settings access-tokens activity list agent --limit 20
+```
+
+| Flag          | Description                                  |
+| ------------- | -------------------------------------------- |
+| `--limit int` | How many actions per page; 0 for all of them |
+| `--page int`  | Which page of results, counting from zero    |
+
+### `access-tokens create`
+
+[Section titled “access-tokens create”](#access-tokens-create)
+
+Make a token for a program to use.
+
+–name, –expires and at least one –vault are required. The token reads the vaults named and nothing else, and stops working when –expires runs out, which is between 1h and 1y from now.
+
+–agent marks it for an AI agent, which then has to give a reason for every action it takes; `activity list` shows them.
+
+The token is shown once and never again. Under –output json it is the `secret` field.
+
+```plaintext
+proton pass settings access-tokens create
+```
+
+```bash
+proton pass settings access-tokens create --name ci --expires 30d --vault Work
+proton pass settings access-tokens create --name agent --expires 1d --vault Work --agent
+proton pass settings access-tokens create --name ci --expires 30d --vault Work --output json
+```
+
+| Flag                  | Description                                                          |
+| --------------------- | -------------------------------------------------------------------- |
+| `--agent`             | Make it for an AI agent, which has to give a reason for every action |
+| `--expires string`    | How long the token works (e.g. 30d, 12h); 1h to 1y                   |
+| `--name string`       | Name for the new token                                               |
+| `--vault stringArray` | A vault the token may read, by name or ID (repeatable)               |
+
+### `access-tokens delete`
+
+[Section titled “access-tokens delete”](#access-tokens-delete)
+
+Stop a token working, for good.
+
+A program holding the token is refused from then on. Deleting one that has already expired only takes it off the list.
+
+```plaintext
+proton pass settings access-tokens delete REF...
+```
+
+```bash
+proton pass settings access-tokens delete ci
+```
+
+### `access-tokens get`
+
+[Section titled “access-tokens get”](#access-tokens-get)
+
+Show a token and the vaults it reads.
+
+The token itself is not here: it was shown once, when it was made, and nothing brings it back. A token you have lost is deleted and made again.
+
+```plaintext
+proton pass settings access-tokens get REF
+```
+
+```bash
+proton pass settings access-tokens get ci
+```
+
+### `access-tokens list`
+
+[Section titled “access-tokens list”](#access-tokens-list)
+
+List the tokens, expired ones included.
+
+STATUS is active, expiring or expired; expiring means within the hour. A token that expired more than thirty days ago is gone from the list. The tokens themselves are never shown here.
+
+```plaintext
+proton pass settings access-tokens list
+```
+
+```bash
+proton pass settings access-tokens list
+proton pass settings access-tokens list --output json
+```
+
+| Flag            | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| `--desc`        | Reverse the order                                    |
+| `--limit int`   | How many access tokens per page; 0 for all of them   |
+| `--page int`    | Which page of results, counting from zero            |
+| `--sort string` | Order by: created, name, expires (default `created`) |
+
+### `access-tokens update`
+
+[Section titled “access-tokens update”](#access-tokens-update)
+
+Change which vaults a token reads.
+
+–vault names the whole set, one flag per vault: a vault not named is taken away, and one the token did not have is handed to it. An expired token cannot be changed; delete it and make another.
+
+```plaintext
+proton pass settings access-tokens update REF
+```
+
+```bash
+proton pass settings access-tokens update ci --vault Work --vault Personal
+```
+
+| Flag                  | Description                                            |
+| --------------------- | ------------------------------------------------------ |
+| `--vault stringArray` | A vault the token may read, by name or ID (repeatable) |
 
 ## `domains`
 
@@ -12032,7 +12251,62 @@ Holds `domains`, `extra-password` and `mailboxes`.
 
 The domains an alias can be made on.
 
-Holds `list`.
+Proton’s own are always there. A custom domain is one you own and needs a paid Pass plan; it carries no alias until its DNS entries are in place. `get` shows them and says which ones Proton can see.
+
+Holds `create`, `delete`, `get`, `list` and `update`.
+
+### `domains create`
+
+[Section titled “domains create”](#domains-create)
+
+Add a domain of your own for aliases to be made on.
+
+DOMAIN is a domain you own, written as example.com. Adding one needs a paid Pass plan.
+
+The domain carries no alias until its DNS entries are in place: first the one that proves it is yours, then the MX entries that bring its mail here. `get` shows every entry the domain needs.
+
+```plaintext
+proton pass settings domains create DOMAIN
+```
+
+```bash
+proton pass settings domains create example.com
+```
+
+### `domains delete`
+
+[Section titled “domains delete”](#domains-delete)
+
+Remove a domain of your own.
+
+Every alias made on the domain is deleted with it, and an alias address cannot be brought back. Adding the domain again needs its DNS entries verified from scratch.
+
+```plaintext
+proton pass settings domains delete REF
+```
+
+```bash
+proton pass settings domains delete example.com
+```
+
+### `domains get`
+
+[Section titled “domains get”](#domains-get)
+
+Show a domain, with the DNS entries a custom one needs.
+
+Reads a custom domain’s DNS again each time it runs, so what it reports is what Proton can see now. Each check reads ok, missing or wrong, and a wrong one says what was found instead. Ownership and MX are what a domain needs to carry aliases; SPF, DKIM and DMARC keep its mail out of spam.
+
+The catch-all, display name and random prefix appear once the domain is verified.
+
+```plaintext
+proton pass settings domains get REF
+```
+
+```bash
+proton pass settings domains get example.com
+proton pass settings domains get example.com --output json
+```
 
 ### `domains list`
 
@@ -12040,7 +12314,7 @@ Holds `list`.
 
 List the domains an alias can be made on.
 
-These are the values `proton pass aliases create --suffix` accepts: the part of an alias after the @.
+These are the values `proton pass aliases create --suffix` accepts: the part of an alias after the @. A custom domain is listed whatever state it is in; STATUS is active, unverified or unconfigured, and is blank for one of Proton’s.
 
 ```plaintext
 proton pass settings domains list
@@ -12048,6 +12322,7 @@ proton pass settings domains list
 
 ```bash
 proton pass settings domains list
+proton pass settings domains list --output json
 ```
 
 | Flag            | Description                                  |
@@ -12056,6 +12331,35 @@ proton pass settings domains list
 | `--limit int`   | How many domains per page; 0 for all of them |
 | `--page int`    | Which page of results, counting from zero    |
 | `--sort string` | Order by: domain (default `domain`)          |
+
+### `domains update`
+
+[Section titled “domains update”](#domains-update)
+
+Change a domain.
+
+–default makes new aliases take this domain when nothing names another, and –default=false leaves none chosen. Every other flag is a custom domain’s, and waits until the domain is verified.
+
+–catch-all names the mailboxes that take mail sent to any name at the domain; an alias is made for the name as the first mail arrives. One flag per mailbox, and `--catch-all none` turns it off.
+
+```plaintext
+proton pass settings domains update REF
+```
+
+```bash
+proton pass settings domains update example.com --default
+proton pass settings domains update example.com --catch-all me@proton.me
+proton pass settings domains update example.com --catch-all none
+proton pass settings domains update example.com --display-name "Jane Roe" --random-prefix
+```
+
+| Flag                      | Description                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `--catch-all stringArray` | Mailbox that takes mail sent to any name at the domain (repeatable), or none |
+| `--clear-display-name`    | Remove the display name                                                      |
+| `--default`               | Make new aliases take this domain; –default=false chooses none               |
+| `--display-name string`   | Name recipients see on mail from the domain’s aliases                        |
+| `--random-prefix`         | Put a random word in front of a new alias on the domain                      |
 
 ## `extra-password`
 
