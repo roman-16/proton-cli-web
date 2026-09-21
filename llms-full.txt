@@ -856,6 +856,10 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail messages unsubscribe`](/mail/messages/#unsubscribe)                                 | Ask a mailing list to stop                                          |
 | [`proton mail messages update`](/mail/messages/#update)                                           | Change when messages delete themselves                              |
 | [`proton mail messages watch`](/mail/messages/#watch)                                             | Print each message as it arrives                                    |
+| [`proton mail protected attachments download`](/mail/protected/#attachments-download)             | Download and decrypt attachments                                    |
+| [`proton mail protected attachments list`](/mail/protected/#attachments-list)                     | List a password-protected message’s attachments                     |
+| [`proton mail protected get`](/mail/protected/#get)                                               | Show a password-protected message, decrypted                        |
+| [`proton mail protected reply`](/mail/protected/#reply)                                           | Reply to a password-protected message                               |
 | [`proton mail settings addresses create`](/mail/settings/#addresses-create)                       | Add an address to the account                                       |
 | [`proton mail settings addresses delete`](/mail/settings/#addresses-delete)                       | Delete addresses                                                    |
 | [`proton mail settings addresses disable`](/mail/settings/#addresses-disable)                     | Stop an address sending and receiving                               |
@@ -7552,6 +7556,8 @@ The password a recipient outside Proton types comes from a file or from standard
 
 Such a message expires after 28 days whatever `--expires` says. `--eo-password-file -` takes the stream for itself, so it cannot be combined with `--body -`.
 
+To read one that was sent to you, see [Open a password-protected message somebody sent you](#open-a-password-protected-message-somebody-sent-you).
+
 A scheduled send sits in the `scheduled` folder until it goes. To pull it back to Drafts, run `proton mail messages unschedule REF`.
 
 ## Reply and forward
@@ -7656,6 +7662,54 @@ proton mail conversations attachments download REF --dest-dir ./thread/
 Naming an attachment downloads that one, by its own name or by its ID; naming none downloads them all.
 
 Existing files are never overwritten silently: names collide into `file (2).pdf`, or pass `--force`. `--include-inline` covers embedded images too.
+
+## Open a password-protected message somebody sent you
+
+[Section titled “Open a password-protected message somebody sent you”](#open-a-password-protected-message-somebody-sent-you)
+
+A message sent to an address outside Proton arrives as a link, and the password comes to you some other way. Name it by the link or by the id in it:
+
+```bash
+proton mail protected get 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane
+proton mail protected get 'https://mail.proton.me/eo/9fK2pQ7xNv4mB8' --eo-password-file -
+proton mail protected attachments list 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane
+proton mail protected attachments download 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane --dest-dir .
+```
+
+Quote the link: a shell splits nothing in an id, and everything in a URL.
+
+The password is the one whoever sent the message gave you, not a Proton password, and it comes from a file or from standard input.
+
+```console
+$ proton mail protected get 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane
+Subject:  Q3 numbers
+From:     Jane Roe <jane@proton.me>
+To:       me@example.com
+Date:     2026-04-15 14:32
+Expires:  2026-05-13 14:32
+
+
+Here are the numbers we discussed.
+
+
+Attachments
+ID        NAME           SIZE
+────────  ─────────────  ───────
+kQ81mDx4  q3-report.pdf  84.2 KB
+```
+
+`get` takes the same `--render`, `--body-only` and `--strip-quotes` as `mail messages get`. The message is gone 28 days after it was sent.
+
+An answer goes to whoever sent it and nobody else:
+
+```bash
+proton mail protected reply 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane --body 'Got them, thanks.'
+proton mail protected reply 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane --body 'Signed copy attached.' --attach ./signed.pdf
+```
+
+Five answers can go back from behind one link, and a `Replies` line on `get` counts the ones already sent.
+
+**None of this needs an account.** Your own mail, `login` included, is untouched by it.
 
 ## Back it up
 
@@ -9396,6 +9450,125 @@ proton mail messages watch --output json
 | `--folder string`  | Folder or label to look in (default: the ones that notify) |
 | `--from string`    | Match the sender’s address                                 |
 | `--subject string` | Match text in the subject                                  |
+
+***
+
+Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
+# proton mail protected
+
+> Messages somebody sent you behind a password.
+
+Every command under `proton mail protected`, with the arguments and flags it takes. For these commands in use, see [the mail guide](/mail/).
+
+Holds `attachments`, `get` and `reply`.
+
+## `attachments`
+
+[Section titled “attachments”](#attachments)
+
+Files attached to a password-protected message.
+
+Holds `download` and `list`.
+
+### `attachments download`
+
+[Section titled “attachments download”](#attachments-download)
+
+Download and decrypt attachments.
+
+Naming an attachment downloads that one; naming none downloads them all. Existing files are never overwritten silently: a collision becomes “file (2).pdf” unless –force says otherwise.
+
+```plaintext
+proton mail protected attachments download LINK [ATTACHMENT_REF]
+```
+
+```bash
+proton mail protected attachments download 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane --dest-dir .
+proton mail protected attachments download 9fK2pQ7xNv4mB8 q3-report.pdf --eo-password-file /run/secrets/jane --dest report.pdf
+```
+
+| Flag                        | Description                                                                 |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `--dest string`             | Write to this path, or - for stdout                                         |
+| `--dest-dir string`         | Write into this directory, keeping each item’s own name                     |
+| `--eo-password-file string` | Read the password for recipients outside Proton from a file, or - for stdin |
+| `--force`                   | Overwrite a file that already exists                                        |
+| `--include-inline`          | Include inline attachments when downloading them all                        |
+
+### `attachments list`
+
+[Section titled “attachments list”](#attachments-list)
+
+List a password-protected message’s attachments.
+
+```plaintext
+proton mail protected attachments list LINK
+```
+
+```bash
+proton mail protected attachments list 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane
+```
+
+| Flag                        | Description                                                                 |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `--eo-password-file string` | Read the password for recipients outside Proton from a file, or - for stdin |
+| `--include-inline`          | Include inline attachments, such as signature graphics                      |
+
+## `get`
+
+[Section titled “get”](#get)
+
+Show a password-protected message, decrypted.
+
+LINK is the address you were sent or the id in it, and the password is the one whoever sent it gave you rather than a Proton password. Neither this nor anything else under `protected` needs an account.
+
+Such a message is gone 28 days after it was sent, and the Expires line says when. A Replies line counts the answers already sent from behind the link.
+
+```plaintext
+proton mail protected get LINK
+```
+
+```bash
+proton mail protected get 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane
+proton mail protected get 'https://mail.proton.me/eo/9fK2pQ7xNv4mB8' --eo-password-file -
+proton mail protected get 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane --body-only
+```
+
+| Flag                        | Description                                                                 |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `--body-only`               | Emit only the body, with no headers or attachment list                      |
+| `--eo-password-file string` | Read the password for recipients outside Proton from a file, or - for stdin |
+| `--include-inline`          | List inline attachments too, such as signature graphics                     |
+| `--render string`           | Which representation of the body to print: text, html, raw (default `text`) |
+| `--strip-quotes`            | Drop quoted reply blocks from the body                                      |
+
+## `reply`
+
+[Section titled “reply”](#reply)
+
+Reply to a password-protected message.
+
+The answer goes to whoever sent it and nobody else - the link knows no other address - sealed to their key, with the original quoted below your text.
+
+Proton takes five answers from behind one link. –eo-password-file - claims standard input, so it cannot be combined with –body -.
+
+```plaintext
+proton mail protected reply LINK
+```
+
+```bash
+proton mail protected reply 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane --body 'Got them, thanks.'
+proton mail protected reply 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane --body 'Signed copy attached.' --attach ./signed.pdf
+```
+
+| Flag                        | Description                                                                 |
+| --------------------------- | --------------------------------------------------------------------------- |
+| `--attach stringArray`      | File to attach (repeatable)                                                 |
+| `--body string`             | Your text, placed above the quoted original (- reads stdin)                 |
+| `--eo-password-file string` | Read the password for recipients outside Proton from a file, or - for stdin |
+| `--html`                    | Compose in HTML (default: match the original)                               |
+| `--no-quote`                | Do not quote the original message                                           |
 
 ***
 
@@ -13869,6 +14042,17 @@ A computer, an item somebody shared with you and a public link somebody sent you
 proton drive items list /Documents --computer "Work laptop"
 proton drive items download /report.pdf --shared Project --dest-dir .
 proton drive items list / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL'
+```
+
+## A message behind a password
+
+[Section titled “A message behind a password”](#a-message-behind-a-password)
+
+A password-protected message is in no mailbox, so it has no `REF`. Its usage shows `LINK`, and either the link you were sent or the id in it names it:
+
+```bash
+proton mail protected get 9fK2pQ7xNv4mB8 --eo-password-file /run/secrets/jane
+proton mail protected get 'https://mail.proton.me/eo/9fK2pQ7xNv4mB8' --eo-password-file -
 ```
 
 ## Full IDs that start with a dash
