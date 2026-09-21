@@ -130,6 +130,7 @@
 <li>The decrypted body of a message you report with <code dir="auto">mail messages mark phishing</code>, so Proton’s anti-abuse team can read what was sent to you. Nothing withdraws a report.</li>
 <li>The SRP proof during login, which does not reveal your password.</li>
 <li>The verifier for a Pass extra password you set, which Proton checks a password against and cannot read one out of.</li>
+<li>When you change a password or set a recovery phrase: the same kind of verifier for the new secret, and your keys locked again with it. The secret itself does not leave, and the keys are the ones you already had.</li>
 <li>Opening a public link with <code dir="auto">--link</code> or <code dir="auto">--shared</code> carries your session, so Proton knows which account opened it, and the owner sees one more visit.</li>
 <li>Once a day, on an install no package manager owns, a request to GitHub asking which release is newest. It carries nothing about you or your account, and <code dir="auto">PROTON_NO_UPDATE_CHECK</code> ends it (<a href="/install/#updating">Updating</a>).</li>
 </ul>
