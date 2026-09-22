@@ -916,7 +916,8 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail settings folders create`](/mail/settings/#folders-create)                           | Create a folder                                                     |
 | [`proton mail settings folders delete`](/mail/settings/#folders-delete)                           | Delete folders                                                      |
 | [`proton mail settings folders list`](/mail/settings/#folders-list)                               | List your folders                                                   |
-| [`proton mail settings folders update`](/mail/settings/#folders-update)                           | Rename or recolor a folder                                          |
+| [`proton mail settings folders reorder`](/mail/settings/#folders-reorder)                         | Set the order your folders are kept in                              |
+| [`proton mail settings folders update`](/mail/settings/#folders-update)                           | Rename a folder, recolor it, or move it                             |
 | [`proton mail settings forwarding accept`](/mail/settings/#forwarding-accept)                     | Accept forwardings sent to you                                      |
 | [`proton mail settings forwarding create`](/mail/settings/#forwarding-create)                     | Forward one of your addresses to another address                    |
 | [`proton mail settings forwarding decline`](/mail/settings/#forwarding-decline)                   | Decline forwardings sent to you                                     |
@@ -937,6 +938,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail settings labels create`](/mail/settings/#labels-create)                             | Create a label                                                      |
 | [`proton mail settings labels delete`](/mail/settings/#labels-delete)                             | Delete labels                                                       |
 | [`proton mail settings labels list`](/mail/settings/#labels-list)                                 | List your labels                                                    |
+| [`proton mail settings labels reorder`](/mail/settings/#labels-reorder)                           | Set the order your labels are kept in                               |
 | [`proton mail settings labels update`](/mail/settings/#labels-update)                             | Rename or recolor a label                                           |
 | [`proton mail settings list`](/mail/settings/#list)                                               | List the mail settings that can be changed                          |
 | [`proton mail settings senders allow`](/mail/settings/#senders-allow)                             | Always let someone reach the inbox                                  |
@@ -8480,14 +8482,29 @@ Each JSON line names the thread in `conversation_id`, so a consumer can act on t
 
 ```bash
 proton mail settings folders create --name Projects
-proton mail settings folders create --name Clients --parent PARENT_FOLDER_ID
+proton mail settings folders create --name Clients --parent Projects
 proton mail settings labels create --name Important --color "#8080FF"
 proton mail settings labels delete Important        # by name, or by ID
 ```
 
 Colours have to be one of Proton’s 20 accent colours. An invalid one prints the palette and is refused before anything is sent.
 
+A folder goes inside another with `--parent`, which takes the folder’s name, short ID or ID. `--parent none` brings it back to the top level.
+
 Deleting a folder or label asks first. The messages it held are not deleted.
+
+### Order
+
+[Section titled “Order”](#order)
+
+`folders list` and `labels list` show them in the order Proton keeps them, which is the order every Proton client shows.
+
+```bash
+proton mail settings folders reorder Projects        # put it first
+proton mail settings labels reorder --alphabetical   # sort them all
+```
+
+`reorder` moves the ones you name to the front, in the order you name them, and the rest keep the order they are in. A folder is ordered among the folders it sits beside, so name folders from one place at a time; `--alphabetical` covers every level.
 
 Folders carry a **NOTIFY** switch, which is whether mail landing there is worth telling you about. It shows in `folders list`, `--notify` sets it, and it decides what `messages watch` covers by default. Labels have no such switch.
 
@@ -11096,7 +11113,7 @@ proton mail settings filters update Receipts --sieve ./receipts.sieve
 
 Folders, which a message lives in.
 
-Holds `create`, `delete`, `list` and `update`.
+Holds `create`, `delete`, `list`, `reorder` and `update`.
 
 ### `folders create`
 
@@ -11119,7 +11136,7 @@ proton mail settings folders create --name Receipts --notify=false
 | `--color string`  | Accent color, by name (purple) or hex (#8080FF) (default `#8080FF`) |
 | `--name string`   | Name for the new folder                                             |
 | `--notify`        | Tell you when mail arrives here (default `true`)                    |
-| `--parent string` | Put it inside this folder, by ID                                    |
+| `--parent string` | Put it inside this folder                                           |
 
 ### `folders delete`
 
@@ -11154,11 +11171,36 @@ proton mail settings folders list
 | `--limit int` | How many folders per page; 0 for all of them |
 | `--page int`  | Which page of results, counting from zero    |
 
+### `folders reorder`
+
+[Section titled “folders reorder”](#folders-reorder)
+
+Set the order your folders are kept in.
+
+Name the folders that should come first, in order; the rest keep the order they are in. –alphabetical sorts them all instead.
+
+A folder is ordered among the folders it sits beside, so name folders from one place at a time. –alphabetical covers every level.
+
+```plaintext
+proton mail settings folders reorder [REF...]
+```
+
+```bash
+proton mail settings folders reorder Receipts
+proton mail settings folders reorder --alphabetical
+```
+
+| Flag             | Description                                        |
+| ---------------- | -------------------------------------------------- |
+| `--alphabetical` | Sort them all alphabetically instead of naming any |
+
 ### `folders update`
 
 [Section titled “folders update”](#folders-update)
 
-Rename or recolor a folder.
+Rename a folder, recolor it, or move it.
+
+–parent takes the folder to put it inside, or none to bring it back to the top level. –notify says whether mail landing here is worth telling you about.
 
 ```plaintext
 proton mail settings folders update REF
@@ -11166,15 +11208,16 @@ proton mail settings folders update REF
 
 ```bash
 proton mail settings folders update Receipts --name Invoices
+proton mail settings folders update 2026 --parent none
 proton mail settings folders update Receipts --notify
 ```
 
-| Flag              | Description                                         |
-| ----------------- | --------------------------------------------------- |
-| `--color string`  | New accent color, by name (purple) or hex (#8080FF) |
-| `--name string`   | New name                                            |
-| `--notify`        | Tell you when mail arrives here (default `true`)    |
-| `--parent string` | Move it inside this folder, by ID                   |
+| Flag              | Description                                           |
+| ----------------- | ----------------------------------------------------- |
+| `--color string`  | New accent color, by name (purple) or hex (#8080FF)   |
+| `--name string`   | New name                                              |
+| `--notify`        | Tell you when mail arrives here (default `true`)      |
+| `--parent string` | Move it inside this folder, or none for the top level |
 
 ## `forwarding`
 
@@ -11543,7 +11586,7 @@ proton mail settings imports undo jane@fastmail.com
 
 Labels, which a message carries.
 
-Holds `create`, `delete`, `list` and `update`.
+Holds `create`, `delete`, `list`, `reorder` and `update`.
 
 ### `labels create`
 
@@ -11597,6 +11640,27 @@ proton mail settings labels list
 | ------------- | ------------------------------------------- |
 | `--limit int` | How many labels per page; 0 for all of them |
 | `--page int`  | Which page of results, counting from zero   |
+
+### `labels reorder`
+
+[Section titled “labels reorder”](#labels-reorder)
+
+Set the order your labels are kept in.
+
+Name the labels that should come first, in order; the rest keep the order they are in. –alphabetical sorts them all instead.
+
+```plaintext
+proton mail settings labels reorder [REF...]
+```
+
+```bash
+proton mail settings labels reorder Work
+proton mail settings labels reorder --alphabetical
+```
+
+| Flag             | Description                                        |
+| ---------------- | -------------------------------------------------- |
+| `--alphabetical` | Sort them all alphabetically instead of naming any |
 
 ### `labels update`
 
