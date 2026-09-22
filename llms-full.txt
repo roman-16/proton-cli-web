@@ -872,6 +872,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail messages mark read`](/mail/messages/#mark-read)                                     | Mark messages as read                                               |
 | [`proton mail messages mark unread`](/mail/messages/#mark-unread)                                 | Mark messages as unread                                             |
 | [`proton mail messages move`](/mail/messages/#move)                                               | Move messages to a folder                                           |
+| [`proton mail messages receipt`](/mail/messages/#receipt)                                         | Tell the sender you read their message                              |
 | [`proton mail messages reply`](/mail/messages/#reply)                                             | Reply to a message                                                  |
 | [`proton mail messages send`](/mail/messages/#send)                                               | Compose and send a message                                          |
 | [`proton mail messages star`](/mail/messages/#star)                                               | Star messages                                                       |
@@ -8233,6 +8234,41 @@ A reply leaves from the address the original arrived on. A forward carries the o
 
 Reply and forward take everything `send` takes.
 
+## Read receipts
+
+[Section titled “Read receipts”](#read-receipts)
+
+Ask the people you write to for confirmation that they read the message:
+
+```bash
+proton mail messages send --to alice@proton.me --subject Contract --body "Signed and attached." --request-receipt
+```
+
+Every command that composes takes the flag: `send`, `reply`, `forward`, both `conversations` answers, and `drafts create`. On a draft, `proton mail drafts update REF --request-receipt=false` takes the request off again.
+
+A message that asks you for one says so:
+
+```console
+$ proton mail messages get 5bH2mQxK
+Subject:    Invoice #2291 is ready
+From:       Fastmail Billing <billing@fastmail.com>
+To:         me@proton.me
+Date:       2026-04-15 14:32
+Receipt:    requested
+Signature:  verified
+ID:         5bH2mQxK
+```
+
+Nothing goes back until you send it:
+
+```bash
+proton mail messages receipt 5bH2mQxK
+```
+
+The line then reads `Receipt: sent`. A receipt cannot be taken back, and a message that already has one is refused.
+
+In `--output json` a message carries `receipt_requested`, `receipt_sent`, and `receipt_due` for the ones you can still answer.
+
 ## Drafts
 
 [Section titled “Drafts”](#drafts)
@@ -8912,6 +8948,7 @@ proton mail conversations forward 'Quarterly numbers' --to jane@example.com
 | `--no-attachments`            | Leave the original’s attachments behind                                          |
 | `--no-quote`                  | Do not quote the original message                                                |
 | `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--request-receipt`           | Ask the recipients to confirm when they read it                                  |
 | `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
 | `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
@@ -9142,6 +9179,7 @@ proton mail conversations reply 'Quarterly numbers' --everyone --body Agreed.
 | `--html`                      | Compose in HTML (default: match the original)                                    |
 | `--no-quote`                  | Do not quote the original message                                                |
 | `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--request-receipt`           | Ask the recipients to confirm when they read it                                  |
 | `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
 | `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
@@ -9369,6 +9407,7 @@ proton mail drafts create --to jane@example.com --subject Report --attach ./repo
 | `--from string`               | Address to send from, by email or ID (default: your primary)              |
 | `--html`                      | Treat the body as HTML rather than plain text                             |
 | `--no-signature`              | Leave out this address’s signature and Proton’s footer                    |
+| `--request-receipt`           | Ask the recipients to confirm when they read it                           |
 | `--subject string`            | Subject line                                                              |
 | `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                   |
 
@@ -9451,19 +9490,20 @@ proton mail drafts update 5bH2mQxK --body 'Notes attached.'
 proton mail drafts update 5bH2mQxK --detach report.pdf
 ```
 
-| Flag                          | Description                                                             |
-| ----------------------------- | ----------------------------------------------------------------------- |
-| `--attach stringArray`        | File to attach (repeatable)                                             |
-| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html) |
-| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                |
-| `--body string`               | Message body (- reads stdin)                                            |
-| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                      |
-| `--detach stringArray`        | Remove an attachment by name or ID (repeatable)                         |
-| `--from string`               | Address to send from, by email or ID (default: your primary)            |
-| `--html`                      | Switch the draft to HTML; –html=false switches it to plain text         |
-| `--no-signature`              | Leave out this address’s signature and Proton’s footer                  |
-| `--subject string`            | Subject line                                                            |
-| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                 |
+| Flag                          | Description                                                                                   |
+| ----------------------------- | --------------------------------------------------------------------------------------------- |
+| `--attach stringArray`        | File to attach (repeatable)                                                                   |
+| `--attach-inline stringArray` | Image to embed in the HTML body by Content-ID (repeatable; needs –html)                       |
+| `--bcc stringArray`           | Blind-carbon-copy recipient (repeatable)                                                      |
+| `--body string`               | Message body (- reads stdin)                                                                  |
+| `--cc stringArray`            | Carbon-copy recipient (repeatable)                                                            |
+| `--detach stringArray`        | Remove an attachment by name or ID (repeatable)                                               |
+| `--from string`               | Address to send from, by email or ID (default: your primary)                                  |
+| `--html`                      | Switch the draft to HTML; –html=false switches it to plain text                               |
+| `--no-signature`              | Leave out this address’s signature and Proton’s footer                                        |
+| `--request-receipt`           | Ask the recipients to confirm when they read it; –request-receipt=false takes the request off |
+| `--subject string`            | Subject line                                                                                  |
+| `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                                       |
 
 ***
 
@@ -9588,7 +9628,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton mail messages`, with the arguments and flags it takes. For these commands in use, see [the mail guide](/mail/).
 
-Holds `attachments`, `delete`, `empty`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `reply`, `send`, `star`, `trash`, `unlabel`, `unschedule`, `unstar`, `unsubscribe`, `update` and `watch`.
+Holds `attachments`, `delete`, `empty`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `receipt`, `reply`, `send`, `star`, `trash`, `unlabel`, `unschedule`, `unstar`, `unsubscribe`, `update` and `watch`.
 
 ## `attachments`
 
@@ -9768,6 +9808,7 @@ proton mail messages forward 'Invoice #2291' --to jane@example.com --no-attachme
 | `--no-attachments`            | Leave the original’s attachments behind                                          |
 | `--no-quote`                  | Do not quote the original message                                                |
 | `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--request-receipt`           | Ask the recipients to confirm when they read it                                  |
 | `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
 | `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
@@ -10009,6 +10050,25 @@ proton mail messages move --from newsletter@example.com --older-than 90d --into 
 | `--to string`         | Match a recipient’s address                                                             |
 | `--unread`            | Match unread messages                                                                   |
 
+## `receipt`
+
+[Section titled “receipt”](#receipt)
+
+Tell the sender you read their message.
+
+Only a message that asked for a read receipt can be answered, and only once. `get` shows such a message as Receipt: requested.
+
+To ask for one yourself, send with `proton mail messages send --request-receipt`.
+
+```plaintext
+proton mail messages receipt REF...
+```
+
+```bash
+proton mail messages receipt 'Invoice #2291'
+proton mail messages receipt 5bH2mQxK --dry-run
+```
+
 ## `reply`
 
 [Section titled “reply”](#reply)
@@ -10045,6 +10105,7 @@ proton mail messages reply 'Invoice #2291' --body 'Draft first.' --draft
 | `--html`                      | Compose in HTML (default: match the original)                                    |
 | `--no-quote`                  | Do not quote the original message                                                |
 | `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--request-receipt`           | Ask the recipients to confirm when they read it                                  |
 | `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
 | `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
 
@@ -10063,6 +10124,7 @@ proton mail messages send --to jane@example.com --subject Report --body 'See att
 proton mail messages send --to team@example.com --subject Standup --body -
 proton mail messages send --to jane@example.com --subject Reminder --send-at 2026-04-16T09:00
 proton mail messages send --to jane@example.com --subject Invoice --body 'See attached.' --eo-password-file /run/secrets/jane
+proton mail messages send --to jane@example.com --subject Contract --body 'Signed and attached.' --request-receipt
 proton mail messages send --eml ./draft.eml
 ```
 
@@ -10080,6 +10142,7 @@ proton mail messages send --eml ./draft.eml
 | `--from string`               | Address to send from, by email or ID (default: your primary)                     |
 | `--html`                      | Treat the body as HTML rather than plain text                                    |
 | `--no-signature`              | Leave out this address’s signature and Proton’s footer                           |
+| `--request-receipt`           | Ask the recipients to confirm when they read it                                  |
 | `--send-at string`            | Schedule delivery (RFC 3339, or YYYY-MM-DDTHH:MM in the zone you are working in) |
 | `--subject string`            | Subject line                                                                     |
 | `--to stringArray`            | Recipient (repeatable; accepts “Name ”)                                          |
