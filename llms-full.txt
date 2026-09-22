@@ -727,6 +727,11 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton calendar settings calendars share update`](/calendar/settings/#calendars-share-update)   | Change what somebody may do with a calendar                         |
 | [`proton calendar settings calendars update`](/calendar/settings/#calendars-update)               | Rename or recolor a calendar, or change what it gives new events    |
 | [`proton calendar settings get`](/calendar/settings/#get)                                         | Show the calendar settings now in effect                            |
+| [`proton calendar settings links create`](/calendar/settings/#links-create)                       | Publish a calendar as a link anyone can follow                      |
+| [`proton calendar settings links get`](/calendar/settings/#links-get)                             | Show one link, URL and all                                          |
+| [`proton calendar settings links list`](/calendar/settings/#links-list)                           | List the links you have published                                   |
+| [`proton calendar settings links revoke`](/calendar/settings/#links-revoke)                       | Stop a link working                                                 |
+| [`proton calendar settings links update`](/calendar/settings/#links-update)                       | Rename a link                                                       |
 | [`proton calendar settings list`](/calendar/settings/#list)                                       | List the calendar settings that can be changed                      |
 | [`proton calendar settings set`](/calendar/settings/#set)                                         | Change one calendar setting                                         |
 | [`proton contacts create`](/contacts/contacts/#create)                                            | Create a contact                                                    |
@@ -1073,6 +1078,7 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 * The verifier for a Pass extra password you set, which Proton checks a password against and cannot read one out of.
 * When you change a password or set a recovery phrase: the same kind of verifier for the new secret, and your keys locked again with it. The secret itself does not leave, and the keys are the ones you already had.
 * Opening a public link with `--link` or `--shared` carries your session, so Proton knows which account opened it, and the owner sees one more visit.
+* The key that opens a calendar you publish with `calendar settings links create --access full`. It travels in the link, and Proton reads those events to serve the feed. A limited link carries no such key.
 * Once a day, on an install no package manager owns, a request to GitHub asking which release is newest. It carries nothing about you or your account, and `PROTON_NO_UPDATE_CHECK` ends it ([Updating](/install/#updating)).
 
 **What never leaves:** your password, your second password if you have one, your Pass extra password, your key password, and an unlocked private key.
@@ -3079,6 +3085,28 @@ proton calendar invitations accept Work
 
 Until you accept, you see the calendar’s name and who sent it, and nothing that is on it.
 
+### Publish a calendar as a link
+
+[Section titled “Publish a calendar as a link”](#publish-a-calendar-as-a-link)
+
+```bash
+proton calendar settings links create Work --name 'Team feed'
+proton calendar settings links create Work --access full --name 'Team feed'
+proton calendar settings links list
+proton calendar settings links get 'Team feed'
+proton calendar settings links revoke 'Team feed'
+```
+
+A link is an `.ics` feed that any calendar app can follow, and it stays up to date. **Anyone holding the URL can open it**, with no Proton account.
+
+`--access limited`, the default, shows only whether you are busy. `--access full` shows every detail of every event, and Proton reads them to serve the feed.
+
+The URL is shown when the link is made and by `links get`, never in a listing. `--name` is yours alone, and whoever follows the link never sees it.
+
+A calendar carries at most five links. What a link shows cannot be changed afterwards: revoke it and publish another.
+
+On another account, follow one the way you would any published calendar - see [Subscribe to a published calendar](#subscribe-to-a-published-calendar).
+
 ## Settings
 
 [Section titled “Settings”](#settings)
@@ -3471,7 +3499,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton calendar settings`, with the arguments and flags it takes. For these commands in use, see [the calendar guide](/calendar/).
 
-Holds `calendars`, `get`, `list` and `set`.
+Holds `calendars`, `get`, `links`, `list` and `set`.
 
 ## `calendars`
 
@@ -3686,6 +3714,119 @@ proton calendar settings get
 ```bash
 proton calendar settings get
 ```
+
+## `links`
+
+[Section titled “links”](#links)
+
+Links that open a calendar for anyone.
+
+Holds `create`, `get`, `list`, `revoke` and `update`.
+
+### `links create`
+
+[Section titled “links create”](#links-create)
+
+Publish a calendar as a link anyone can follow.
+
+The link is an .ics feed, so any calendar app can follow it and stays up to date. A limited link shows only whether you are busy; a full one shows every detail of every event, and Proton reads them to serve it.
+
+–name is yours alone and is never shown to anyone following the link. A calendar carries at most five links.
+
+```plaintext
+proton calendar settings links create REF
+```
+
+```bash
+proton calendar settings links create Work
+proton calendar settings links create Work --access full --name 'Team feed'
+```
+
+| Flag              | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| `--access string` | What they may do with it: limited, full (default `limited`) |
+| `--name string`   | Name for the new link, which only you see                   |
+
+### `links get`
+
+[Section titled “links get”](#links-get)
+
+Show one link, URL and all.
+
+Use this to recover a URL you mislaid, rather than revoking the link and making a new one. The URL appears here and in no listing.
+
+```plaintext
+proton calendar settings links get REF
+```
+
+```bash
+proton calendar settings links get 'Team feed'
+```
+
+### `links list`
+
+[Section titled “links list”](#links-list)
+
+List the links you have published.
+
+The URLs are not shown: each one opens its calendar for anybody holding it. To read a URL, use `links get`.
+
+```plaintext
+proton calendar settings links list
+```
+
+```bash
+proton calendar settings links list
+proton calendar settings links list --calendar Work
+```
+
+| Flag                | Description                                            |
+| ------------------- | ------------------------------------------------------ |
+| `--calendar string` | Which calendar, by name or ID (default: all of them)   |
+| `--desc`            | Reverse the order                                      |
+| `--limit int`       | How many links per page; 0 for all of them             |
+| `--page int`        | Which page of results, counting from zero              |
+| `--sort string`     | Order by: calendar, created, name (default `calendar`) |
+
+### `links revoke`
+
+[Section titled “links revoke”](#links-revoke)
+
+Stop a link working.
+
+The calendar is untouched; only the link stops opening it. Whatever somebody already copied out of it stays copied.
+
+```plaintext
+proton calendar settings links revoke REF...
+```
+
+```bash
+proton calendar settings links revoke 'Team feed'
+```
+
+### `links update`
+
+[Section titled “links update”](#links-update)
+
+Rename a link.
+
+The name is yours alone and is never shown to anyone following the link. –clear-name takes it off again.
+
+What a link shows, and the URL it is opened at, cannot be changed: make another link for that.
+
+```plaintext
+proton calendar settings links update REF
+```
+
+```bash
+proton calendar settings links update 'Team feed' --name 'Team, read-only'
+proton calendar settings links update 'Team feed' --clear-name
+```
+
+| Flag            | Description                  |
+| --------------- | ---------------------------- |
+| `--clear-name`  | Remove the link’s name       |
+| `--name string` | New name, which only you see |
 
 ## `list`
 
