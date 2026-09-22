@@ -782,11 +782,26 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive photos albums delete`](/drive/photos/#albums-delete)                               | Delete albums                                                       |
 | [`proton drive photos albums list`](/drive/photos/#albums-list)                                   | List albums                                                         |
 | [`proton drive photos albums remove`](/drive/photos/#albums-remove)                               | Take photos out of an album                                         |
+| [`proton drive photos albums share add`](/drive/photos/#albums-share-add)                         | Invite someone to an album                                          |
+| [`proton drive photos albums share confirm`](/drive/photos/#albums-share-confirm)                 | Let somebody in once they join Proton                               |
+| [`proton drive photos albums share get`](/drive/photos/#albums-share-get)                         | Show how an album is shared                                         |
+| [`proton drive photos albums share remove`](/drive/photos/#albums-share-remove)                   | Revoke someone’s access, or cancel their invitation                 |
+| [`proton drive photos albums share resend`](/drive/photos/#albums-share-resend)                   | Send an unanswered invitation again                                 |
+| [`proton drive photos albums share update`](/drive/photos/#albums-share-update)                   | Change what somebody may do with an album                           |
 | [`proton drive photos albums update`](/drive/photos/#albums-update)                               | Rename an album, or change its cover                                |
 | [`proton drive photos delete`](/drive/photos/#delete)                                             | Delete photos permanently                                           |
 | [`proton drive photos download`](/drive/photos/#download)                                         | Download a photo                                                    |
 | [`proton drive photos favorite`](/drive/photos/#favorite)                                         | Mark photos as favourites                                           |
+| [`proton drive photos links create`](/drive/photos/#links-create)                                 | Make a link that opens a photo for anyone                           |
+| [`proton drive photos links get`](/drive/photos/#links-get)                                       | Show the link on a photo, URL and all                               |
+| [`proton drive photos links revoke`](/drive/photos/#links-revoke)                                 | Stop the link on a photo working                                    |
 | [`proton drive photos list`](/drive/photos/#list)                                                 | List photos                                                         |
+| [`proton drive photos share add`](/drive/photos/#share-add)                                       | Invite someone to a photo                                           |
+| [`proton drive photos share confirm`](/drive/photos/#share-confirm)                               | Let somebody in once they join Proton                               |
+| [`proton drive photos share get`](/drive/photos/#share-get)                                       | Show how a photo is shared                                          |
+| [`proton drive photos share remove`](/drive/photos/#share-remove)                                 | Revoke someone’s access, or cancel their invitation                 |
+| [`proton drive photos share resend`](/drive/photos/#share-resend)                                 | Send an unanswered invitation again                                 |
+| [`proton drive photos share update`](/drive/photos/#share-update)                                 | Change what somebody may do with a photo                            |
 | [`proton drive photos trash`](/drive/photos/#trash)                                               | Move photos to the trash                                            |
 | [`proton drive photos unfavorite`](/drive/photos/#unfavorite)                                     | Remove photos from favourites                                       |
 | [`proton drive photos upload`](/drive/photos/#upload)                                             | Upload a photo to the library                                       |
@@ -5142,6 +5157,34 @@ Invited:  kim@example.com (editor, ready to confirm)
 
 `update`, `resend` and `remove` work on these the way they work on any invitation.
 
+### A photo album, or one photo
+
+[Section titled “A photo album, or one photo”](#a-photo-album-or-one-photo)
+
+An album is shared with named people and has no public link.
+
+```bash
+proton drive photos albums share add Holidays jane@proton.me --access editor
+proton drive photos albums share get Holidays
+proton drive photos albums share update Holidays jane@proton.me --access viewer
+proton drive photos albums share remove Holidays jane@proton.me
+```
+
+Whoever you invite gets the photos the album holds, and anything you add to it afterwards.
+
+`share resend` and `share confirm` work as they do for a file, and so does inviting an address that is not on Proton.
+
+One photo takes either mechanism:
+
+```bash
+proton drive photos share add 5bH2mQxK jane@proton.me
+proton drive photos links create 5bH2mQxK --expires 7d
+proton drive photos links get 5bH2mQxK
+proton drive photos links revoke 5bH2mQxK
+```
+
+Albums and photos have no path. Name an album by its name or ID, a photo by the ID `photos list` shows.
+
 ### What is shared, and by whom
 
 [Section titled “What is shared, and by whom”](#what-is-shared-and-by-whom)
@@ -5154,12 +5197,28 @@ proton drive invitations list
 proton drive invitations accept INVITATION_ID
 ```
 
+`invitations list` names what each offer is for:
+
+```console
+$ proton drive invitations list
+ID        FROM           TYPE    NAME       ROLE    CREATED
+4Np72kRt  bob@proton.me  album   Holidays   viewer  2026-03-14 09:12
+7Kd91mQx  kim@proton.me  folder  Q3 report  editor  2026-03-12 16:40
+```
+
 An item somebody shared with you has no path of its own. Open it with `--shared`, naming it by the ID or the name the listing showed:
 
 ```bash
 proton drive items list / --shared Project              # a shared folder
 proton drive items download /report.pdf --shared Project --dest-dir ./downloads/
 proton drive items download / --shared quarterly.pdf    # a shared file is / itself
+```
+
+An album somebody shared with you is listed there as well, and opens like any other item, with its photos inside it:
+
+```bash
+proton drive items list / --shared Holidays
+proton drive items download /IMG_2291.jpg --shared Holidays --dest-dir ./trip/
 ```
 
 ROLE in `shared list` is what you may do there: a viewer lists and downloads, an editor uploads and changes things as well.
@@ -5260,6 +5319,8 @@ proton drive photos albums add ALBUM_ID PHOTO_ID...
 proton drive photos list --album ALBUM_ID
 proton drive photos albums delete Holiday --delete-photos
 ```
+
+To hand an album to somebody, or a link to one photo, see [A photo album, or one photo](#a-photo-album-or-one-photo).
 
 ## After a password reset
 
@@ -5418,6 +5479,8 @@ proton drive invitations decline 5bH2mQxK
 
 List invitations waiting for an answer.
 
+NAME is what is being offered and TYPE what kind of thing it is: a file, a folder, or a photo album. A name that cannot be decrypted is left empty, and the invitation can still be accepted or declined by the ID beside it.
+
 ```plaintext
 proton drive invitations list
 ```
@@ -5426,12 +5489,12 @@ proton drive invitations list
 proton drive invitations list
 ```
 
-| Flag            | Description                                      |
-| --------------- | ------------------------------------------------ |
-| `--desc`        | Reverse the order                                |
-| `--limit int`   | How many invitations per page; 0 for all of them |
-| `--page int`    | Which page of results, counting from zero        |
-| `--sort string` | Order by: created, sender (default `created`)    |
+| Flag            | Description                                         |
+| --------------- | --------------------------------------------------- |
+| `--desc`        | Reverse the order                                   |
+| `--limit int`   | How many invitations per page; 0 for all of them    |
+| `--page int`    | Which page of results, counting from zero           |
+| `--sort string` | Order by: created, name, sender (default `created`) |
 
 ***
 
@@ -6059,7 +6122,7 @@ proton drive links get /Documents/report.pdf
 
 List the links you have made.
 
-The URLs are not shown: each one opens its item for anybody holding it. To read a URL, use `links get`.
+The URLs are not shown: each one opens its item for anybody holding it. To read a URL, use `links get`, or `photos links get` for a link on a photo.
 
 ```plaintext
 proton drive links list
@@ -6107,7 +6170,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton drive photos`, with the arguments and flags it takes. For these commands in use, see [the drive guide](/drive/).
 
-Holds `albums`, `delete`, `download`, `favorite`, `list`, `trash`, `unfavorite` and `upload`.
+Holds `albums`, `delete`, `download`, `favorite`, `links`, `list`, `share`, `trash`, `unfavorite` and `upload`.
 
 ## `albums`
 
@@ -6115,7 +6178,7 @@ Holds `albums`, `delete`, `download`, `favorite`, `list`, `trash`, `unfavorite` 
 
 Photo albums.
 
-Holds `add`, `create`, `delete`, `list`, `remove` and `update`.
+Holds `add`, `create`, `delete`, `list`, `remove`, `share` and `update`.
 
 ### `albums add`
 
@@ -6203,6 +6266,114 @@ proton drive photos albums remove REF PHOTO_REF...
 proton drive photos albums remove Holidays 5bH2mQxK
 ```
 
+### `albums share`
+
+[Section titled “albums share”](#albums-share)
+
+The people you share an album with.
+
+Holds `add`, `confirm`, `get`, `remove`, `resend` and `update`.
+
+### `albums share add`
+
+[Section titled “albums share add”](#albums-share-add)
+
+Invite someone to an album.
+
+EMAIL may be an address outside Proton. Proton emails them an invitation to create an account, and nothing reaches them until they have one and you run `share confirm`.
+
+```plaintext
+proton drive photos albums share add REF EMAIL
+```
+
+```bash
+proton drive photos albums share add Holidays jane@proton.me
+proton drive photos albums share add Holidays jane@proton.me --access editor --message 'Photos from the trip'
+```
+
+| Flag               | Description                                                 |
+| ------------------ | ----------------------------------------------------------- |
+| `--access string`  | What they may do with it: viewer, editor (default `viewer`) |
+| `--message string` | Note to include in the invitation email                     |
+
+### `albums share confirm`
+
+[Section titled “albums share confirm”](#albums-share-confirm)
+
+Let somebody in once they join Proton.
+
+Use it for an address that had no Proton account when you invited it. It is refused until the account exists, and `share get` says who is ready. Afterwards they hold an ordinary invitation, which they still have to accept.
+
+```plaintext
+proton drive photos albums share confirm REF EMAIL
+```
+
+```bash
+proton drive photos albums share confirm Holidays sam@example.com
+```
+
+### `albums share get`
+
+[Section titled “albums share get”](#albums-share-get)
+
+Show how an album is shared.
+
+```plaintext
+proton drive photos albums share get REF
+```
+
+```bash
+proton drive photos albums share get Holidays
+```
+
+### `albums share remove`
+
+[Section titled “albums share remove”](#albums-share-remove)
+
+Revoke someone’s access, or cancel their invitation.
+
+```plaintext
+proton drive photos albums share remove REF EMAIL
+```
+
+```bash
+proton drive photos albums share remove Holidays jane@proton.me
+```
+
+### `albums share resend`
+
+[Section titled “albums share resend”](#albums-share-resend)
+
+Send an unanswered invitation again.
+
+```plaintext
+proton drive photos albums share resend REF EMAIL
+```
+
+```bash
+proton drive photos albums share resend Holidays jane@proton.me
+```
+
+### `albums share update`
+
+[Section titled “albums share update”](#albums-share-update)
+
+Change what somebody may do with an album.
+
+Name them by address. It works whether they have accepted the share or still have it pending.
+
+```plaintext
+proton drive photos albums share update REF EMAIL
+```
+
+```bash
+proton drive photos albums share update Holidays jane@proton.me --access viewer
+```
+
+| Flag              | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| `--access string` | What they may do with it: viewer, editor (default `viewer`) |
+
 ### `albums update`
 
 [Section titled “albums update”](#albums-update)
@@ -6272,6 +6443,74 @@ proton drive photos favorite REF...
 proton drive photos favorite 5bH2mQxK
 ```
 
+## `links`
+
+[Section titled “links”](#links)
+
+Links that open a photo for anyone.
+
+Holds `create`, `get` and `revoke`.
+
+### `links create`
+
+[Section titled “links create”](#links-create)
+
+Make a link that opens a photo for anyone.
+
+An item carries one link, so running it again changes that link rather than making a second one, and a URL you have already shared keeps working.
+
+The password is read from a file, never from a flag value, and may be at most 50 characters. –clear-link-password takes it off again, and –expires never makes an expiring link permanent.
+
+An album has no public link. Share one with the people you want to see it, with `photos albums share add`.
+
+```plaintext
+proton drive photos links create REF
+```
+
+```bash
+proton drive photos links create 5bH2mQxK
+proton drive photos links create 5bH2mQxK --expires 7d
+proton drive photos links create 5bH2mQxK --link-password-file /run/secrets/photo-link
+```
+
+| Flag                          | Description                                                 |
+| ----------------------------- | ----------------------------------------------------------- |
+| `--clear-link-password`       | Remove the public link’s password                           |
+| `--expires string`            | Stop working after DURATION (e.g. 7d, 2w, 6mo), or never    |
+| `--link-password-file string` | Read the public link’s password from a file, or - for stdin |
+
+### `links get`
+
+[Section titled “links get”](#links-get)
+
+Show the link on a photo, URL and all.
+
+Use it to recover a URL you mislaid, rather than revoking the link and making a new one. The URL appears here and in no listing.
+
+```plaintext
+proton drive photos links get REF
+```
+
+```bash
+proton drive photos links get 5bH2mQxK
+```
+
+### `links revoke`
+
+[Section titled “links revoke”](#links-revoke)
+
+Stop the link on a photo working.
+
+The item is untouched; only the link stops working. This cannot take back what somebody already read.
+
+```plaintext
+proton drive photos links revoke REF
+```
+
+```bash
+proton drive photos links revoke 5bH2mQxK
+```
+
 ## `list`
 
 [Section titled “list”](#list)
@@ -6296,6 +6535,114 @@ proton drive photos list --tag favorites
 | `--page int`     | Which page of results, counting from zero                                                                                              |
 | `--sort string`  | Order by: captured (default `captured`)                                                                                                |
 | `--tag string`   | Show only photos with this tag: favorites, screenshots, videos, live-photos, motion-photos, selfies, portraits, bursts, panoramas, raw |
+
+## `share`
+
+[Section titled “share”](#share)
+
+The people you share a photo with.
+
+Holds `add`, `confirm`, `get`, `remove`, `resend` and `update`.
+
+### `share add`
+
+[Section titled “share add”](#share-add)
+
+Invite someone to a photo.
+
+EMAIL may be an address outside Proton. Proton emails them an invitation to create an account, and nothing reaches them until they have one and you run `share confirm`.
+
+```plaintext
+proton drive photos share add REF EMAIL
+```
+
+```bash
+proton drive photos share add 5bH2mQxK jane@proton.me
+proton drive photos share add 5bH2mQxK jane@proton.me --access editor
+```
+
+| Flag               | Description                                                 |
+| ------------------ | ----------------------------------------------------------- |
+| `--access string`  | What they may do with it: viewer, editor (default `viewer`) |
+| `--message string` | Note to include in the invitation email                     |
+
+### `share confirm`
+
+[Section titled “share confirm”](#share-confirm)
+
+Let somebody in once they join Proton.
+
+Use it for an address that had no Proton account when you invited it. It is refused until the account exists, and `share get` says who is ready. Afterwards they hold an ordinary invitation, which they still have to accept.
+
+```plaintext
+proton drive photos share confirm REF EMAIL
+```
+
+```bash
+proton drive photos share confirm 5bH2mQxK sam@example.com
+```
+
+### `share get`
+
+[Section titled “share get”](#share-get)
+
+Show how a photo is shared.
+
+```plaintext
+proton drive photos share get REF
+```
+
+```bash
+proton drive photos share get 5bH2mQxK
+```
+
+### `share remove`
+
+[Section titled “share remove”](#share-remove)
+
+Revoke someone’s access, or cancel their invitation.
+
+```plaintext
+proton drive photos share remove REF EMAIL
+```
+
+```bash
+proton drive photos share remove 5bH2mQxK jane@proton.me
+```
+
+### `share resend`
+
+[Section titled “share resend”](#share-resend)
+
+Send an unanswered invitation again.
+
+```plaintext
+proton drive photos share resend REF EMAIL
+```
+
+```bash
+proton drive photos share resend 5bH2mQxK jane@proton.me
+```
+
+### `share update`
+
+[Section titled “share update”](#share-update)
+
+Change what somebody may do with a photo.
+
+Name them by address. It works whether they have accepted the share or still have it pending.
+
+```plaintext
+proton drive photos share update REF EMAIL
+```
+
+```bash
+proton drive photos share update 5bH2mQxK jane@proton.me --access viewer
+```
+
+| Flag              | Description                                                 |
+| ----------------- | ----------------------------------------------------------- |
+| `--access string` | What they may do with it: viewer, editor (default `viewer`) |
 
 ## `trash`
 
@@ -6502,9 +6849,9 @@ Holds `list`.
 
 [Section titled “list”](#list)
 
-List the files and folders you have handed to named people.
+List what you have handed to named people: files, folders and photo albums.
 
-A public link is the other way to share, and `links list` has those. To check a single item instead, run `items share get PATH`.
+A public link is the other way to share, and `links list` has those. To check a single thing instead, run `items share get PATH`, or `photos albums share get REF` for an album.
 
 ```plaintext
 proton drive sharing list
