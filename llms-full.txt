@@ -848,6 +848,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton index watch`](/local-index/commands/#watch)                                              | Keep every index current until you stop it                          |
 | [`proton mail conversations attachments download`](/mail/conversations/#attachments-download)     | Download and decrypt attachments from a thread                      |
 | [`proton mail conversations attachments list`](/mail/conversations/#attachments-list)             | List every attachment in a thread                                   |
+| [`proton mail conversations count`](/mail/conversations/#count)                                   | Count the threads in each folder and label                          |
 | [`proton mail conversations delete`](/mail/conversations/#delete)                                 | Delete threads permanently                                          |
 | [`proton mail conversations export`](/mail/conversations/#export)                                 | Write a whole thread out as .eml files or one mbox                  |
 | [`proton mail conversations forward`](/mail/conversations/#forward)                               | Forward the newest message in a thread                              |
@@ -876,6 +877,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail mailing-lists update`](/mail/mailing-lists/#update)                                 | Set what happens to a mailing list’s mail                           |
 | [`proton mail messages attachments download`](/mail/messages/#attachments-download)               | Download and decrypt attachments                                    |
 | [`proton mail messages attachments list`](/mail/messages/#attachments-list)                       | List a message’s attachments                                        |
+| [`proton mail messages count`](/mail/messages/#count)                                             | Count the messages in each folder and label                         |
 | [`proton mail messages delete`](/mail/messages/#delete)                                           | Delete messages permanently                                         |
 | [`proton mail messages empty`](/mail/messages/#empty)                                             | Delete everything in a folder, permanently                          |
 | [`proton mail messages export`](/mail/messages/#export)                                           | Write messages out as .eml or mbox files                            |
@@ -8572,7 +8574,7 @@ proton mail messages get "Invoice #2291"     # headers, body, attachment list
 proton mail messages get REF --body-only > body.txt
 ```
 
-Folders are `inbox`, `sent`, `drafts`, `trash`, `spam`, `archive`, `starred`, `scheduled`, `snoozed`, `all`, or any label. Proton’s inbox tabs are folders too: `primary`, `social`, `promotions`, `newsletters`, `transactions`, `updates`.
+Folders are `inbox`, `sent`, `drafts`, `trash`, `spam`, `archive`, `starred`, `scheduled`, `snoozed`, `all`, or any label. Proton’s inbox tabs are folders too: `primary`, `social`, `promotions`, `newsletters`, `transactions`, `updates`. A tab holds the inbox’s mail sorted into it, and `all` is everything, or everything but spam and trash while `almost-all-mail` is on.
 
 Listings come back newest first. `--sort size` orders by how much room a message takes, largest first, and `--desc` reverses either order. A listing ordered by size shows a SIZE column.
 
@@ -8583,6 +8585,21 @@ proton mail messages list --folder all --sort size --limit 10
 `get` shows the plain-text body by default. `--render html` gives you the original markup, `--render raw` the untouched body, and `--strip-quotes` drops quoted reply blocks.
 
 A `Signature:` line reports the verdict of the signature check against the sender’s key.
+
+## Count unread mail
+
+[Section titled “Count unread mail”](#count-unread-mail)
+
+```bash
+proton mail conversations count
+proton mail messages count --folder Receipts
+```
+
+Every folder and label gets a row with how much it holds and how much of that is unread. While categories are on, so does each tab the inbox shows.
+
+`conversations count` counts threads, and a thread counts as unread while any message in it is. `messages count` counts messages. `--folder` counts one folder or label.
+
+To count what a filter matches, read the last line of `list`: in `25 of 42 messages`, 42 match.
 
 ## Spot a message Proton distrusts
 
@@ -8619,7 +8636,7 @@ proton mail messages mark phishing REF        # report it, and file it as spam
 
 [Section titled “Search”](#search)
 
-Searching is `list` with a filter. `list` looks in the inbox; **`--folder all` searches everything.**
+Searching is `list` with a filter. `list` looks in the inbox; **`--folder all` searches everything**, spam and trash included unless `almost-all-mail` is on.
 
 ```bash
 proton mail messages list --keyword invoice --folder all
@@ -8759,7 +8776,7 @@ proton mail drafts send REF
 
 [Section titled “Organize”](#organize)
 
-A message lives in exactly **one folder** and carries any number of **labels**. So moving and labelling are different verbs, and passing a label to `move` is an error rather than a silent relabel.
+A message lives in exactly **one folder** and carries any number of **labels**. So moving and labelling are different verbs, and passing a label to `move` is an error rather than a silent relabel. `move --into` takes `inbox`, `archive`, `spam`, `trash`, a tab or one of your own folders.
 
 ```bash
 proton mail messages move REF --into archive     # it leaves where it was
@@ -8779,7 +8796,7 @@ proton mail messages delete --folder spam --all
 
 Add `--dry-run` to see the list first. `--limit` caps how many a verb touches and defaults to 150. See [Filters and bulk changes](/using/filters/).
 
-**`empty` is not `delete --all`.** A filtered delete shows what it will touch. `empty` clears the folder whole, takes no filter, and always asks.
+**`empty` is not `delete --all`.** A filtered delete shows what it will touch. `empty` clears the folder whole, takes no filter, and always asks. It clears `trash`, `spam`, `snoozed` and your own folders and labels, and refuses any other folder.
 
 ```bash
 proton mail messages empty --folder trash
@@ -9325,7 +9342,7 @@ Signatures are stored as HTML. Plain text is escaped and its newlines become lin
 
 Every command under `proton mail conversations`, with the arguments and flags it takes. For these commands in use, see [the mail guide](/mail/).
 
-Holds `attachments`, `delete`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `reply`, `snooze`, `star`, `trash`, `unlabel`, `unsnooze` and `unstar`.
+Holds `attachments`, `count`, `delete`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `reply`, `snooze`, `star`, `trash`, `unlabel`, `unsnooze` and `unstar`.
 
 ## `attachments`
 
@@ -9373,6 +9390,29 @@ proton mail conversations attachments list 'Quarterly numbers'
 | Flag               | Description                |
 | ------------------ | -------------------------- |
 | `--include-inline` | Include inline attachments |
+
+## `count`
+
+[Section titled “count”](#count)
+
+Count the threads in each folder and label.
+
+UNREAD is how many are unread, and TOTAL how many there are. A thread counts as unread while any message in it is. Without –folder every folder and label has a row, and while categories are on, so does each category the inbox shows as a tab.
+
+To count what a filter matches, the last line of `list` says how many.
+
+```plaintext
+proton mail conversations count
+```
+
+```bash
+proton mail conversations count
+proton mail conversations count --folder inbox --output json
+```
+
+| Flag              | Description              |
+| ----------------- | ------------------------ |
+| `--folder string` | Folder or label to count |
 
 ## `delete`
 
@@ -9528,7 +9568,7 @@ List threads in a folder.
 
 Takes the same filters as the verbs that organise threads, so you can preview a selection here before acting on it. A text filter goes through Proton’s own index, which lags a change by a few seconds, or through the copy `index create mail` builds, which also reads bodies.
 
-Looks in the inbox unless told otherwise. Use –folder all to search everything.
+Looks in the inbox unless told otherwise. Use –folder all to search everything, or everything but spam and trash while almost-all-mail is on.
 
 Newest first, or largest first with –sort size; –desc reverses either.
 
@@ -10173,7 +10213,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton mail messages`, with the arguments and flags it takes. For these commands in use, see [the mail guide](/mail/).
 
-Holds `attachments`, `delete`, `empty`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `receipt`, `reply`, `send`, `star`, `trash`, `unlabel`, `unschedule`, `unstar`, `unsubscribe`, `update` and `watch`.
+Holds `attachments`, `count`, `delete`, `empty`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `receipt`, `reply`, `send`, `star`, `trash`, `unlabel`, `unschedule`, `unstar`, `unsubscribe`, `update` and `watch`.
 
 ## `attachments`
 
@@ -10227,6 +10267,29 @@ proton mail messages attachments list 5bH2mQxK --include-inline
 | ------------------ | ------------------------------------------------------ |
 | `--include-inline` | Include inline attachments, such as signature graphics |
 
+## `count`
+
+[Section titled “count”](#count)
+
+Count the messages in each folder and label.
+
+UNREAD is how many are unread, and TOTAL how many there are. Without –folder every folder and label has a row, and while categories are on, so does each category the inbox shows as a tab.
+
+To count what a filter matches, the last line of `list` says how many.
+
+```plaintext
+proton mail messages count
+```
+
+```bash
+proton mail messages count
+proton mail messages count --folder Receipts
+```
+
+| Flag              | Description              |
+| ----------------- | ------------------------ |
+| `--folder string` | Folder or label to count |
+
 ## `delete`
 
 [Section titled “delete”](#delete)
@@ -10268,6 +10331,8 @@ proton mail messages delete --folder spam --all --yes
 Delete everything in a folder, permanently.
 
 Proton clears the folder without reporting what was in it, so nothing is listed first. This takes no filters and always asks for confirmation.
+
+Only snoozed, spam, trash and your own folders and labels can be emptied.
 
 ```plaintext
 proton mail messages empty
@@ -10431,7 +10496,7 @@ List messages in a folder.
 
 Takes the same filters as trash, move, label and export, so you can preview a selection here before acting on it. A text filter goes through Proton’s own index, which lags a change by a few seconds and does not cover bodies, or through the copy `index create mail` builds, which does.
 
-Looks in the inbox unless told otherwise. Use –folder all to search everything.
+Looks in the inbox unless told otherwise. Use –folder all to search everything, or everything but spam and trash while almost-all-mail is on.
 
 Newest first, or largest first with –sort size; –desc reverses either.
 
@@ -10588,6 +10653,8 @@ proton mail messages mark unread 'Invoice #2291'
 Move messages to a folder.
 
 A message is in exactly one folder, so this takes it out of the one it was in. To tag it while leaving it where it is, use `label` instead.
+
+–into takes inbox, archive, spam, trash, a tab or one of your own folders.
 
 ```plaintext
 proton mail messages move [REF...]
@@ -15258,7 +15325,7 @@ Generate a shell completion script.
 
 Completion knows the whole command tree, every flag, and the values each enumerated flag accepts - so it offers item types, output formats, setting keys, colours and icons as you type them.
 
-Where a reference is wanted it offers back what your listings showed: the short ID, and the subject, name or address beside it. A flag whose value names one of your things answers the same way, so –into, –vault and –folder offer what you have. It reads what this machine remembers rather than asking Proton, so a collection you have not listed yet offers nothing and says which listing would fill it.
+Where a reference is wanted it offers back what your listings showed: the short ID, and the subject, name or address beside it. A flag whose value names one of your things answers the same way, so –vault, –folder and, outside Drive, –into offer what you have. It reads what this machine remembers rather than asking Proton, so a collection you have not listed yet offers nothing and says which listing would fill it.
 
 One script covers both proton and proton-cli.
 
@@ -15766,7 +15833,7 @@ Work      -- 5bH2mQxK
 Personal  -- 9xL4pQrT
 ```
 
-`--folder`, `--label`, `--into`, `--parent`, `--vault`, `--calendar`, `--album`, `--computer`, `--shared`, `--mailbox` and `--suffix` all complete this way.
+`--folder`, `--label`, `--parent`, `--vault`, `--calendar`, `--album`, `--computer`, `--shared`, `--mailbox`, `--suffix` and `--into` all complete this way, and `--folder` and the mail `--into` offer the built-in folders too. In Drive, `--into` takes a path.
 
 ```console
 $ proton mail conversations list
@@ -16070,6 +16137,16 @@ proton calendar reminders watch --output json |
 ```
 
 A watcher reports what happens while it is watching. It never replays what arrived before it started.
+
+### Unread count in a status bar
+
+[Section titled “Unread count in a status bar”](#unread-count-in-a-status-bar)
+
+```bash
+proton mail conversations count --folder inbox --output json | jq '.folders_or_labels[0].unread'
+```
+
+Waybar, polybar, i3blocks and tmux can each run that on an interval. A minute apart is plenty; see [Rate limits](#before-you-automate) before polling faster.
 
 ### Run a watch under systemd
 
