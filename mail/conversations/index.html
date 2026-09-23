@@ -208,6 +208,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -224,6 +228,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -238,6 +246,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -424,6 +436,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -444,6 +460,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -459,6 +479,10 @@
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
 </tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
+</tr>
 </tbody>
 </table>
 <div class="sl-heading-wrapper level-h2"><h2 id="list"><code dir="auto">list</code></h2><a class="sl-anchor-link" href="#list"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “list”</span></a></div>
@@ -467,7 +491,7 @@
 <p>Looks in the inbox unless told otherwise. Use –folder all to search everything.</p>
 <p>Newest first, or largest first with –sort size; –desc reverses either.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail conversations list</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations list"><div></div></button></div></figure></div>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--unread</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">inbox</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--sort</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">size</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--desc</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations listproton mail conversations list --unread --folder inboxproton mail conversations list --from jane@example.com --folder allproton mail conversations list --sort size --desc"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--unread</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">inbox</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">jane@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--has-attachments</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">conversations</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--sort</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">size</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--desc</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail conversations listproton mail conversations list --unread --folder inboxproton mail conversations list --from jane@example.com --folder allproton mail conversations list --has-attachments --folder allproton mail conversations list --sort size --desc"><div></div></button></div></figure></div>
 <table>
 <thead>
 <tr>
@@ -497,6 +521,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -517,6 +545,10 @@
 <td>Which page of results, counting from zero</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--sort string</code></td>
 <td>Order by: time, size (default <code dir="auto">time</code>)</td>
 </tr>
@@ -535,6 +567,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -574,6 +610,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -590,6 +630,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -604,6 +648,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -640,6 +688,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -656,6 +708,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -670,6 +726,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -706,6 +766,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--into string</code></td>
 <td>Destination folder, by name or ID</td>
 </tr>
@@ -726,6 +790,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -740,6 +808,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -859,6 +931,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -873,6 +949,10 @@
 <tr>
 <td><code dir="auto">--older-than string</code></td>
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
 </tr>
 <tr>
 <td><code dir="auto">--starred</code></td>
@@ -893,6 +973,10 @@
 <tr>
 <td><code dir="auto">--until string</code></td>
 <td>When they come back (e.g. 3d, or 2026-04-17T09:00)</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -929,6 +1013,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -945,6 +1033,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -959,6 +1051,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -995,6 +1091,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1011,6 +1111,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1025,6 +1129,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1061,6 +1169,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1081,6 +1193,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1095,6 +1211,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1131,6 +1251,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1147,6 +1271,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1161,6 +1289,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1197,6 +1329,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1213,6 +1349,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1227,6 +1367,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>

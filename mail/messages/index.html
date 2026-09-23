@@ -209,6 +209,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -225,6 +229,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -239,6 +247,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -312,6 +324,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -332,6 +348,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -346,6 +366,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -496,6 +520,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -516,6 +544,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -531,15 +563,19 @@
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
 </tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
+</tr>
 </tbody>
 </table>
 <div class="sl-heading-wrapper level-h2"><h2 id="list"><code dir="auto">list</code></h2><a class="sl-anchor-link" href="#list"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “list”</span></a></div>
 <p>List messages in a folder.</p>
 <p>Takes the same filters as trash, move, label and export, so you can preview a selection here before acting on it. A text filter goes through Proton’s own index, which lags a change by a few seconds and does not cover bodies, or through the copy <code dir="auto">index create mail</code> builds, which does.</p>
 <p>Looks in the inbox unless told otherwise. Use –folder all to search everything.</p>
-<p>Newest first, or largest first with –sort size; –desc reverses either. Ordering by size is Proton’s to do, so it is not answered from a local index and does not search bodies.</p>
+<p>Newest first, or largest first with –sort size; –desc reverses either.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail messages list</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages list"><div></div></button></div></figure></div>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--unread</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--limit</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#FFC799;--1:#0550AE">50</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--starred</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--output</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">json</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">billing@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--keyword</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">invoice</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--after</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-01-01</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--keyword</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'parking permit'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--sort</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">size</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--limit</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#FFC799;--1:#0550AE">10</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages listproton mail messages list --unreadproton mail messages list --folder archive --limit 50proton mail messages list --starred --output jsonproton mail messages list --from billing@example.com --folder allproton mail messages list --keyword invoice --after 2026-01-01 --folder allproton mail messages list --keyword &#x27;parking permit&#x27; --folder allproton mail messages list --folder all --sort size --limit 10"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--unread</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--limit</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#FFC799;--1:#0550AE">50</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--starred</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--output</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">json</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">billing@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--via</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">work@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--has-attachments</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">billing@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--keyword</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">invoice</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--after</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">2026-01-01</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--keyword</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'parking permit'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">list</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">all</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--sort</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">size</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--limit</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#FFC799;--1:#0550AE">10</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages listproton mail messages list --unreadproton mail messages list --folder archive --limit 50proton mail messages list --starred --output jsonproton mail messages list --from billing@example.com --folder allproton mail messages list --via work@example.com --folder allproton mail messages list --has-attachments --from billing@example.com --folder allproton mail messages list --keyword invoice --after 2026-01-01 --folder allproton mail messages list --keyword &#x27;parking permit&#x27; --folder allproton mail messages list --folder all --sort size --limit 10"><div></div></button></div></figure></div>
 <table>
 <thead>
 <tr>
@@ -569,6 +605,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -589,6 +629,10 @@
 <td>Which page of results, counting from zero</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--sort string</code></td>
 <td>Order by: time, size (default <code dir="auto">time</code>)</td>
 </tr>
@@ -607,6 +651,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -656,6 +704,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -672,6 +724,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -686,6 +742,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -722,6 +782,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -736,6 +800,10 @@
 <tr>
 <td><code dir="auto">--older-than string</code></td>
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
+</tr>
+<tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
 </tr>
 <tr>
 <td><code dir="auto">--starred</code></td>
@@ -753,13 +821,17 @@
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
 </tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
+</tr>
 </tbody>
 </table>
 <div class="sl-heading-wrapper level-h2"><h2 id="move"><code dir="auto">move</code></h2><a class="sl-anchor-link" href="#move"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “move”</span></a></div>
 <p>Move messages to a folder.</p>
 <p>A message is in exactly one folder, so this takes it out of the one it was in. To tag it while leaving it where it is, use <code dir="auto">label</code> instead.</p>
 <div class="expressive-code"><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="plaintext"><code><div class="ec-line"><div class="code"><span style="--0:#ffffff;--1:#1f2328">proton mail messages move [REF...]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages move [REF...]"><div></div></button></div></figure></div>
-<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Invoice #2291'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">newsletter@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--older-than</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">90d</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages move &#x27;Invoice #2291&#x27; --into archiveproton mail messages move --from newsletter@example.com --older-than 90d --into archive"><div></div></button></div></figure></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">Terminal window</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">'Invoice #2291'</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--from</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">newsletter@example.com</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--older-than</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">90d</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span></div></div><div class="ec-line"><div class="code"><span style="--0:#FFC799;--1:#953800">proton</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">mail</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">messages</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">move</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--folder</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">inbox</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--read</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--older-than</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">30d</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0550AE">--into</span><span style="--0:#FFFFFF;--1:#1F2328"> </span><span style="--0:#99FFE4;--1:#0A3069">archive</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="proton mail messages move &#x27;Invoice #2291&#x27; --into archiveproton mail messages move --from newsletter@example.com --older-than 90d --into archiveproton mail messages move --folder inbox --read --older-than 30d --into archive"><div></div></button></div></figure></div>
 <table>
 <thead>
 <tr>
@@ -789,6 +861,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--into string</code></td>
 <td>Destination folder, by name or ID</td>
 </tr>
@@ -809,6 +885,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -823,6 +903,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1027,6 +1111,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1043,6 +1131,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1057,6 +1149,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1093,6 +1189,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1109,6 +1209,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1123,6 +1227,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1159,6 +1267,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1179,6 +1291,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1193,6 +1309,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1248,6 +1368,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1264,6 +1388,10 @@
 <td>Match messages older than DURATION (e.g. 30d, 2w, 1h)</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1278,6 +1406,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
@@ -1325,6 +1457,10 @@
 <td>Match the sender’s address</td>
 </tr>
 <tr>
+<td><code dir="auto">--has-attachments</code></td>
+<td>Match messages with attachments</td>
+</tr>
+<tr>
 <td><code dir="auto">--keyword string</code></td>
 <td>Match text in the subject, a name or an address, and in bodies once a mail index exists</td>
 </tr>
@@ -1345,6 +1481,10 @@
 <td>Read the account password from a file, or - for stdin</td>
 </tr>
 <tr>
+<td><code dir="auto">--read</code></td>
+<td>Match read messages</td>
+</tr>
+<tr>
 <td><code dir="auto">--starred</code></td>
 <td>Match starred messages</td>
 </tr>
@@ -1363,6 +1503,10 @@
 <tr>
 <td><code dir="auto">--unread</code></td>
 <td>Match unread messages</td>
+</tr>
+<tr>
+<td><code dir="auto">--via string</code></td>
+<td>Match mail that arrived at, or left from, this address of yours</td>
 </tr>
 </tbody>
 </table>
