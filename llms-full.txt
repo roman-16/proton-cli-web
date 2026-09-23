@@ -718,6 +718,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton account settings two-factor generate`](/account/settings/#two-factor-generate)           | Make a two-factor secret for an authenticator app                   |
 | [`proton account settings two-factor get`](/account/settings/#two-factor-get)                     | Show what this account is asked for at sign-in                      |
 | [`proton api`](/api/api/)                                                                         | Send a raw authenticated request to the Proton API                  |
+| [`proton calendar busy-times list`](/calendar/busy-times/#list)                                   | List when people are busy in a date range                           |
 | [`proton calendar events create`](/calendar/events/#create)                                       | Create an event                                                     |
 | [`proton calendar events delete`](/calendar/events/#delete)                                       | Delete events                                                       |
 | [`proton calendar events export`](/calendar/events/#export)                                       | Write events out as an .ics file                                    |
@@ -3210,9 +3211,9 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 # Calendar
 
-> Events, recurrence, reminders and invitations in Proton Calendar, plus .ics in and out. Everything is encrypted with your calendar key and signed with your address key.
+> Events, recurrence, reminders and invitations in Proton Calendar, when other people are busy, and .ics in and out. Everything is encrypted with your calendar key and signed with your address key.
 
-This page is what people actually do. For every command and flag, see the reference: [events](/calendar/events/), [reminders](/calendar/reminders/), [invitations](/calendar/invitations/), [settings](/calendar/settings/).
+This page is what people actually do. For every command and flag, see the reference: [events](/calendar/events/), [busy times](/calendar/busy-times/), [reminders](/calendar/reminders/), [invitations](/calendar/invitations/), [settings](/calendar/settings/).
 
 ## See what’s on
 
@@ -3226,7 +3227,7 @@ proton calendar events get "Team sync"
 
 Every calendar is included unless `--calendar` narrows it.
 
-`--after` and `--before` are the first and last **whole** days to include, read in your own zone, and both are included. Without them you get the next 30 days, starting today. Name one and the other is 30 days away from it, so `--after 2027-01-01` lists that January.
+`--after` and `--before` are the first and last **whole** days to include, read in your own zone, and both are included. Without them you get the next 30 days, starting today. Name one and you get the 30 days starting or ending there, so `--after 2027-01-01` lists January 1 to 30.
 
 An event is on a day when it touches any part of it, so a query for one day inside a three-day event returns it.
 
@@ -3309,7 +3310,7 @@ A colour per event is a paid feature. On a free account the colour is stored and
 
 Proton users are added directly. External addresses get an emailed invitation.
 
-A bare address is required: `--attendee jane@example.com:optional` is not accepted.
+A bare address invites somebody as required, and `--attendee jane@example.com:optional` as optional. A value that is not an address, or a role other than `optional` or `required`, is refused before anything is sent.
 
 ### Recurrence
 
@@ -3343,6 +3344,32 @@ The four hours a year where a clock reading means two instants or none are refus
 $ proton calendar events create --title 'Night shift' --start 2026-10-25T02:30
 Error: 02:30 happens twice on 2026-10-25 in Europe/Vienna, when the clocks go back; say which one, as 2026-10-25T02:30:00+02:00 or 2026-10-25T02:30:00+01:00
 ```
+
+## See when people are busy
+
+[Section titled “See when people are busy”](#see-when-people-are-busy)
+
+Before you invite people, see when they are busy:
+
+```console
+$ proton calendar busy-times list jane.roe@example.com alex.roe@example.com max@example.org --after 2026-05-04 --before 2026-05-08
+EMAIL                 DATE        TIME     DURATION
+────────────────────  ──────────  ───────  ────────
+jane.roe@example.com  2026-05-04  09:00          1h
+alex.roe@example.com  2026-05-04  14:00       1h30m
+jane.roe@example.com  2026-05-05  all day        1d
+alex.roe@example.com  2026-05-07  10:30         30m
+4 busy times.
+! Availability unknown for max@example.org: Proton will not say when they are busy.
+```
+
+It needs a Duo, Family, Visionary or business plan. On any other plan it is refused.
+
+A busy time says when somebody is busy, never what with. Without `--after` and `--before` you get the next 7 days, starting today.
+
+Anyone outside Proton, and anyone else Proton will not show, is listed as unknown rather than left out. With `--output json` they are under `unknown`.
+
+Whether your own events make you look busy to others is set per calendar with `--busy`; see [Your calendars](#your-calendars).
 
 ## Change or answer one
 
@@ -3466,7 +3493,7 @@ proton calendar settings calendars delete Work
 
 Each calendar carries its own defaults for the events made in it.
 
-* `--busy` says whether events there make you look busy to people checking your availability.
+* `--busy` says whether events there make you look busy to [people checking your availability](#see-when-people-are-busy).
 * `--no-remind` gives new events none.
 * `--default` makes it the calendar new events go into when `--calendar` names none.
 
@@ -3576,6 +3603,45 @@ proton calendar settings set primary-timezone Europe/Vienna
 | `primary-timezone` · `secondary-timezone`                                                  | An IANA zone                               |
 | `invite-locale`                                                                            | A language, such as `en_US`                |
 
+# proton calendar busy-times
+
+> When other people are busy.
+
+Every command under `proton calendar busy-times`, with the arguments and flags it takes. For these commands in use, see [the calendar guide](/calendar/).
+
+Holds `list`.
+
+## `list`
+
+[Section titled “list”](#list)
+
+List when people are busy in a date range.
+
+With neither –after nor –before it covers the next 7 days, starting today. With one of them, it covers the 7 days starting or ending there.
+
+It needs a Duo, Family, Visionary or business plan. Somebody whose busy times Proton will not show, such as anyone outside Proton, is listed as unknown. A busy time says when, never what.
+
+```plaintext
+proton calendar busy-times list EMAIL...
+```
+
+```bash
+proton calendar busy-times list jane.roe@example.com
+proton calendar busy-times list jane.roe@example.com alex.roe@example.com --after 2026-05-04 --before 2026-05-08
+proton calendar busy-times list jane.roe@example.com --output json
+```
+
+| Flag              | Description                                     |
+| ----------------- | ----------------------------------------------- |
+| `--after string`  | First day to include (YYYY-MM-DD)               |
+| `--before string` | Last day to include (YYYY-MM-DD)                |
+| `--limit int`     | How many busy times per page; 0 for all of them |
+| `--page int`      | Which page of results, counting from zero       |
+
+***
+
+Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
 # proton calendar events
 
 > Events in your calendars.
@@ -3652,7 +3718,7 @@ proton calendar events delete 4f2a1b9c@2026-05-04T09:00 --onwards
 
 Write events out as an .ics file.
 
-With neither –after nor –before it covers the next 30 days, starting today. With one of them, the other is 30 days away from it.
+With neither –after nor –before it covers the next 30 days, starting today. With one of them, it covers the 30 days starting or ending there.
 
 A recurring series is written once, with its rule, so another client reads it back as the same series.
 
@@ -3721,7 +3787,7 @@ curl -s https://example.com/team.ics | proton calendar events import -
 
 List what is on your calendars between two dates.
 
-With neither –after nor –before it covers the next 30 days, starting today. With one of them, the other is 30 days away from it.
+With neither –after nor –before it covers the next 30 days, starting today. With one of them, it covers the 30 days starting or ending there.
 
 –keyword matches the title, the location, the description, the organizer and the people invited. On its own it covers every event there has been and the next three years of every repeating one; with –after or –before it covers those days instead.
 
@@ -3892,7 +3958,7 @@ Holds `list` and `watch`.
 
 List every reminder your events will raise between two dates.
 
-With neither –after nor –before it covers the next 30 days, starting today. With one of them, the other is 30 days away from it.
+With neither –after nor –before it covers the next 30 days, starting today. With one of them, it covers the 30 days starting or ending there.
 
 A reminder is listed on the day it goes off, not the day its event is on. An event with two reminders is two rows; a recurring event is one row per occurrence.
 
@@ -9167,7 +9233,7 @@ proton mail settings imports get jane@fastmail.com
 
 **The other mailbox’s password is sent to Proton**, which connects to the mailbox and keeps the password until the import is over. Most providers want an app password here rather than the one you sign in with. The password is read from a file, never a flag - `-` reads standard input.
 
-`--server` and `--port` are looked up from the address. Give them for a provider Proton does not know:
+`--server` and `--port` are looked up from the address. Give them for a provider Proton does not know, or for a login that is not an address:
 
 ```bash
 proton mail settings imports create jane@example.com --imap-password-file /run/secrets/mailbox \
@@ -12030,9 +12096,9 @@ proton mail settings imports cancel jane@fastmail.com
 
 Bring another mailbox in over IMAP.
 
-EMAIL is the mailbox to import from, and –imap-password-file is what opens it. That password is sent to Proton, which connects to the mailbox and keeps the password until the import is over. Most providers want an app password here rather than the one you sign in with.
+LOGIN signs in to the mailbox to import from, and is usually its address; –imap-password-file is what opens it. That password is sent to Proton, which connects to the mailbox and keeps the password until the import is over. Most providers want an app password here rather than the one you sign in with.
 
-–server and –port are looked up from the address, and have to be given for a provider that is not known.
+–server and –port are looked up from the address, and have to be given for a provider that is not known, or for a login that is not an address.
 
 Every folder is imported unless –skip leaves it out, which leaves out what is inside it too. A folder that matches one of yours lands in it and the rest keep their own names; Gmail’s folders arrive as labels. Mail outside –after and –before is left behind, by the day it arrived.
 
@@ -12041,7 +12107,7 @@ Everything that arrives carries one label, named after the other mailbox unless 
 The import carries on after this returns. `get` says how far it has got, and `undo` takes back everything it brought in.
 
 ```plaintext
-proton mail settings imports create EMAIL
+proton mail settings imports create LOGIN
 ```
 
 ```bash
@@ -12297,7 +12363,7 @@ A whole domain works too, written with the @: `@example.com`.
 Deciding again about the same sender replaces the earlier decision rather than colliding with it.
 
 ```plaintext
-proton mail settings senders allow EMAIL...
+proton mail settings senders allow SENDER...
 ```
 
 ```bash
@@ -12315,7 +12381,7 @@ A whole domain works too, written with the @: `@example.com`.
 Deciding again about the same sender replaces the earlier decision rather than colliding with it.
 
 ```plaintext
-proton mail settings senders block EMAIL...
+proton mail settings senders block SENDER...
 ```
 
 ```bash
@@ -12351,7 +12417,7 @@ proton mail settings senders list
 Drop a standing decision, letting the spam filter decide again.
 
 ```plaintext
-proton mail settings senders remove EMAIL...
+proton mail settings senders remove SENDER...
 ```
 
 ```bash
@@ -12369,7 +12435,7 @@ A whole domain works too, written with the @: `@example.com`.
 Deciding again about the same sender replaces the earlier decision rather than colliding with it.
 
 ```plaintext
-proton mail settings senders spam EMAIL...
+proton mail settings senders spam SENDER...
 ```
 
 ```bash
