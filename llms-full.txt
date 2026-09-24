@@ -664,7 +664,14 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton account get`](/account/account/#get)                                                     | Show the account, its storage and this machine’s session            |
 | [`proton account login`](/account/account/#login)                                                 | Sign in and save the session for this profile                       |
 | [`proton account logout`](/account/account/#logout)                                               | Discard the saved session for this profile                          |
+| [`proton account keys create`](/account/keys/#create)                                             | Generate a key for an address                                       |
+| [`proton account keys delete`](/account/keys/#delete)                                             | Delete keys of an address                                           |
+| [`proton account keys export`](/account/keys/#export)                                             | Write keys out to files                                             |
+| [`proton account keys get`](/account/keys/#get)                                                   | Show one key and what it is used for                                |
+| [`proton account keys import`](/account/keys/#import)                                             | Add keys to an address from files                                   |
+| [`proton account keys list`](/account/keys/#list)                                                 | List the keys of the account and its addresses                      |
 | [`proton account keys reactivate`](/account/keys/#reactivate)                                     | Bring back the keys a password reset locked                         |
+| [`proton account keys update`](/account/keys/#update)                                             | Make a key primary, or mark it obsolete or compromised              |
 | [`proton account profiles delete`](/account/profiles/#delete)                                     | Remove a profile and everything it keeps on this machine            |
 | [`proton account profiles list`](/account/profiles/#list)                                         | List the profiles with a saved session                              |
 | [`proton account security-log delete`](/account/security-log/#delete)                             | Remove every event the log holds                                    |
@@ -1105,7 +1112,7 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 [Section titled “What leaves your machine”](#what-leaves-your-machine)
 
 * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens.
-* Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, the locked key a forwarding you accepted adds to your address, and the locked key a forwarding you set up derives for the other address, whose passphrase only that address can open.
+* Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, a key you generate or import for an address, locked so only your account opens it, the locked key a forwarding you accepted adds to your address, and the locked key a forwarding you set up derives for the other address, whose passphrase only that address can open.
 * The decrypted body of a message you report with `mail messages mark phishing`, so Proton’s anti-abuse team can read what was sent to you. Nothing withdraws a report.
 * The SRP proof during login, which does not reveal your password.
 * The verifier for a Pass extra password you set, which Proton checks a password against and cannot read one out of.
@@ -1118,7 +1125,7 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 
 There is no telemetry, and there is nothing to turn off. proton-cli never reports a command you ran, a feature you used, or the fact that you ran it at all. The diagnostic log is written to your disk and read by nobody unless you run `proton report` and paste it somewhere yourself ([Reporting a bug](/help/troubleshooting/#reporting-a-bug)). What is known about how the tool is used comes from counters the distribution channels publish, and is [on the site](https://proton-cli.lerchster.dev/stats/) in full.
 
-**Anything you export is plaintext.** `mail messages export` and `contacts export` decrypt on the way out, so the files they write are readable by anything. Put them where you would be comfortable putting the mail itself.
+**What you export is plaintext.** `mail messages export` and `contacts export` decrypt on the way out, so the files they write are readable by anything. Put them where you would be comfortable putting the mail itself. A private key from `account keys export --private` is the exception: it is written locked with the passphrase you give.
 
 ## What is stored on disk
 
@@ -1163,7 +1170,7 @@ Found a vulnerability? [`SECURITY.md`](https://github.com/roman-16/proton-cli/bl
 
 > Sign in once and your password is never asked for again on that machine.
 
-This page covers signing in and out, unattended and two-password sign-in, running several Proton accounts side by side, the sessions Proton holds across your devices, unlocking data after a password reset, and your account settings.
+This page covers signing in and out, unattended and two-password sign-in, running several Proton accounts side by side, the sessions Proton holds across your devices, your encryption keys, unlocking data after a password reset, and your account settings.
 
 For every command and flag, see the reference: [account](/account/account/), [keys](/account/keys/), [security-log](/account/security-log/), [sessions](/account/sessions/), [profiles](/account/profiles/), [settings](/account/settings/).
 
@@ -1358,6 +1365,7 @@ proton account login --user alice@proton.me \
 
 These commands ask for your password again even when you are signed in:
 
+* `account keys create` · `account keys delete` · `account keys export --private` · `account keys import` · `account keys update`
 * `account keys reactivate`
 * `account security-log delete` · `account security-log disable` · `account security-log enable`
 * `account sessions revoke`
@@ -1400,6 +1408,112 @@ Error: --password-file - and --body - both read standard input, which can only b
 Try:   pass it with --password-file FILE instead
 ```
 
+## Your encryption keys
+
+[Section titled “Your encryption keys”](#your-encryption-keys)
+
+Every key of the account and of its addresses:
+
+```console
+$ proton account keys list
+ID        KIND     ADDRESS          FINGERPRINT                               ALGORITHM         CREATED           STATUS
+────────  ───────  ───────────────  ────────────────────────────────────────  ────────────────  ────────────────  ───────
+Xq3v9KpL  address  alice@proton.me  efc080fc29483fb2bf6706826c723749a013efb7  ECC (Curve25519)  2024-03-12 09:41  primary
+7Hn2Lw0R  address  alice@proton.me  8023711ec0c59bca3710f43ece03ac772bc5c84e  RSA (2048)        2019-01-04 18:22  active
+Pz8mQ2rT  address  alice@pm.me      ed048f24c9d2674d6728ad5b546472c03857cbac  ECC (Curve25519)  2019-01-04 18:22  primary
+Kd91mQxT  account                   139d79d095d7555689ad0e20f2b4b7bf15de5e46  ECC (Curve25519)  2019-01-04 18:22  primary
+4 keys.
+```
+
+An address’s primary key is what mail to it is encrypted to and what it signs with. Its other keys open and verify what arrived before. A key is named by its ID, its short ID or its fingerprint:
+
+```console
+$ proton account keys get 8023711ec0c59bca3710f43ece03ac772bc5c84e
+Fingerprint:  8023711ec0c59bca3710f43ece03ac772bc5c84e
+Kind:         address
+Address:      alice@proton.me
+Algorithm:    RSA (2048)
+Created:      2019-01-04 18:22
+Status:       active
+Used For:     decryption, verification
+ID:           7Hn2Lw0R
+```
+
+Adding, changing and deleting a key ask for your password even when you are signed in. With nobody to ask, pass `--password-file`.
+
+### Export a key
+
+[Section titled “Export a key”](#export-a-key)
+
+```bash
+proton account keys export Xq3v9KpL             # the public key, into the current directory
+proton account keys export Xq3v9KpL --dest -    # the public key, to stdout
+```
+
+`--private` writes the private key, locked with a passphrase you choose. It asks for your password first, even when you are signed in:
+
+```console
+$ proton account keys export Xq3v9KpL --private
+Password:
+Passphrase:
+✓ Exported key "efc080fc29483fb2bf6706826c723749a013efb7" to privatekey.alice@proton.me-efc080fc29483fb2bf6706826c723749a013efb7.asc, locked with your passphrase.
+```
+
+The passphrase needs at least eight characters. With no terminal to ask, both come from files:
+
+```bash
+proton account keys export Xq3v9KpL --private \
+  --password-file /run/secrets/proton --passphrase-file /run/secrets/key-backup
+```
+
+### Add a key to an address
+
+[Section titled “Add a key to an address”](#add-a-key-to-an-address)
+
+```bash
+proton account keys create alice@proton.me                         # generate one
+proton account keys import alice@proton.me ~/keys/alice-2019.asc   # bring one in from a file
+```
+
+A generated key becomes the address’s primary key, and the one it replaces keeps opening what arrived before. An account that creates post-quantum keys generates them in a Proton client.
+
+An imported key joins the address as one that reads; make it primary with `update --primary`. Its public half is published with every name and address it carries. A locked file asks for its passphrase, and `--passphrase-file` gives it. One passphrase serves a whole run, so files locked with different passphrases are imported one at a time. `-` reads the file from stdin.
+
+Both print the new key’s ID on stdout.
+
+### Make a key primary, or stop trusting one
+
+[Section titled “Make a key primary, or stop trusting one”](#make-a-key-primary-or-stop-trusting-one)
+
+```console
+$ proton account keys update 7Hn2Lw0R --primary
+Password:
+✓ Updated key "8023711ec0c59bca3710f43ece03ac772bc5c84e" - now the primary key of alice@proton.me.
+```
+
+| Flag            | What the key does afterwards                                                               |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `--obsolete`    | Opens and verifies what arrived before; nothing new is encrypted to it                     |
+| `--compromised` | Opens what was sealed to it; nothing is encrypted to it, and what it signed is not trusted |
+
+`=false` takes a mark off. `--compromised=false` leaves the key obsolete, so pass `--obsolete=false` as well to use it again. The primary key cannot be marked: make another key primary first.
+
+A message signed by a key its owner marked compromised shows `Signature: invalid`.
+
+Generating a key, importing one, or changing an address’s primary key pauses its end-to-end encrypted forwardings. `proton mail settings forwarding enable` resumes them.
+
+### Delete a key
+
+[Section titled “Delete a key”](#delete-a-key)
+
+```console
+$ proton account keys delete 7Hn2Lw0R
+! Nothing sealed to this key opens again, and what it signed is no longer verified. `proton account keys export 8023711ec0c59bca3710f43ece03ac772bc5c84e --private` keeps a copy.
+Would delete key "8023711ec0c59bca3710f43ece03ac772bc5c84e". This cannot be undone. Continue? [y/N]
+```
+
+An address’s primary key and the account’s own keys cannot be deleted.
+
 ## After a password reset
 
 [Section titled “After a password reset”](#after-a-password-reset)
@@ -1426,7 +1540,11 @@ proton account keys reactivate --recovery-phrase
 proton account keys reactivate --recovery-file ~/Downloads/proton_recovery.asc
 ```
 
-Keys the secret does not open stay locked and are named. A key from an earlier reset opens with the secret from that time, so run the command again with it.
+Keys the secret does not open stay locked and are named. A key from an earlier reset opens with the secret from that time, so run the command again with it. An address key that stays locked comes back from a copy you exported:
+
+```bash
+proton account keys import alice@proton.me privatekey.alice@proton.me-8023711ec0c59bca3710f43ece03ac772bc5c84e.asc
+```
 
 What was locked opens from the next command onwards. Drive files need one more step, under [Drive](/drive/#after-a-password-reset).
 
@@ -1900,9 +2018,152 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 > The keys your data is encrypted with.
 
+Account keys belong to the account. Address keys belong to one address each: its primary key is what mail to it is encrypted to and what it signs with, and its other keys open and verify what arrived before.
+
 Every command under `proton account keys`, with the arguments and flags it takes. For these commands in use, see [the account guide](/account/).
 
-Holds `reactivate`.
+Holds `create`, `delete`, `export`, `get`, `import`, `list`, `reactivate` and `update`.
+
+## `create`
+
+[Section titled “create”](#create)
+
+Generate a key for an address, as its primary key.
+
+REF is the address. The key it replaces stays, and goes on opening and verifying what arrived before. An account that creates post-quantum keys is refused: generate the key in a Proton client.
+
+Asks for your password even when you are signed in. With no terminal to ask, pass –password-file, which takes - for stdin.
+
+```plaintext
+proton account keys create REF
+```
+
+```bash
+proton account keys create alice@proton.me
+proton account keys create alice@proton.me --dry-run
+```
+
+| Flag                     | Description                                           |
+| ------------------------ | ----------------------------------------------------- |
+| `--password-file string` | Read the account password from a file, or - for stdin |
+| `--totp string`          | Two-factor code                                       |
+
+## `delete`
+
+[Section titled “delete”](#delete)
+
+Delete keys of an address.
+
+Nothing sealed to a deleted key opens again, and what it signed is no longer verified. `proton account keys export REF --private` keeps a copy first. The primary key of an address and the account’s own keys cannot be deleted.
+
+Asks for your password even when you are signed in. With no terminal to ask, pass –password-file, which takes - for stdin.
+
+```plaintext
+proton account keys delete REF...
+```
+
+```bash
+proton account keys delete 7Hn2Lw0R
+proton account keys delete 7Hn2Lw0R --yes
+```
+
+| Flag                     | Description                                           |
+| ------------------------ | ----------------------------------------------------- |
+| `--password-file string` | Read the account password from a file, or - for stdin |
+| `--totp string`          | Two-factor code                                       |
+
+## `export`
+
+[Section titled “export”](#export)
+
+Write keys out to files, or one to stdout with –dest -.
+
+A file is named publickey.OWNER-FINGERPRINT.asc, or privatekey.OWNER-FINGERPRINT.asc with –private, where OWNER is the address or the account’s username.
+
+–private writes the private key, locked with a passphrase of at least eight characters, and asks for your password even when you are signed in. With no terminal to ask, pass –password-file and –passphrase-file. Only one of them can be -.
+
+```plaintext
+proton account keys export REF...
+```
+
+```bash
+proton account keys export 7Hn2Lw0R
+proton account keys export 7Hn2Lw0R --dest -
+proton account keys export 7Hn2Lw0R --private --dest-dir ~/backup
+proton account keys export 7Hn2Lw0R --private --password-file /run/secrets/proton --passphrase-file /run/secrets/key-backup
+```
+
+| Flag                       | Description                                                         |
+| -------------------------- | ------------------------------------------------------------------- |
+| `--dest string`            | Write to this path, or - for stdout                                 |
+| `--dest-dir string`        | Write into this directory, keeping each item’s own name             |
+| `--force`                  | Overwrite a file that already exists                                |
+| `--passphrase-file string` | Read the passphrase that locks the file from a file, or - for stdin |
+| `--password-file string`   | Read the account password from a file, or - for stdin               |
+| `--private`                | Export the private key, locked with a passphrase                    |
+| `--totp string`            | Two-factor code                                                     |
+
+## `get`
+
+[Section titled “get”](#get)
+
+Show one key and what it is used for.
+
+REF is the key’s ID, short ID or fingerprint.
+
+```plaintext
+proton account keys get REF
+```
+
+```bash
+proton account keys get 7Hn2Lw0R
+proton account keys get c4e1a86d0f3b7e25a9c1d4f8b6e2a0937d5c1e84
+```
+
+## `import`
+
+[Section titled “import”](#import)
+
+Add keys to an address from files, or from stdin with -.
+
+REF is the address. A key joins it as one that reads, or as its primary key when it has no other. A copy of a key the address holds locked comes back as that key. A key’s public half is published with every name and address it carries.
+
+Every key is read and opened before anything is sent, and one that fails stops the import. A locked key asks for its passphrase, and one passphrase serves the whole run.
+
+Asks for your password even when you are signed in. With no terminal to ask, pass –password-file and –passphrase-file. Only one of them, or SRC, can be -.
+
+```plaintext
+proton account keys import REF SRC...
+```
+
+```bash
+proton account keys import alice@proton.me ~/keys/alice-2019.asc
+proton account keys import alice@proton.me ~/keys/work.asc ~/keys/old.asc --passphrase-file /run/secrets/key
+cat ~/keys/alice-2019.asc | proton account keys import alice@proton.me - --passphrase-file /run/secrets/key
+```
+
+| Flag                       | Description                                                         |
+| -------------------------- | ------------------------------------------------------------------- |
+| `--passphrase-file string` | Read the passphrase that locks the file from a file, or - for stdin |
+| `--password-file string`   | Read the account password from a file, or - for stdin               |
+| `--totp string`            | Two-factor code                                                     |
+
+## `list`
+
+[Section titled “list”](#list)
+
+List the keys of the account and its addresses.
+
+STATUS is one of primary, active, obsolete, compromised, locked, forwarding, disabled and unreadable. A locked key comes back with `proton account keys reactivate`.
+
+```plaintext
+proton account keys list
+```
+
+```bash
+proton account keys list
+proton account keys list --output json
+```
 
 ## `reactivate`
 
@@ -1931,6 +2192,36 @@ proton account keys reactivate --previous-password-file /run/secrets/proton-old 
 | `--recovery-phrase`               | Recover with the recovery phrase, asked for at the prompt           |
 | `--recovery-phrase-file string`   | Read the recovery phrase from a file, or - for stdin                |
 | `--totp string`                   | Two-factor code                                                     |
+
+## `update`
+
+[Section titled “update”](#update)
+
+Make a key primary, or mark it obsolete or compromised.
+
+–primary makes it the key its address encrypts to and signs with, and the one it replaces stays. –obsolete stops encryption to the key and keeps its signatures trusted. –compromised stops both, and the key goes on opening what was sealed to it.
+
+\=false takes a mark off. –compromised=false leaves the key obsolete, so pass –obsolete=false as well to use it again. The primary key cannot be marked, and only address keys change.
+
+Asks for your password even when you are signed in. With no terminal to ask, pass –password-file, which takes - for stdin.
+
+```plaintext
+proton account keys update REF
+```
+
+```bash
+proton account keys update 7Hn2Lw0R --primary
+proton account keys update 9d02f7c1 --compromised
+proton account keys update 9d02f7c1 --compromised=false --obsolete=false
+```
+
+| Flag                     | Description                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------- |
+| `--compromised`          | Stop encrypting to it and trusting its signatures; –compromised=false trusts them again |
+| `--obsolete`             | Stop encrypting to it; –obsolete=false encrypts to it again                             |
+| `--password-file string` | Read the account password from a file, or - for stdin                                   |
+| `--primary`              | Make it the key its address encrypts to and signs with                                  |
+| `--totp string`          | Two-factor code                                                                         |
 
 ***
 
@@ -7752,7 +8043,9 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 **Only a security key you plug in can be registered.** `proton account settings security-keys create` registers a key over USB. A built-in authenticator - Windows Hello, Touch ID, a machine’s own secure element - and a passkey held in a phone are registered in [Proton’s own settings](https://account.proton.me).
 
-**Post-quantum keys are read, never generated.** An account that opted in during Proton’s rollout signs in, and mail and shares reach others who opted in. Turning the setting on is done in Proton’s own settings, and adding an address to such an account is refused.
+**Post-quantum keys are read, never generated or imported.** An account that opted in during Proton’s rollout signs in, and mail and shares reach others who opted in. Turning the setting on is done in Proton’s own settings. On such an account, adding an address and generating a key are refused, and a post-quantum key file is imported in a Proton client.
+
+**Account keys are listed and exported, never generated or deleted.** Generating an account key, and deleting one a password reset locked, are done in [Proton’s own settings](https://account.proton.me).
 
 **A recurring event needs a zone that can be named.** proton reads one from `TZ`, `/etc/localtime` or `/etc/timezone`, then from your Proton calendar settings. Where none of those answers, a recurring event drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure.
 
