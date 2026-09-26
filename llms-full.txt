@@ -775,9 +775,9 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton contacts groups list`](/contacts/groups/#list)                                           | List contact groups                                                 |
 | [`proton contacts groups remove`](/contacts/groups/#remove)                                       | Remove contacts from a group                                        |
 | [`proton contacts groups update`](/contacts/groups/#update)                                       | Rename or recolor a contact group                                   |
-| [`proton contacts keys list`](/contacts/keys/#list)                                               | List the keys pinned to a contact                                   |
-| [`proton contacts keys pin`](/contacts/keys/#pin)                                                 | Pin a public key so mail to a contact is encrypted to it            |
-| [`proton contacts keys unpin`](/contacts/keys/#unpin)                                             | Remove the keys pinned to a contact                                 |
+| [`proton contacts keys list`](/contacts/keys/#list)                                               | List the keys you trust for a contact                               |
+| [`proton contacts keys trust`](/contacts/keys/#trust)                                             | Trust a public key so mail to a contact is encrypted to it          |
+| [`proton contacts keys untrust`](/contacts/keys/#untrust)                                         | Stop trusting a contact’s keys                                      |
 | [`proton drive computers delete`](/drive/computers/#delete)                                       | Remove computers from Drive                                         |
 | [`proton drive computers list`](/drive/computers/#list)                                           | List the computers syncing to Drive                                 |
 | [`proton drive computers update`](/drive/computers/#update)                                       | Rename a computer                                                   |
@@ -1008,7 +1008,9 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass items attachments update`](/pass/items/#attachments-update)                         | Rename an attachment                                                |
 | [`proton pass items create`](/pass/items/#create)                                                 | Create an item                                                      |
 | [`proton pass items delete`](/pass/items/#delete)                                                 | Delete items permanently                                            |
+| [`proton pass items exclude`](/pass/items/#exclude)                                               | Leave logins out of Pass Monitor’s checks                           |
 | [`proton pass items get`](/pass/items/#get)                                                       | Show one item, decrypted                                            |
+| [`proton pass items include`](/pass/items/#include)                                               | Bring logins back into Pass Monitor’s checks                        |
 | [`proton pass items list`](/pass/items/#list)                                                     | List items across your vaults                                       |
 | [`proton pass items move`](/pass/items/#move)                                                     | Put an item in another vault                                        |
 | [`proton pass items passkeys list`](/pass/items/#passkeys-list)                                   | List the passkeys stored against a login                            |
@@ -1061,6 +1063,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass vaults create`](/pass/vaults/#create)                                               | Create a vault                                                      |
 | [`proton pass vaults delete`](/pass/vaults/#delete)                                               | Delete vaults, and everything in them                               |
 | [`proton pass vaults get`](/pass/vaults/#get)                                                     | Show one vault in full                                              |
+| [`proton pass vaults hide`](/pass/vaults/#hide)                                                   | Keep vaults out of your listings                                    |
 | [`proton pass vaults list`](/pass/vaults/#list)                                                   | List your vaults                                                    |
 | [`proton pass vaults share add`](/pass/vaults/#share-add)                                         | Offer a vault to somebody                                           |
 | [`proton pass vaults share confirm`](/pass/vaults/#share-confirm)                                 | Let somebody into a vault once they join Proton                     |
@@ -1068,6 +1071,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass vaults share remove`](/pass/vaults/#share-remove)                                   | Take somebody’s access to a vault away                              |
 | [`proton pass vaults share update`](/pass/vaults/#share-update)                                   | Change what somebody may do with a vault                            |
 | [`proton pass vaults transfer`](/pass/vaults/#transfer)                                           | Make somebody else the owner of a vault                             |
+| [`proton pass vaults unhide`](/pass/vaults/#unhide)                                               | Bring hidden vaults back into your listings                         |
 | [`proton pass vaults update`](/pass/vaults/#update)                                               | Rename a vault, or change how it looks                              |
 | [`proton changelog`](/proton/#changelog)                                                          | Print what each release changed                                     |
 | [`proton completion`](/proton/#completion)                                                        | Generate a shell completion script                                  |
@@ -5544,7 +5548,7 @@ proton contacts emails update jane@example.com --encrypt off
 The settings depend on each other, and `emails update` refuses a combination that cannot be sent:
 
 * **A Proton address** takes `--email-format` alone. Mail to it is always encrypted and signed.
-* **Encrypted mail is always signed.** `--encrypt` needs a key: a pinned one, or one the address’s provider publishes.
+* **Encrypted mail is always signed.** `--encrypt` needs a key: a trusted one, or one the address’s provider publishes.
 * **Signed mail’s format follows the scheme:** plain text under `pgp-inline`, as it was written under `pgp-mime`.
 
 With `--eo-password-file`, a message goes to an address that is not encrypted to as a password-protected link, whatever its settings say.
@@ -5578,7 +5582,7 @@ proton contacts merge
 
 Contacts are duplicates when they share an **email address**, compared without regard to case. Sharing only a name is not enough, since people are routinely called the same thing.
 
-The oldest contact of each set is kept, so groups and pinned keys that refer to it keep working. Fields from the others are added, and nothing is overwritten.
+The oldest contact of each set is kept, so groups and trusted keys that refer to it keep working. Fields from the others are added, and nothing is overwritten.
 
 ## Import and export
 
@@ -5598,21 +5602,21 @@ A card with no name and no address is skipped and reported. The rest still land.
 
 Nothing is merged on import, so reading a file that has no UIDs twice creates duplicates. Run `contacts merge` afterwards to fold them together.
 
-## Pinned keys
+## Trusted keys
 
-[Section titled “Pinned keys”](#pinned-keys)
+[Section titled “Trusted keys”](#trusted-keys)
 
-Pinning a public key to a contact means mail to that address is encrypted to the key *you* trust, not just whatever the server hands back.
+Trusting a public key for a contact means mail to that address is encrypted to the key *you* chose, not just whatever the server hands back.
 
 ```bash
-proton contacts keys pin jane --key jane-pubkey.asc
-proton contacts keys pin jane@example.com --key -           # armored key on stdin
-proton contacts keys unpin jane@example.com
+proton contacts keys trust jane --key jane-pubkey.asc
+proton contacts keys trust jane@example.com --key -         # armored key on stdin
+proton contacts keys untrust jane@example.com
 ```
 
-A key is pinned to one address. Name that address when the contact holds several; naming the contact is enough when they hold one.
+A key is trusted for one address. Name that address when the contact holds several; naming the contact is enough when they hold one.
 
-Pinning turns encryption to the address on. To keep a key for verifying signatures only, turn it off again with `proton contacts emails update jane@example.com --encrypt off`. Unpinning removes the keys and leaves the address’s other settings as they are.
+Trusting turns encryption to the address on. To keep a key for verifying signatures only, turn it off again with `proton contacts emails update jane@example.com --encrypt off`. Untrusting removes the keys and leaves the address’s other settings as they are.
 
 # proton contacts
 
@@ -5776,7 +5780,7 @@ Fold duplicate contacts into one.
 
 Contacts are duplicates when they share an email address, compared without regard to case. Sharing only a name is not enough.
 
-The oldest contact of each set is kept, so groups and pinned keys that refer to it keep working. Fields from the others are added; nothing is overwritten.
+The oldest contact of each set is kept, so groups and trusted keys that refer to it keep working. Fields from the others are added; nothing is overwritten.
 
 ```plaintext
 proton contacts merge
@@ -5866,7 +5870,7 @@ Holds `list` and `update`.
 
 List a contact’s addresses and how mail to each is sent.
 
-ENCRYPT is blank for an address with nothing pinned that states no choice: mail to it is encrypted when its provider publishes a key.
+ENCRYPT is blank for an address with no trusted key that states no choice: mail to it is encrypted when its provider publishes a key.
 
 ```plaintext
 proton contacts emails list REF
@@ -5882,7 +5886,7 @@ proton contacts emails list jane
 
 Change how mail to one of a contact’s addresses is sent.
 
-Name the address as REF when the contact holds more than one. A Proton address takes –email-format alone: mail to it is always encrypted and signed. Encrypted mail is always signed, and the scheme decides the format of signed mail: plain text under pgp-inline, as written under pgp-mime. –encrypt needs a pinned key, or one the address’s provider publishes.
+Name the address as REF when the contact holds more than one. A Proton address takes –email-format alone: mail to it is always encrypted and signed. Encrypted mail is always signed, and the scheme decides the format of signed mail: plain text under pgp-inline, as written under pgp-mime. –encrypt needs a trusted key, or one the address’s provider publishes.
 
 ```plaintext
 proton contacts emails update REF
@@ -6040,19 +6044,19 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 # proton contacts keys
 
-> Public keys pinned to a contact.
+> Public keys you trust for a contact.
 
-Pinning a key means mail to that address is encrypted to the key you trust, rather than to whatever the server hands back. Whether it is encrypted at all is one of the address’s settings: see `contacts emails`.
+Trusting a key means mail to that address is encrypted to that key, rather than to whatever the server hands back. Whether it is encrypted at all is one of the address’s settings: see `contacts emails`.
 
 Every command under `proton contacts keys`, with the arguments and flags it takes. For these commands in use, see [the contacts guide](/contacts/).
 
-Holds `list`, `pin` and `unpin`.
+Holds `list`, `trust` and `untrust`.
 
 ## `list`
 
 [Section titled “list”](#list)
 
-List the keys pinned to a contact.
+List the keys you trust for a contact.
 
 ```plaintext
 proton contacts keys list REF
@@ -6062,44 +6066,44 @@ proton contacts keys list REF
 proton contacts keys list jane
 ```
 
-## `pin`
+## `trust`
 
-[Section titled “pin”](#pin)
+[Section titled “trust”](#trust)
 
-Pin a public key so mail to a contact is encrypted to it.
+Trust a public key so mail to a contact is encrypted to it.
 
-A key is pinned to one address. Name that address as REF when the contact holds more than one; naming the contact is enough when they hold one.
+A key is trusted for one address. Name that address as REF when the contact holds more than one; naming the contact is enough when they hold one.
 
-Pinning turns encryption to the address on. To keep a key for verifying signatures only, pin it and then run `contacts emails update REF --encrypt off`.
+Trusting turns encryption to the address on. To keep a key for verifying signatures only, trust it and then run `contacts emails update REF --encrypt off`.
 
 ```plaintext
-proton contacts keys pin REF
+proton contacts keys trust REF
 ```
 
 ```bash
-proton contacts keys pin jane --key jane-pubkey.asc
-proton contacts keys pin jane@example.com --key -
+proton contacts keys trust jane --key jane-pubkey.asc
+proton contacts keys trust jane@example.com --key -
 ```
 
 | Flag           | Description                            |
 | -------------- | -------------------------------------- |
 | `--key string` | Armoured public key file (- for stdin) |
 
-## `unpin`
+## `untrust`
 
-[Section titled “unpin”](#unpin)
+[Section titled “untrust”](#untrust)
 
-Remove the keys pinned to a contact.
+Stop trusting a contact’s keys.
 
-A key is pinned to one address. Name that address as REF when the contact holds more than one; naming the contact is enough when they hold one.
+Keys are trusted for one address. Name that address as REF when the contact holds more than one; naming the contact is enough when they hold one.
 
 ```plaintext
-proton contacts keys unpin REF
+proton contacts keys untrust REF
 ```
 
 ```bash
-proton contacts keys unpin jane
-proton contacts keys unpin jane@example.com
+proton contacts keys untrust jane
+proton contacts keys untrust jane@example.com
 ```
 
 ***
@@ -13077,6 +13081,16 @@ proton pass generate --words 4                  # or a passphrase
 
 **A listing carries no secret.** `items list`, `aliases list`, `trash list` and `shared list` show what an item is and where it lives, in every format including JSON. The password, the card, the keys and the hidden fields are what `items get` is for.
 
+### When an item was last used
+
+[Section titled “When an item was last used”](#when-an-item-was-last-used)
+
+`items get` shows when an item was created, last changed and last used. **Last Used** is when a Pass app last filled the item in, and shows for logins, cards and identities. Reading an item with `proton` does not count as using it.
+
+```bash
+proton pass items list --sort used --desc     # the most recently used first
+```
+
 `generate` reaches no account and needs no session. The alphabet leaves out `i`, `o`, `l` and their capitals unless letters are all the password may contain. Every character kind you ask for is guaranteed to appear, and a length too short to hold one of each is refused.
 
 `--words N` makes a passphrase instead: capitalised words, each followed by a digit, joined by `--separator`.
@@ -13228,6 +13242,21 @@ Deleting a vault takes everything in it, so it names the vault and asks first.
 
 To keep an item at the top of the list, run `proton pass items pin github.com`.
 
+### Hide a vault
+
+[Section titled “Hide a vault”](#hide-a-vault)
+
+```bash
+proton pass vaults hide Archive
+proton pass vaults unhide Archive
+```
+
+A hidden vault is left out of `items list`, the trash, `aliases list`, `sharing list`, the password checks and `breaches list`, and looking an item up by name does not search it. `items list --vault Archive` still lists it, and an item’s ID still reaches it. `vaults list` shows every vault, and says which are hidden.
+
+* `trash empty` leaves the trash of a hidden vault alone.
+* A new item without `--vault` goes to your first vault that is not hidden.
+* Only you stop seeing it: hiding a shared vault changes nothing for its other members.
+
 ## Aliases
 
 [Section titled “Aliases”](#aliases)
@@ -13252,7 +13281,17 @@ An alias is an item, so it is read and edited like one:
 proton pass items get shop
 proton pass items update shop --mailbox work@proton.me    # where its mail arrives
 proton pass items update shop --display-name "Jane R"     # what recipients see
+proton pass items update shop --clear-display-name
 ```
+
+An alias brought in from SimpleLogin can carry a note of SimpleLogin’s own, which `items get` shows as **SimpleLogin Note**.
+
+```bash
+proton pass items update shop --simplelogin-note "Bike shop, 2024"
+proton pass items update shop --clear-simplelogin-note
+```
+
+**That note is not end-to-end encrypted**, and an alias without one cannot be given one. `--note` is the encrypted note every item has, and `aliases create --note` sets it on a new alias.
 
 When an address starts attracting spam, **switch it off rather than delete it.** A disabled alias keeps its address and stops receiving; deleting it burns the address for good.
 
@@ -13424,7 +13463,7 @@ proton pass import pass-backup.zip --passphrase-file ~/.backup-passphrase
 
 The archive is the one **Proton Pass itself writes**, so the app opens what this writes and this opens what the app wrote.
 
-It holds **the vaults you own**, and the attachments on their items. A vault somebody shared with you is theirs to back up and stays out. When something is left out, the command says how much on stderr.
+It holds **the vaults you own**, hidden or not, and the attachments on their items. A vault somebody shared with you is theirs to back up and stays out. When something is left out, the command says how much on stderr.
 
 `--no-attachments` writes the items alone, which is much faster.
 
@@ -13590,13 +13629,25 @@ proton pass items list --risk missing-2fa      # a site offers a code and you st
 proton pass items list --risk compromised      # the password has leaked somewhere
 ```
 
-This is Pass Monitor’s password health. Each check keeps only the logins that fail it and adds a RISK column saying what was found. Logins sharing one password carry the same number, so two pairs do not read as one group of four. Anything you excluded from Proton’s security checks is left out of all of them.
+This is Pass Monitor’s password health. Each check keeps only the logins that fail it and adds a RISK column saying what was found. Logins sharing one password carry the same number, so two pairs do not read as one group of four. A login you excluded is left out of all of them.
 
 `--risk weak` is `proton`’s own reading: a password shorter than twelve characters, or shorter than sixteen and drawn from fewer than three of lowercase, uppercase, digits and symbols. Pass judges strength its own way, so the two can disagree.
 
 `--risk compromised` is the only check that reaches the network. It sends the first six hexadecimal characters of each password’s SHA-1 to `credential-check.protonweb.com`, never the password and never the whole hash, and asks one question per password you have stored.
 
 No check prints a password. `proton pass items get` is still the only command that does.
+
+### Exclude a login from the checks
+
+[Section titled “Exclude a login from the checks”](#exclude-a-login-from-the-checks)
+
+```bash
+proton pass items exclude "Router admin"
+proton pass items list --excluded              # every login you excluded
+proton pass items include "Router admin"
+```
+
+Only logins can be excluded, and only in a vault you may edit. `items get` shows **Monitor: excluded** on one. An alias’s address is watched or not with `breaches enable` and `breaches disable`, which is the same switch.
 
 ## Breaches
 
@@ -13733,12 +13784,14 @@ proton pass aliases create
 ```bash
 proton pass aliases create --prefix shop --mailbox me@proton.me
 proton pass aliases create --prefix news --mailbox me@proton.me --vault Work --name 'Newsletter alias'
+proton pass aliases create --prefix shop --note 'Bike shop'
 ```
 
 | Flag                    | Description                                                    |
 | ----------------------- | -------------------------------------------------------------- |
 | `--mailbox stringArray` | Where mail to the alias should arrive (repeatable)             |
 | `--name string`         | Name for the alias item                                        |
+| `--note string`         | Note for the alias item                                        |
 | `--prefix string`       | The part before the @                                          |
 | `--suffix string`       | The part from the @ onwards (default: the first Proton offers) |
 | `--vault string`        | Which vault to keep it in, by name or ID                       |
@@ -14034,7 +14087,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton pass items`, with the arguments and flags it takes. For these commands in use, see [the pass guide](/pass/).
 
-Holds `attachments`, `create`, `delete`, `get`, `list`, `move`, `passkeys`, `pin`, `revisions`, `share`, `totp`, `trash`, `unpin` and `update`.
+Holds `attachments`, `create`, `delete`, `exclude`, `get`, `include`, `list`, `move`, `passkeys`, `pin`, `revisions`, `share`, `totp`, `trash`, `unpin` and `update`.
 
 ## `attachments`
 
@@ -14233,6 +14286,23 @@ proton pass items delete --vault Work --all --yes
 | `--type string`       | Match only this kind of item: login, note, credit-card, wifi, ssh-key, identity, alias, custom |
 | `--vault string`      | Match only this vault, by name or ID                                                           |
 
+## `exclude`
+
+[Section titled “exclude”](#exclude)
+
+Leave logins out of Pass Monitor’s checks.
+
+An excluded login is left out of every `items list --risk` check, and `items list --excluded` lists them. Only logins can be excluded: an alias’s address is watched or not with `breaches enable` and `breaches disable`.
+
+```plaintext
+proton pass items exclude REF...
+```
+
+```bash
+proton pass items exclude 'Router admin'
+proton pass items exclude 'Router admin' 'Printer admin'
+```
+
 ## `get`
 
 [Section titled “get”](#get)
@@ -14240,6 +14310,8 @@ proton pass items delete --vault Work --all --yes
 Show one item, decrypted.
 
 Passwords, TOTP secrets and private keys are printed in full. This is the only command that prints them; the listings do not.
+
+Last Used is when a Pass app last filled the item in, and shows for logins, cards and identities. Reading an item with this program does not count.
 
 ```plaintext
 proton pass items get REF
@@ -14250,21 +14322,39 @@ proton pass items get github.com
 proton pass items get GitHub --output json
 ```
 
+## `include`
+
+[Section titled “include”](#include)
+
+Bring logins back into Pass Monitor’s checks.
+
+```plaintext
+proton pass items include REF...
+```
+
+```bash
+proton pass items include 'Router admin'
+```
+
 ## `list`
 
 [Section titled “list”](#list)
 
 List items across your vaults.
 
-Takes the same filters as trash and delete, so you can preview a selection here before acting on it.
+Takes the same filters as trash and delete, so you can preview a selection here before acting on it. A hidden vault is left out unless –vault names it.
 
-–risk is Pass Monitor’s password health, and keeps only the logins that fail one check. A RISK column says what was found, numbering the logins that share one password so two pairs do not read as one group of four. Anything excluded from Proton’s security checks is left out of all of them.
+–sort used orders by when a Pass app last filled an item in. Reading one with this program does not count as using it.
+
+–risk is Pass Monitor’s password health, and keeps only the logins that fail one check. A RISK column says what was found, numbering the logins that share one password so two pairs do not read as one group of four. A login excluded with `items exclude` is left out of all of them.
 
 –risk weak is this program’s own reading: a password shorter than twelve characters, or shorter than sixteen and drawn from fewer than three of lowercase, uppercase, digits and symbols. Pass judges strength its own way, so the two can disagree.
 
 –risk missing-2fa names the logins for sites that offer a time-based code and have neither a code nor a passkey stored against them.
 
 –risk compromised asks a public corpus of leaked passwords whether yours are in it, one request per password you have stored. It is the only check that reaches the network, and it sends the first six hexadecimal characters of each password’s SHA-1 - one bucket in sixteen million - to credential-check.protonweb.com, never the password and never the whole hash.
+
+–excluded keeps only the logins excluded from Pass Monitor, which no check looks at. `items include` brings one back.
 
 No check prints a password; `items get` is still the only command that does.
 
@@ -14280,17 +14370,20 @@ proton pass items list --risk reused
 proton pass items list --risk weak --vault Work
 proton pass items list --risk missing-2fa
 proton pass items list --risk compromised
+proton pass items list --excluded
+proton pass items list --sort used --desc
 ```
 
 | Flag                  | Description                                                                                    |
 | --------------------- | ---------------------------------------------------------------------------------------------- |
 | `--desc`              | Reverse the order                                                                              |
+| `--excluded`          | Keep only the logins excluded from Pass Monitor                                                |
 | `--limit int`         | How many items per page; 0 for all of them (default `50`)                                      |
 | `--newer-than string` | Match items newer than DURATION                                                                |
 | `--older-than string` | Match items older than DURATION (e.g. 30d, 2w, 1h)                                             |
 | `--page int`          | Which page of results, counting from zero                                                      |
 | `--risk string`       | Keep only the logins failing this password check: compromised, missing-2fa, reused, weak       |
-| `--sort string`       | Order by: name, type, modified, created (default `name`)                                       |
+| `--sort string`       | Order by: name, type, modified, created, used (default `name`)                                 |
 | `--type string`       | Match only this kind of item: login, note, credit-card, wifi, ssh-key, identity, alias, custom |
 | `--vault string`      | Match only this vault, by name or ID                                                           |
 
@@ -14609,6 +14702,8 @@ A secret is read from a file, never from a flag value: –secret-file NAME=FILE,
 
 –attach puts a local file on the item, and needs a paid Pass plan. –detach takes one off by name or ID; it stays in the item’s history.
 
+–simplelogin-note replaces the note an alias brought from SimpleLogin, and –clear-simplelogin-note removes it. That note is not end-to-end encrypted, and an alias without one is refused: –note is the encrypted one.
+
 ```plaintext
 proton pass items update REF
 ```
@@ -14619,6 +14714,10 @@ proton pass items update GitHub --secret-file password=-
 proton pass items update GitHub --username roman-16 --url github.com
 proton pass items update GitHub --generate-password
 proton pass items update Passport --attach ~/scans/visa.pdf --detach passport.pdf
+proton pass items update shop --display-name 'Jane R'
+proton pass items update shop --clear-display-name
+proton pass items update shop --simplelogin-note 'Bike shop, 2024'
+proton pass items update shop --clear-simplelogin-note
 ```
 
 | Flag                              | Description                                                                                                               |
@@ -14627,6 +14726,8 @@ proton pass items update Passport --attach ~/scans/visa.pdf --detach passport.pd
 | `--attach stringArray`            | Attach a local file (repeatable)                                                                                          |
 | `--birthdate string`              | Replace the birthdate (identity)                                                                                          |
 | `--city string`                   | Replace the city (identity)                                                                                               |
+| `--clear-display-name`            | Remove the display name (alias)                                                                                           |
+| `--clear-simplelogin-note`        | Remove the SimpleLogin note (alias)                                                                                       |
 | `--company string`                | Replace the company (identity)                                                                                            |
 | `--country string`                | Replace the country (identity)                                                                                            |
 | `--county string`                 | Replace the county (identity)                                                                                             |
@@ -14666,6 +14767,7 @@ proton pass items update Passport --attach ~/scans/visa.pdf --detach passport.pd
 | `--secret-file stringArray`       | Read a secret field from a file, as NAME=FILE; - is stdin (repeatable)                                                    |
 | `--security string`               | Wi-Fi security (wifi): WPA, WPA2, WPA3, WEP                                                                               |
 | `--separator string`              | What stands between the words of a passphrase: comma, digit, hyphen, period, space, symbol, underscore (default `hyphen`) |
+| `--simplelogin-note string`       | Replace the note SimpleLogin keeps beside the address (alias)                                                             |
 | `--social-security-number string` | Replace the social security number (identity)                                                                             |
 | `--ssid string`                   | Replace the network name (wifi)                                                                                           |
 | `--state string`                  | Replace the state (identity)                                                                                              |
@@ -15436,6 +15538,8 @@ Holds `empty`, `list` and `restore`.
 
 Delete everything in the trash, permanently.
 
+What a hidden vault holds in its trash is left alone. `vaults unhide` brings it back into reach.
+
 ```plaintext
 proton pass trash empty
 ```
@@ -15449,6 +15553,8 @@ proton pass trash empty
 [Section titled “list”](#list)
 
 List what is in the trash.
+
+What a hidden vault holds in its trash is left out.
 
 ```plaintext
 proton pass trash list
@@ -15494,7 +15600,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton pass vaults`, with the arguments and flags it takes. For these commands in use, see [the pass guide](/pass/).
 
-Holds `create`, `delete`, `get`, `list`, `share`, `transfer` and `update`.
+Holds `create`, `delete`, `get`, `hide`, `list`, `share`, `transfer`, `unhide` and `update`.
 
 ## `create`
 
@@ -15540,6 +15646,25 @@ proton pass vaults get REF
 
 ```bash
 proton pass vaults get Work
+```
+
+## `hide`
+
+[Section titled “hide”](#hide)
+
+Keep vaults out of your listings.
+
+A hidden vault is left out of `items list`, the trash, `aliases list`, `sharing list`, the password checks and `breaches list`, and looking an item up by name does not search it. Naming it still reaches it, as in `items list --vault Archive`, and so does an item’s ID. `vaults list` shows every vault, hidden or not.
+
+Only you stop seeing it: the other members of a shared vault are not affected.
+
+```plaintext
+proton pass vaults hide REF...
+```
+
+```bash
+proton pass vaults hide Archive
+proton pass vaults hide Archive 'Old work'
 ```
 
 ## `list`
@@ -15678,6 +15803,20 @@ proton pass vaults transfer REF EMAIL
 
 ```bash
 proton pass vaults transfer Work jane@proton.me
+```
+
+## `unhide`
+
+[Section titled “unhide”](#unhide)
+
+Bring hidden vaults back into your listings.
+
+```plaintext
+proton pass vaults unhide REF...
+```
+
+```bash
+proton pass vaults unhide Archive
 ```
 
 ## `update`
