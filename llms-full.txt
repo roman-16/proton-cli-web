@@ -766,6 +766,8 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton contacts list`](/contacts/contacts/#list)                                                | List contacts                                                       |
 | [`proton contacts merge`](/contacts/contacts/#merge)                                              | Fold duplicate contacts into one                                    |
 | [`proton contacts update`](/contacts/contacts/#update)                                            | Change a contact’s details                                          |
+| [`proton contacts emails list`](/contacts/emails/#list)                                           | List a contact’s addresses and how mail to each is sent             |
+| [`proton contacts emails update`](/contacts/emails/#update)                                       | Change how mail to an address is sent                               |
 | [`proton contacts groups add`](/contacts/groups/#add)                                             | Add contacts to a group                                             |
 | [`proton contacts groups create`](/contacts/groups/#create)                                       | Create a contact group                                              |
 | [`proton contacts groups delete`](/contacts/groups/#delete)                                       | Delete contact groups                                               |
@@ -5457,9 +5459,9 @@ Adding a version section here is what publishes a release, so this file is the o
 
 # Contacts
 
-> Your Proton address book from the terminal: typed addresses and phones, the full vCard field set, groups, duplicate merging, and import and export. Cards are encrypted and signed with your user key.
+> Your Proton address book from the terminal: typed addresses and phones, the full vCard field set, photos, groups, how mail to each address is sent, duplicate merging, and import and export. Cards are encrypted and signed with your user key.
 
-This page is what people actually do. For every command and flag, see the reference: [contacts](/contacts/contacts/), [groups](/contacts/groups/), [keys](/contacts/keys/).
+This page is what people actually do. For every command and flag, see the reference: [contacts](/contacts/contacts/), [emails](/contacts/emails/), [groups](/contacts/groups/), [keys](/contacts/keys/).
 
 `REF` is a contact ID, a name, or an email address.
 
@@ -5475,7 +5477,11 @@ proton contacts update jane --email jane@newdomain.com
 proton contacts delete jane
 ```
 
-`--email` and `--phone` are repeatable. On `update` they **replace** the existing values rather than adding to them, so pass every value you want the contact to keep.
+A repeatable flag such as `--email` or `--phone` **replaces** the existing values on `update` rather than adding to them, so pass every value you want the contact to keep. To remove a detail altogether, pass its `--clear-` flag:
+
+```bash
+proton contacts update jane --clear-note --clear-job-title
+```
 
 ## Fields
 
@@ -5492,7 +5498,7 @@ proton contacts create --name "Jane Roe" \
   --language de-AT --timezone Europe/Vienna --note "Likes tea"
 ```
 
-`--email`, `--phone`, `--address` and `--website` are repeatable and may say what kind they are. A bare value states no kind, which is not the same as `other`.
+`--nickname`, `--email`, `--phone`, `--address`, `--website`, `--organization`, `--job-title`, `--role`, `--language`, `--timezone` and `--note` are repeatable. `--email`, `--phone`, `--address` and `--website` may say what kind they are. A bare value states no kind, which is not the same as `other`.
 
 | Field                                 | Kinds                                                   |
 | ------------------------------------- | ------------------------------------------------------- |
@@ -5500,6 +5506,48 @@ proton contacts create --name "Jane Roe" \
 | `--phone`                             | `home`, `work`, `other`, `cell`, `main`, `fax`, `pager` |
 
 A word before the colon that is not one of these is part of the value, so `--website https://example.com` keeps its scheme.
+
+## Photo
+
+[Section titled “Photo”](#photo)
+
+```bash
+proton contacts update jane --photo ~/Pictures/jane.jpg
+proton contacts update jane --photo https://example.com/jane.png
+proton contacts update jane --clear-photo
+```
+
+An image file is shrunk until its shorter side is at most 180 pixels and stored as JPEG, without its metadata. JPEG, PNG, GIF and WebP are read, and `--photo -` reads the image from standard input. A web address is stored as it is given.
+
+`contacts get` shows the photo’s format and size, or its web address. With `--output json`, `photo` holds the web address, or the image itself as a `data:` URI.
+
+## How mail to an address is sent
+
+[Section titled “How mail to an address is sent”](#how-mail-to-an-address-is-sent)
+
+Each address has its own settings, which `proton` and Proton’s own apps follow when they send to it:
+
+```bash
+proton contacts emails list jane
+proton contacts emails update jane@acme.com --email-format plain-text
+proton contacts emails update jane@acme.com --sign on --scheme pgp-inline
+proton contacts emails update jane@example.com --encrypt off
+```
+
+| Flag             | Values                                                                      | Default                                               |
+| ---------------- | --------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `--email-format` | `automatic` sends mail as it was written, `plain-text` always as plain text | `automatic`                                           |
+| `--encrypt`      | `on`, `off`                                                                 | `on` when there is a key to encrypt to                |
+| `--sign`         | `on`, `off`, `default`                                                      | `default`, which follows `mail settings` `sign`       |
+| `--scheme`       | `pgp-mime`, `pgp-inline`, `default`                                         | `default`, which follows `mail settings` `pgp-scheme` |
+
+The settings depend on each other, and `emails update` refuses a combination that cannot be sent:
+
+* **A Proton address** takes `--email-format` alone. Mail to it is always encrypted and signed.
+* **Encrypted mail is always signed.** `--encrypt` needs a key: a pinned one, or one the address’s provider publishes.
+* **Signed mail’s format follows the scheme:** plain text under `pgp-inline`, as it was written under `pgp-mime`.
+
+With `--eo-password-file`, a message goes to an address that is not encrypted to as a password-protected link, whatever its settings say.
 
 ## Groups
 
@@ -5542,7 +5590,7 @@ proton contacts export --dest - > contacts.vcf       # one file, all of them
 proton contacts import contacts.vcf
 ```
 
-**A property this tool has no flag for still travels.** The stored card goes out and comes back whole, so an anniversary, a photo or a second postal address survives a round trip even though no flag sets one.
+**A property this tool has no flag for still travels.** The stored card goes out and comes back whole, so a logo, a related person or a custom property survives a round trip even though no flag sets one.
 
 **An import is addressed by UID.** A card carries the UID of the contact it is, so reading a file back changes that contact rather than making a second one. Export, edit, import, and the address book says what the file says.
 
@@ -5559,27 +5607,28 @@ Pinning a public key to a contact means mail to that address is encrypted to the
 ```bash
 proton contacts keys pin jane --key jane-pubkey.asc
 proton contacts keys pin jane@example.com --key -           # armored key on stdin
-proton contacts keys pin jane --key jane.asc --no-encrypt   # pin for verification only
 proton contacts keys unpin jane@example.com
 ```
 
 A key is pinned to one address. Name that address when the contact holds several; naming the contact is enough when they hold one.
 
-`--scheme` is `pgp-mime` by default, or `pgp-inline`.
+Pinning turns encryption to the address on. To keep a key for verifying signatures only, turn it off again with `proton contacts emails update jane@example.com --encrypt off`. Unpinning removes the keys and leaves the address’s other settings as they are.
 
 # proton contacts
 
-> Contacts, their groups and their pinned keys.
+> Contacts, their groups, email settings and keys.
 
 Every command under `proton contacts`, with the arguments and flags it takes. For these commands in use, see [the contacts guide](/contacts/).
 
-Holds `create`, `delete`, `export`, `get`, `groups`, `import`, `keys`, `list`, `merge` and `update`.
+Holds `create`, `delete`, `emails`, `export`, `get`, `groups`, `import`, `keys`, `list`, `merge` and `update`.
 
 ## `create`
 
 [Section titled “create”](#create)
 
 Create a contact.
+
+A photo from a file is shrunk until its shorter side is at most 180 pixels and stored as JPEG; JPEG, PNG, GIF and WebP are read. A web address is stored as it is given.
 
 ```plaintext
 proton contacts create
@@ -5589,27 +5638,29 @@ proton contacts create
 proton contacts create --name 'Jane Roe' --email jane@example.com
 proton contacts create --name 'Jane Roe' --email work:jane@acme.com --phone cell:+43123456 --anniversary 2015-06-20
 proton contacts create --name 'Jane Roe' --email jane@example.com --phone '+43 660 1234567' --organization Acme
+proton contacts create --name 'Jane Roe' --email jane@example.com --photo https://example.com/jane.png
 ```
 
-| Flag                    | Description                                                   |
-| ----------------------- | ------------------------------------------------------------- |
-| `--address stringArray` | Set a postal address, as ADDRESS or KIND:ADDRESS (repeatable) |
-| `--anniversary string`  | Set the anniversary (e.g. 2015-06-20)                         |
-| `--birthday string`     | Set the birthday (e.g. 1990-01-31)                            |
-| `--email stringArray`   | Set an email address, as ADDRESS or KIND:ADDRESS (repeatable) |
-| `--first-name string`   | Set the given name                                            |
-| `--gender string`       | Set the gender                                                |
-| `--job-title string`    | Set the job title                                             |
-| `--language string`     | Set the preferred language (e.g. de-AT)                       |
-| `--last-name string`    | Set the family name                                           |
-| `--name string`         | Set the name shown in listings                                |
-| `--nickname string`     | Set the nickname                                              |
-| `--note string`         | Set the note                                                  |
-| `--organization string` | Set the organization                                          |
-| `--phone stringArray`   | Set a phone number, as NUMBER or KIND:NUMBER (repeatable)     |
-| `--role string`         | Set the role played in the organization                       |
-| `--timezone string`     | Set the time zone (e.g. Europe/Vienna)                        |
-| `--website stringArray` | Set a website, as URL or KIND:URL (repeatable)                |
+| Flag                         | Description                                                   |
+| ---------------------------- | ------------------------------------------------------------- |
+| `--address stringArray`      | Set a postal address, as ADDRESS or KIND:ADDRESS (repeatable) |
+| `--anniversary string`       | Set the anniversary (e.g. 2015-06-20)                         |
+| `--birthday string`          | Set the birthday (e.g. 1990-01-31)                            |
+| `--email stringArray`        | Set an email address, as ADDRESS or KIND:ADDRESS (repeatable) |
+| `--first-name string`        | Set the given name                                            |
+| `--gender string`            | Set the gender                                                |
+| `--job-title stringArray`    | Set a job title (repeatable)                                  |
+| `--language stringArray`     | Set a preferred language, e.g. de-AT (repeatable)             |
+| `--last-name string`         | Set the family name                                           |
+| `--name string`              | Set the name shown in listings                                |
+| `--nickname stringArray`     | Set a nickname (repeatable)                                   |
+| `--note stringArray`         | Set a note (repeatable)                                       |
+| `--organization stringArray` | Set an organization (repeatable)                              |
+| `--phone stringArray`        | Set a phone number, as NUMBER or KIND:NUMBER (repeatable)     |
+| `--photo string`             | Set the photo: an image file, - for stdin, or a web address   |
+| `--role stringArray`         | Set a role played in an organization (repeatable)             |
+| `--timezone stringArray`     | Set a time zone, e.g. Europe/Vienna (repeatable)              |
+| `--website stringArray`      | Set a website, as URL or KIND:URL (repeatable)                |
 
 ## `delete`
 
@@ -5742,7 +5793,9 @@ proton contacts merge
 
 Change a contact’s details.
 
-Only what you pass is replaced. –email and –phone replace the whole list rather than adding to it, so pass every address you want the contact to keep.
+Only what you pass is replaced. A repeatable flag replaces the whole list rather than adding to it, so pass every value you want the contact to keep. –clear-note removes every note, –clear-photo the photo, and so on for each detail.
+
+A photo from a file is shrunk until its shorter side is at most 180 pixels and stored as JPEG; JPEG, PNG, GIF and WebP are read. A web address is stored as it is given.
 
 ```plaintext
 proton contacts update REF
@@ -5751,27 +5804,102 @@ proton contacts update REF
 ```bash
 proton contacts update jane --job-title 'Head of Design'
 proton contacts update jane --email jane.roe@work.example --birthday 1990-04-16
+proton contacts update jane --photo ~/Pictures/jane.jpg
+proton contacts update jane --clear-note --clear-photo
 ```
 
-| Flag                    | Description                                                       |
-| ----------------------- | ----------------------------------------------------------------- |
-| `--address stringArray` | Replace a postal address, as ADDRESS or KIND:ADDRESS (repeatable) |
-| `--anniversary string`  | Replace the anniversary (e.g. 2015-06-20)                         |
-| `--birthday string`     | Replace the birthday (e.g. 1990-01-31)                            |
-| `--email stringArray`   | Replace an email address, as ADDRESS or KIND:ADDRESS (repeatable) |
-| `--first-name string`   | Replace the given name                                            |
-| `--gender string`       | Replace the gender                                                |
-| `--job-title string`    | Replace the job title                                             |
-| `--language string`     | Replace the preferred language (e.g. de-AT)                       |
-| `--last-name string`    | Replace the family name                                           |
-| `--name string`         | Replace the name shown in listings                                |
-| `--nickname string`     | Replace the nickname                                              |
-| `--note string`         | Replace the note                                                  |
-| `--organization string` | Replace the organization                                          |
-| `--phone stringArray`   | Replace a phone number, as NUMBER or KIND:NUMBER (repeatable)     |
-| `--role string`         | Replace the role played in the organization                       |
-| `--timezone string`     | Replace the time zone (e.g. Europe/Vienna)                        |
-| `--website stringArray` | Replace a website, as URL or KIND:URL (repeatable)                |
+| Flag                         | Description                                                       |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `--address stringArray`      | Replace a postal address, as ADDRESS or KIND:ADDRESS (repeatable) |
+| `--anniversary string`       | Replace the anniversary (e.g. 2015-06-20)                         |
+| `--birthday string`          | Replace the birthday (e.g. 1990-01-31)                            |
+| `--clear-address`            | Remove every postal address                                       |
+| `--clear-anniversary`        | Remove the anniversary                                            |
+| `--clear-birthday`           | Remove the birthday                                               |
+| `--clear-email`              | Remove every email address                                        |
+| `--clear-first-name`         | Remove the given name                                             |
+| `--clear-gender`             | Remove the gender                                                 |
+| `--clear-job-title`          | Remove every job title                                            |
+| `--clear-language`           | Remove every preferred language                                   |
+| `--clear-last-name`          | Remove the family name                                            |
+| `--clear-nickname`           | Remove every nickname                                             |
+| `--clear-note`               | Remove every note                                                 |
+| `--clear-organization`       | Remove every organization                                         |
+| `--clear-phone`              | Remove every phone number                                         |
+| `--clear-photo`              | Remove the photo                                                  |
+| `--clear-role`               | Remove every role                                                 |
+| `--clear-timezone`           | Remove every time zone                                            |
+| `--clear-website`            | Remove every website                                              |
+| `--email stringArray`        | Replace an email address, as ADDRESS or KIND:ADDRESS (repeatable) |
+| `--first-name string`        | Replace the given name                                            |
+| `--gender string`            | Replace the gender                                                |
+| `--job-title stringArray`    | Replace a job title (repeatable)                                  |
+| `--language stringArray`     | Replace a preferred language, e.g. de-AT (repeatable)             |
+| `--last-name string`         | Replace the family name                                           |
+| `--name string`              | Replace the name shown in listings                                |
+| `--nickname stringArray`     | Replace a nickname (repeatable)                                   |
+| `--note stringArray`         | Replace a note (repeatable)                                       |
+| `--organization stringArray` | Replace an organization (repeatable)                              |
+| `--phone stringArray`        | Replace a phone number, as NUMBER or KIND:NUMBER (repeatable)     |
+| `--photo string`             | Replace the photo: an image file, - for stdin, or a web address   |
+| `--role stringArray`         | Replace a role played in an organization (repeatable)             |
+| `--timezone stringArray`     | Replace a time zone, e.g. Europe/Vienna (repeatable)              |
+| `--website stringArray`      | Replace a website, as URL or KIND:URL (repeatable)                |
+
+***
+
+Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
+# proton contacts emails
+
+> How mail to a contact's addresses is sent.
+
+Each address has its own format, encryption, signing and scheme. Where an address says default, it follows the account’s `mail settings` sign and pgp-scheme.
+
+Every command under `proton contacts emails`, with the arguments and flags it takes. For these commands in use, see [the contacts guide](/contacts/).
+
+Holds `list` and `update`.
+
+## `list`
+
+[Section titled “list”](#list)
+
+List a contact’s addresses and how mail to each is sent.
+
+ENCRYPT is blank for an address with nothing pinned that states no choice: mail to it is encrypted when its provider publishes a key.
+
+```plaintext
+proton contacts emails list REF
+```
+
+```bash
+proton contacts emails list jane
+```
+
+## `update`
+
+[Section titled “update”](#update)
+
+Change how mail to one of a contact’s addresses is sent.
+
+Name the address as REF when the contact holds more than one. A Proton address takes –email-format alone: mail to it is always encrypted and signed. Encrypted mail is always signed, and the scheme decides the format of signed mail: plain text under pgp-inline, as written under pgp-mime. –encrypt needs a pinned key, or one the address’s provider publishes.
+
+```plaintext
+proton contacts emails update REF
+```
+
+```bash
+proton contacts emails update jane@example.com --email-format plain-text
+proton contacts emails update jane@example.com --sign on --scheme pgp-inline
+proton contacts emails update jane@example.com --encrypt off
+```
+
+| Flag                    | Description                                                                            |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| `--email-format string` | What mail to the address is sent as: automatic, plain-text                             |
+| `--encrypt string`      | Whether mail to the address is encrypted: off, on                                      |
+| `--scheme string`       | How signed or encrypted mail to the address is packaged: pgp-mime, pgp-inline, default |
+| `--sign string`         | Whether mail to the address is signed: on, off, default                                |
 
 ***
 
@@ -5914,7 +6042,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 > Public keys pinned to a contact.
 
-Pinning a key means mail to that address is encrypted to the key you trust, rather than to whatever the server hands back.
+Pinning a key means mail to that address is encrypted to the key you trust, rather than to whatever the server hands back. Whether it is encrypted at all is one of the address’s settings: see `contacts emails`.
 
 Every command under `proton contacts keys`, with the arguments and flags it takes. For these commands in use, see [the contacts guide](/contacts/).
 
@@ -5942,20 +6070,20 @@ Pin a public key so mail to a contact is encrypted to it.
 
 A key is pinned to one address. Name that address as REF when the contact holds more than one; naming the contact is enough when they hold one.
 
+Pinning turns encryption to the address on. To keep a key for verifying signatures only, pin it and then run `contacts emails update REF --encrypt off`.
+
 ```plaintext
 proton contacts keys pin REF
 ```
 
 ```bash
 proton contacts keys pin jane --key jane-pubkey.asc
-proton contacts keys pin jane@example.com --key - --no-encrypt
+proton contacts keys pin jane@example.com --key -
 ```
 
-| Flag              | Description                                                    |
-| ----------------- | -------------------------------------------------------------- |
-| `--key string`    | Armoured public key file (- for stdin)                         |
-| `--no-encrypt`    | Store the key for verification only, leaving encryption off    |
-| `--scheme string` | PGP scheme for recipients outside Proton: pgp-mime, pgp-inline |
+| Flag           | Description                            |
+| -------------- | -------------------------------------- |
+| `--key string` | Armoured public key file (- for stdin) |
 
 ## `unpin`
 
@@ -8967,6 +9095,8 @@ echo "Deployed." | proton mail messages send --to me@proton.me --subject Deploy 
 
 * `--no-signature` leaves both out of one message.
 * `proton mail settings set pm-signature off` turns the footer off account-wide.
+
+Whether a recipient’s copy is encrypted, PGP-signed or sent as plain text follows their contact’s settings, and your account’s `sign` and `pgp-scheme` settings where the contact states none. They are set in [How mail to an address is sent](/contacts/#how-mail-to-an-address-is-sent).
 
 On an account with several addresses, `--from` chooses which one it leaves from, plus-aliases included:
 
