@@ -781,9 +781,11 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive computers delete`](/drive/computers/#delete)                                       | Remove computers from Drive                                         |
 | [`proton drive computers list`](/drive/computers/#list)                                           | List the computers syncing to Drive                                 |
 | [`proton drive computers update`](/drive/computers/#update)                                       | Rename a computer                                                   |
+| [`proton drive invitations abuse`](/drive/invitations/#abuse)                                     | Report what an invitation offers to Proton                          |
 | [`proton drive invitations accept`](/drive/invitations/#accept)                                   | Accept invitations                                                  |
 | [`proton drive invitations decline`](/drive/invitations/#decline)                                 | Decline invitations                                                 |
 | [`proton drive invitations list`](/drive/invitations/#list)                                       | List invitations waiting for an answer                              |
+| [`proton drive items abuse`](/drive/items/#abuse)                                                 | Report something shared with you to Proton                          |
 | [`proton drive items copy`](/drive/items/#copy)                                                   | Copy files into another folder                                      |
 | [`proton drive items create`](/drive/items/#create)                                               | Create a folder, and any missing folder above it                    |
 | [`proton drive items delete`](/drive/items/#delete)                                               | Delete files or folders permanently                                 |
@@ -791,6 +793,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton drive items get`](/drive/items/#get)                                                     | Show a file or folder’s details                                     |
 | [`proton drive items list`](/drive/items/#list)                                                   | List what is in a folder                                            |
 | [`proton drive items move`](/drive/items/#move)                                                   | Move files or folders into another folder                           |
+| [`proton drive items revisions abuse`](/drive/items/#revisions-abuse)                             | Report an earlier version of a shared file to Proton                |
 | [`proton drive items revisions delete`](/drive/items/#revisions-delete)                           | Delete an earlier version permanently                               |
 | [`proton drive items revisions download`](/drive/items/#revisions-download)                       | Download an earlier version of a file                               |
 | [`proton drive items revisions list`](/drive/items/#revisions-list)                               | List a file’s earlier versions                                      |
@@ -1120,6 +1123,7 @@ Signing in runs [Secure Remote Password](https://en.wikipedia.org/wiki/Secure_Re
 * API requests to `https://mail.proton.me/api` over HTTPS, authenticated with your session tokens.
 * Encrypted payloads you asked to create: an encrypted message, an encrypted file block, an encrypted event, a key you generate or import for an address, locked so only your account opens it, the locked key a forwarding you accepted adds to your address, and the locked key a forwarding you set up derives for the other address, whose passphrase only that address can open.
 * The decrypted body of a message you report with `mail messages mark phishing`, so Proton’s anti-abuse team can read what was sent to you. Nothing withdraws a report.
+* The key to something you report with `drive items abuse` or `drive invitations abuse`, so Proton’s abuse team can open it. That key opens everything in what was shared with you, not only the item you named. Nothing withdraws a report.
 * The SRP proof during login, which does not reveal your password.
 * The verifier for a Pass extra password you set, which Proton checks a password against and cannot read one out of.
 * When you change a password or set a recovery phrase: the same kind of verifier for the new secret, and your keys locked again with it. The secret itself does not leave, and the keys are the ones you already had.
@@ -6419,6 +6423,27 @@ proton drive shared remove Q3-report.pdf
 
 A saved link shows `public link` under SHARED BY. `shared remove` forgets it; the link itself keeps working, and `shared add` brings it back.
 
+## Report something shared with you
+
+[Section titled “Report something shared with you”](#report-something-shared-with-you)
+
+Report a file, folder or photo somebody shared with you, or one behind a link, to Proton:
+
+```bash
+proton drive items abuse /invoice.exe --shared Project --category malware --good-faith
+proton drive items abuse / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --category spam --good-faith
+proton drive items revisions abuse /report.pdf 5bH2mQxK --shared Project --category malware --good-faith
+proton drive invitations abuse 5bH2mQxK --category spam --good-faith
+```
+
+`--category` is `spam`, `copyright`, `child-abuse`, `non-consensual-intimate`, `stolen-data`, `malware` or `other`. A `copyright` or `stolen-data` report also needs `--message` and `--email`.
+
+`--good-faith` is your confirmation, in good faith, that what the report says is correct and complete. A report is refused without it.
+
+Proton receives the key to the whole of what was shared, not only the item you name. Nothing withdraws a report, and the item stays where it is: `proton drive shared leave` and `proton drive invitations decline` give it up.
+
+Your own files cannot be reported.
+
 ## Computers
 
 [Section titled “Computers”](#computers)
@@ -6451,6 +6476,8 @@ proton drive photos favorite 3Ns8pT2v
 Tags are `favorites`, `screenshots`, `videos`, `live-photos`, `motion-photos`, `selfies`, `portraits`, `bursts`, `panoramas` and `raw`.
 
 Photos have no path; address them by ID.
+
+`photos upload` leaves a photo the library already holds alone, with the same name and the same content, and says which photo it is. A different photo with the same name is uploaded beside it.
 
 ```bash
 proton drive photos albums create --name Holiday
@@ -6583,7 +6610,31 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton drive invitations`, with the arguments and flags it takes. For these commands in use, see [the drive guide](/drive/).
 
-Holds `accept`, `decline` and `list`.
+Holds `abuse`, `accept`, `decline` and `list`.
+
+## `abuse`
+
+[Section titled “abuse”](#abuse)
+
+Report what an invitation offers to Proton, without accepting it.
+
+Proton receives the key to the whole of what is offered. Copyright and stolen-data reports need –message and –email. Nothing withdraws a report, and the invitation stays until you accept or decline it.
+
+```plaintext
+proton drive invitations abuse REF
+```
+
+```bash
+proton drive invitations abuse 5bH2mQxK --category spam --good-faith
+proton drive invitations abuse 5bH2mQxK --category stolen-data --message 'These are our customer records' --email jane@proton.me --good-faith
+```
+
+| Flag                | Description                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `--category string` | What the report is about: spam, copyright, child-abuse, non-consensual-intimate, stolen-data, malware, other |
+| `--email string`    | Where Proton can reach you about the report; required for copyright and stolen-data                          |
+| `--good-faith`      | Confirm, in good faith, that what the report says is correct and complete                                    |
+| `--message string`  | What Proton should know; required for copyright and stolen-data                                              |
 
 ## `accept`
 
@@ -6646,7 +6697,34 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton drive items`, with the arguments and flags it takes. For these commands in use, see [the drive guide](/drive/).
 
-Holds `copy`, `create`, `delete`, `download`, `get`, `list`, `move`, `revisions`, `share`, `trash`, `update` and `upload`.
+Holds `abuse`, `copy`, `create`, `delete`, `download`, `get`, `list`, `move`, `revisions`, `share`, `trash`, `update` and `upload`.
+
+## `abuse`
+
+[Section titled “abuse”](#abuse)
+
+Report something shared with you to Proton.
+
+PATH is inside –shared REF, something somebody shared with you, or inside –link URL, a public link. Proton receives the key to the whole of what was shared, not only PATH. Copyright and stolen-data reports need –message and –email. Nothing withdraws a report, and the item stays where it is.
+
+```plaintext
+proton drive items abuse PATH
+```
+
+```bash
+proton drive items abuse /invoice.exe --shared Project --category malware --good-faith
+proton drive items abuse / --link 'https://drive.proton.me/urls/7X2K9M3N1P#kQ81mDx4T9wL' --category copyright --message 'My photos, published without permission' --email jane@proton.me --good-faith
+```
+
+| Flag                          | Description                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `--category string`           | What the report is about: spam, copyright, child-abuse, non-consensual-intimate, stolen-data, malware, other |
+| `--email string`              | Where Proton can reach you about the report; required for copyright and stolen-data                          |
+| `--good-faith`                | Confirm, in good faith, that what the report says is correct and complete                                    |
+| `--link string`               | Work inside a public link somebody sent you, by URL                                                          |
+| `--link-password-file string` | Read the public link’s password from a file, or - for stdin                                                  |
+| `--message string`            | What Proton should know; required for copyright and stolen-data                                              |
+| `--shared string`             | Work inside an item shared with you, by name or ID                                                           |
 
 ## `copy`
 
@@ -6878,7 +6956,31 @@ Earlier versions of a file.
 
 Uploading over a file with `--if-exists replace` keeps what was there as a revision. You can read any revision back, restore it, or delete it.
 
-Holds `delete`, `download`, `list` and `restore`.
+Holds `abuse`, `delete`, `download`, `list` and `restore`.
+
+### `revisions abuse`
+
+[Section titled “revisions abuse”](#revisions-abuse)
+
+Report an earlier version of a shared file to Proton.
+
+PATH is inside –shared REF, something somebody shared with you. Proton receives the key to the whole of what was shared, not only this version. Copyright and stolen-data reports need –message and –email. Nothing withdraws a report.
+
+```plaintext
+proton drive items revisions abuse PATH REVISION_REF
+```
+
+```bash
+proton drive items revisions abuse /report.pdf 5bH2mQxK --shared Project --category malware --good-faith
+```
+
+| Flag                | Description                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `--category string` | What the report is about: spam, copyright, child-abuse, non-consensual-intimate, stolen-data, malware, other |
+| `--email string`    | Where Proton can reach you about the report; required for copyright and stolen-data                          |
+| `--good-faith`      | Confirm, in good faith, that what the report says is correct and complete                                    |
+| `--message string`  | What Proton should know; required for copyright and stolen-data                                              |
+| `--shared string`   | Work inside an item shared with you, by name or ID                                                           |
 
 ### `revisions delete`
 
@@ -7817,6 +7919,8 @@ proton drive photos unfavorite 5bH2mQxK
 [Section titled “upload”](#upload)
 
 Upload a photo to the library.
+
+A photo the library already holds, with the same name and the same content, is not uploaded again. A different photo with the same name is uploaded beside it.
 
 ```plaintext
 proton drive photos upload SRC
