@@ -245,7 +245,7 @@ ID        FROM              SUBJECT                DATE              FLAGS
 3 of 47 messages. Next page: --page 1
 ```
 
-`ID` is always the first column. `FLAGS` reads `●` for unread, `★` for starred, `✗` for a message Proton flagged as phishing or suspicious, and a number for attachments.
+`ID` is always the first column. `FLAGS` reads `●` for unread, `★` for starred, `✗` for a message Proton flagged as phishing or suspicious, `⧗` for mail that deletes itself, and a number for attachments.
 
 An empty collection prints nothing on stdout, so a redirect yields an empty file rather than a stray header. On stderr it says `No messages.`, or `No messages match.` when a filter was applied.
 
@@ -877,6 +877,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail conversations unlabel`](/mail/conversations/#unlabel)                               | Detach a label from threads                                         |
 | [`proton mail conversations unsnooze`](/mail/conversations/#unsnooze)                             | Bring snoozed threads back to the inbox now                         |
 | [`proton mail conversations unstar`](/mail/conversations/#unstar)                                 | Remove the star from threads                                        |
+| [`proton mail conversations update`](/mail/conversations/#update)                                 | Change when threads delete themselves                               |
 | [`proton mail drafts create`](/mail/drafts/#create)                                               | Save a draft without sending it                                     |
 | [`proton mail drafts delete`](/mail/drafts/#delete)                                               | Delete drafts                                                       |
 | [`proton mail drafts list`](/mail/drafts/#list)                                                   | List drafts                                                         |
@@ -1389,7 +1390,7 @@ These commands ask for your password again even when you are signed in:
 * `account settings security-keys create` · `account settings security-keys delete`
 * `account settings two-factor enable` · `account settings two-factor disable`
 * `calendar settings calendars delete`
-* `mail messages update`
+* `mail conversations update` · `mail messages update`
 * `mail settings addresses create`
 * `mail settings addresses delete`
 * `mail settings addresses disable`
@@ -9336,6 +9337,8 @@ proton mail messages update REF --expires never
 proton mail messages unsubscribe REF           # leave the list a message came from
 ```
 
+`update --expires` leaves a message whose sender set its expiry as it is, and sets none in trash or spam. `list` marks mail that deletes itself with `⧗`.
+
 `unsubscribe` uses whichever way the list offers, and the answer says which it used. To work from the senders instead of their mail, see [Mailing lists](#mailing-lists).
 
 ## Mailing lists
@@ -9375,11 +9378,14 @@ Conversations are whole threads, with the same verbs as messages.
 proton mail conversations get REF              # every message, chronological
 proton mail conversations get --summary REF    # one line per message
 proton mail conversations snooze REF --until 3d
+proton mail conversations update REF --expires 7d   # the whole thread deletes itself later
 ```
 
 Snooze works on **threads**, not messages: a conversation leaves the inbox as a whole and returns as a whole.
 
 `--until` takes a duration from now or a moment. A moment in the past is refused.
+
+`conversations update --expires` changes every message of each thread. With `--folder`, it changes only the messages in that folder.
 
 ## Attachments
 
@@ -9873,7 +9879,7 @@ Signatures are stored as HTML. Plain text is escaped and its newlines become lin
 
 Every command under `proton mail conversations`, with the arguments and flags it takes. For these commands in use, see [the mail guide](/mail/).
 
-Holds `attachments`, `count`, `delete`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `reply`, `snooze`, `star`, `trash`, `unlabel`, `unsnooze` and `unstar`.
+Holds `attachments`, `count`, `delete`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `reply`, `snooze`, `star`, `trash`, `unlabel`, `unsnooze`, `unstar` and `update`.
 
 ## `attachments`
 
@@ -10484,6 +10490,46 @@ proton mail conversations unstar 'Quarterly numbers'
 | `--to string`         | Match a recipient’s address                                                             |
 | `--unread`            | Match unread messages                                                                   |
 | `--via string`        | Match mail that arrived at, or left from, this address of yours                         |
+
+## `update`
+
+[Section titled “update”](#update)
+
+Change when threads delete themselves.
+
+–expires takes a duration, or never to stop them expiring. It applies to every message in each thread, or with –folder to the ones in that folder. A message whose sender set its expiry keeps it, and none is set in trash or spam.
+
+```plaintext
+proton mail conversations update [REF...]
+```
+
+```bash
+proton mail conversations update 'Quarterly numbers' --expires 7d
+proton mail conversations update --folder archive --older-than 1y --expires 30d
+proton mail conversations update 5bH2mQxK --expires never
+```
+
+| Flag                     | Description                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------- |
+| `--after string`         | First day to include (YYYY-MM-DD)                                                       |
+| `--all`                  | Act on everything in scope, rather than a subset                                        |
+| `--before string`        | Last day to include (YYYY-MM-DD)                                                        |
+| `--expires string`       | Delete them after DURATION (e.g. 7d, 24h), or never                                     |
+| `--folder string`        | Folder or label to look in (default: all)                                               |
+| `--from string`          | Match the sender’s address                                                              |
+| `--has-attachments`      | Match messages with attachments                                                         |
+| `--keyword string`       | Match text in the subject, a name or an address, and in bodies once a mail index exists |
+| `--limit int`            | Most messages to affect; 0 for no cap (default `150`)                                   |
+| `--newer-than string`    | Match messages newer than DURATION                                                      |
+| `--older-than string`    | Match messages older than DURATION (e.g. 30d, 2w, 1h)                                   |
+| `--password-file string` | Read the account password from a file, or - for stdin                                   |
+| `--read`                 | Match read messages                                                                     |
+| `--starred`              | Match starred messages                                                                  |
+| `--subject string`       | Match text in the subject                                                               |
+| `--to string`            | Match a recipient’s address                                                             |
+| `--totp string`          | Two-factor code                                                                         |
+| `--unread`               | Match unread messages                                                                   |
+| `--via string`           | Match mail that arrived at, or left from, this address of yours                         |
 
 ***
 
@@ -11494,7 +11540,7 @@ proton mail messages unsubscribe 5bH2mQxK
 
 Change when messages delete themselves.
 
-–expires takes a duration, or never to stop them expiring. A message already counting down reports the moment it expires rather than how long is left.
+–expires takes a duration, or never to stop them expiring. A message already counting down reports the moment it expires rather than how long is left. A message whose sender set its expiry keeps it, and none is set in trash or spam.
 
 ```plaintext
 proton mail messages update [REF...]
@@ -16444,7 +16490,7 @@ Try:   pass a REF, or a filter such as --unread, --starred, --from, --subject or
 
 `--limit` defaults to 150 on a bulk verb: a guard against a mistyped filter, not a technical bound. A selection that fills it says so, `--limit N` reads as far as it takes to find N, and `--limit 0` lifts the cap altogether.
 
-Bulk verbs act on the IDs the selection resolved to, in batches of fifty, and report Proton’s answer per item. Whatever was refused is named, and the count reports what actually landed.
+Bulk verbs report Proton’s answer per item. Whatever was refused is named, and the count and the IDs in `--output json` report what actually landed.
 
 A filter that matches a folder and the files inside it selects the folder alone.
 
