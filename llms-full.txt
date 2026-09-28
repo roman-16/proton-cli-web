@@ -661,9 +661,16 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 
 | Command                                                                                           | What it does                                                        |
 | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [`proton account delete`](/account/account/#delete)                                               | Delete the account and everything in it                             |
 | [`proton account get`](/account/account/#get)                                                     | Show the account, its storage and this machine’s session            |
 | [`proton account login`](/account/account/#login)                                                 | Sign in and save the session for this profile                       |
 | [`proton account logout`](/account/account/#logout)                                               | Discard the saved session for this profile                          |
+| [`proton account breaches disable`](/account/breaches/#disable)                                   | Turn Dark Web Monitoring off                                        |
+| [`proton account breaches enable`](/account/breaches/#enable)                                     | Turn Dark Web Monitoring on                                         |
+| [`proton account breaches get`](/account/breaches/#get)                                           | Show one breach, and what it exposed                                |
+| [`proton account breaches list`](/account/breaches/#list)                                         | List the breaches Proton found your addresses in                    |
+| [`proton account breaches reopen`](/account/breaches/#reopen)                                     | Mark resolved breaches as open again                                |
+| [`proton account breaches resolve`](/account/breaches/#resolve)                                   | Mark breaches as resolved                                           |
 | [`proton account keys create`](/account/keys/#create)                                             | Generate a key for an address                                       |
 | [`proton account keys delete`](/account/keys/#delete)                                             | Delete keys of an address                                           |
 | [`proton account keys export`](/account/keys/#export)                                             | Write keys out to files                                             |
@@ -693,6 +700,9 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton account settings emergency-access update`](/account/settings/#emergency-access-update)   | Change how long an emergency contact waits                          |
 | [`proton account settings get`](/account/settings/#get)                                           | Show the account settings now in effect                             |
 | [`proton account settings list`](/account/settings/#list)                                         | List the account settings that can be changed                       |
+| [`proton account settings notifications disable`](/account/settings/#notifications-disable)       | Stop emails or notices Proton sends you                             |
+| [`proton account settings notifications enable`](/account/settings/#notifications-enable)         | Have Proton send you emails or notices                              |
+| [`proton account settings notifications list`](/account/settings/#notifications-list)             | List what Proton sends you, and what is on                          |
 | [`proton account settings password set`](/account/settings/#password-set)                         | Change your password                                                |
 | [`proton account settings recovery-contacts add`](/account/settings/#recovery-contacts-add)       | Let somebody help you recover your account                          |
 | [`proton account settings recovery-contacts get`](/account/settings/#recovery-contacts-get)       | Show one recovery contact                                           |
@@ -719,6 +729,9 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton account settings security-keys delete`](/account/settings/#security-keys-delete)         | Remove a security key from the account                              |
 | [`proton account settings security-keys list`](/account/settings/#security-keys-list)             | List the security keys registered with the account                  |
 | [`proton account settings security-keys update`](/account/settings/#security-keys-update)         | Rename a security key                                               |
+| [`proton account settings sentinel disable`](/account/settings/#sentinel-disable)                 | Turn Proton Sentinel off                                            |
+| [`proton account settings sentinel enable`](/account/settings/#sentinel-enable)                   | Turn Proton Sentinel on                                             |
+| [`proton account settings sentinel get`](/account/settings/#sentinel-get)                         | Show whether Proton Sentinel is on                                  |
 | [`proton account settings set`](/account/settings/#set)                                           | Change one account setting                                          |
 | [`proton account settings two-factor disable`](/account/settings/#two-factor-disable)             | Stop asking for an authenticator app code                           |
 | [`proton account settings two-factor enable`](/account/settings/#two-factor-enable)               | Ask for an authenticator app code at every sign-in                  |
@@ -1003,6 +1016,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton pass breaches get`](/pass/breaches/#get)                                                 | Show the breaches one address has appeared in                       |
 | [`proton pass breaches list`](/pass/breaches/#list)                                               | List the addresses Proton watches, and how many breaches each is in |
 | [`proton pass breaches resend`](/pass/breaches/#resend)                                           | Send the confirmation code again                                    |
+| [`proton pass breaches resolve`](/pass/breaches/#resolve)                                         | Mark an address’s current breaches as resolved                      |
 | [`proton pass breaches verify`](/pass/breaches/#verify)                                           | Confirm an address with the code Proton emailed it                  |
 | [`proton pass invitations accept`](/pass/invitations/#accept)                                     | Take what somebody offered you                                      |
 | [`proton pass invitations decline`](/pass/invitations/#decline)                                   | Turn down what somebody offered you                                 |
@@ -1182,9 +1196,9 @@ Found a vulnerability? [`SECURITY.md`](https://github.com/roman-16/proton-cli/bl
 
 > Sign in once and your password is never asked for again on that machine.
 
-This page covers signing in and out, unattended and two-password sign-in, running several Proton accounts side by side, the sessions Proton holds across your devices, your encryption keys, unlocking data after a password reset, and your account settings.
+This page covers signing in and out, unattended and two-password sign-in, running several Proton accounts side by side, the sessions Proton holds across your devices, your encryption keys, unlocking data after a password reset, data breaches, your account settings, and deleting the account.
 
-For every command and flag, see the reference: [account](/account/account/), [keys](/account/keys/), [security-log](/account/security-log/), [sessions](/account/sessions/), [profiles](/account/profiles/), [settings](/account/settings/).
+For every command and flag, see the reference: [account](/account/account/), [breaches](/account/breaches/), [keys](/account/keys/), [security-log](/account/security-log/), [sessions](/account/sessions/), [profiles](/account/profiles/), [settings](/account/settings/).
 
 ## Check who you are signed in as
 
@@ -1193,6 +1207,7 @@ For every command and flag, see the reference: [account](/account/account/), [ke
 ```console
 $ proton account get
 Email:       you@proton.me
+Username:    you
 Name:        Roman
 Storage:     ━━━━━───────────────   26%  119.6 GB of 465.7 GB
 Max Upload:  4.7 GB
@@ -1377,6 +1392,7 @@ proton account login --user alice@proton.me \
 
 These commands ask for your password again even when you are signed in:
 
+* `account delete`
 * `account keys create` · `account keys delete` · `account keys export --private` · `account keys import` · `account keys update`
 * `account keys reactivate`
 * `account security-log delete` · `account security-log disable` · `account security-log enable`
@@ -1742,6 +1758,34 @@ Try:   proton account security-log delete, then run this again
 
 `proton account security-log delete` removes every event and goes on recording. `disable --detailed` stops the IP addresses being recorded and leaves the events alone.
 
+## Check your addresses for data breaches
+
+[Section titled “Check your addresses for data breaches”](#check-your-addresses-for-data-breaches)
+
+Dark Web Monitoring lists the breaches your addresses were found in. This is the “Dark Web Monitoring” section of Proton’s account settings.
+
+```bash
+proton account breaches list
+proton account breaches get Canva
+```
+
+`get` names what leaked, the last few characters of a password that leaked in the clear, and what to do about it. A breach is `new` until you read it in a Proton app, and `open` until you resolve it:
+
+```bash
+proton account breaches resolve Canva
+proton account breaches reopen Canva
+```
+
+The detail of each breach needs a plan that includes Dark Web Monitoring. Without one, `list` names a few and says how many it withholds.
+
+```bash
+proton account breaches disable            # stop looking for new breaches
+proton account breaches enable --emails    # look again, and email you what turns up
+proton account breaches disable --emails   # keep looking, without the emails
+```
+
+Your aliases and the addresses you added elsewhere are watched by Pass Monitor, under [`proton pass breaches`](/pass/#breaches).
+
 ## Where the session lives
 
 [Section titled “Where the session lives”](#where-the-session-lives)
@@ -1768,7 +1812,7 @@ proton account settings set locale de_AT
 
 Values can be given by name or by number, and mistakes are caught before anything is sent.
 
-`get` shows more than `set` can change. Proton Sentinel and Dark Web Monitoring are readable here and turned on at [account.proton.me](https://account.proton.me), along with billing and account deletion. Your password, your second factor and the ways back into the account have collections of their own, below.
+`get` shows more than `set` can change. Proton Sentinel and Dark Web Monitoring are turned on and off by their own commands, below, and billing is managed at [account.proton.me](https://account.proton.me). Your password, your second factor and the ways back into the account have collections of their own, below.
 
 Mail, Calendar and Drive each have settings of their own, under `proton mail settings` and so on. Pass and Contacts have none.
 
@@ -1931,13 +1975,87 @@ Changed:  2026-04-16 09:12
 
 The status is one of `on`, `outdated`, `not set` and `off`. An outdated phrase was set before your keys were replaced: it still opens the data it was made for, and it will not get you back into the account. Setting a new phrase replaces the old one, and `disable` removes it.
 
+## Turn on Proton Sentinel
+
+[Section titled “Turn on Proton Sentinel”](#turn-on-proton-sentinel)
+
+```bash
+proton account settings sentinel get
+proton account settings sentinel enable
+proton account settings sentinel enable --emails   # also the emails it sends
+```
+
+Sentinel needs a plan that includes it. While it is on, Proton chooses which recovery methods the account may use. An organization that turns it on for its members decides it for them, and `get` says so.
+
+## Choose which emails Proton sends you
+
+[Section titled “Choose which emails Proton sends you”](#choose-which-emails-proton-sends-you)
+
+```bash
+proton account settings notifications list
+proton account settings notifications disable offers newsletter
+proton account settings notifications enable newsletter
+```
+
+The list covers announcements, offers, product updates for each Proton app, the recovery checklist and in-app notifications. Critical account notifications are sent whatever is off. The daily email about new mail is a Mail setting: [`proton mail settings set daily-notifications`](/mail/#get-a-daily-email-about-new-mail).
+
+## Delete your account
+
+[Section titled “Delete your account”](#delete-your-account)
+
+```bash
+proton account delete --reason other-service --message "Moving everything to one provider"
+```
+
+This deletes every address, message, contact, event, file and password, and the account cannot be reactivated. You confirm, then give your password again. A member of a family or duo plan leaves the plan first.
+
+`--reason` is one of `different-account`, `too-expensive`, `missing-feature`, `other-service`, `merge` and `other`. `--message` says why in at least ten characters:
+
+```console
+$ proton account delete --reason missing-feature
+Error: --message is required: say in at least ten characters why you are leaving.
+```
+
+With `--reason merge` there is no message. Add the account’s address to the other account straight away, or the address is lost for good.
+
+Afterwards this machine keeps nothing of the account: the profile’s session, index and short-ID cache are removed. Try it first with `--dry-run`.
+
 # proton account
 
 > Your Proton account, its settings and your session.
 
 Every command under `proton account`, with the arguments and flags it takes. For these commands in use, see [the account guide](/account/).
 
-Holds `get`, `keys`, `login`, `logout`, `profiles`, `security-log`, `sessions` and `settings`.
+Holds `breaches`, `delete`, `get`, `keys`, `login`, `logout`, `profiles`, `security-log`, `sessions` and `settings`.
+
+## `delete`
+
+[Section titled “delete”](#delete)
+
+Delete the account and everything in it: every address, message, contact, event, file and password. It cannot be reactivated.
+
+Proton may refuse before anything is asked. Otherwise you confirm, then give your password. A member of a family or duo plan leaves the plan first.
+
+–message says in at least ten characters why you are leaving, and is left out with –reason merge. It reaches the people who improve Proton, not support.
+
+Afterwards this machine keeps nothing of the account: the profile’s session, index and short-ID cache are removed.
+
+```plaintext
+proton account delete
+```
+
+```bash
+proton account delete --reason other-service --message 'Moving everything to one provider'
+proton account delete --reason merge
+proton account delete --reason other --message 'Checking the preview' --dry-run
+```
+
+| Flag                     | Description                                                                                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `--message string`       | Why you are leaving, in at least ten characters                                                                 |
+| `--password-file string` | Read the account password from a file, or - for stdin                                                           |
+| `--reason string`        | The main reason you are leaving: different-account, too-expensive, missing-feature, other-service, merge, other |
+| `--totp string`          | Two-factor code                                                                                                 |
 
 ## `get`
 
@@ -2021,6 +2139,131 @@ proton account logout --all
 | ---------- | ------------------------------------------------ |
 | `--all`    | Act on everything in scope, rather than a subset |
 | `--revoke` | Also invalidate the session at Proton            |
+
+***
+
+Every command also takes the [flags that work everywhere](/about/commands/#flags-that-work-on-every-command).
+
+# proton account breaches
+
+> Breaches Dark Web Monitoring found your addresses in.
+
+A breach is new until you read it in a Proton app, open until you resolve it, and resolved until you reopen it. The detail of each breach needs a plan that includes Dark Web Monitoring.
+
+The addresses Pass Monitor watches, aliases and addresses you added included, are under `proton pass breaches`.
+
+Every command under `proton account breaches`, with the arguments and flags it takes. For these commands in use, see [the account guide](/account/).
+
+Holds `disable`, `enable`, `get`, `list`, `reopen` and `resolve`.
+
+## `disable`
+
+[Section titled “disable”](#disable)
+
+Turn Dark Web Monitoring off.
+
+–emails stops only the emails it sends, and leaves it on.
+
+```plaintext
+proton account breaches disable
+```
+
+```bash
+proton account breaches disable
+proton account breaches disable --emails
+```
+
+| Flag       | Description              |
+| ---------- | ------------------------ |
+| `--emails` | Only the emails it sends |
+
+## `enable`
+
+[Section titled “enable”](#enable)
+
+Turn Dark Web Monitoring on.
+
+–emails turns on the emails it sends about what it finds as well, and turns it on first if it was off.
+
+```plaintext
+proton account breaches enable
+```
+
+```bash
+proton account breaches enable
+proton account breaches enable --emails
+```
+
+| Flag       | Description              |
+| ---------- | ------------------------ |
+| `--emails` | Also the emails it sends |
+
+## `get`
+
+[Section titled “get”](#get)
+
+Show one breach, and what it exposed.
+
+Names what leaked, the last few characters of the password if one leaked in the clear, and what Proton recommends doing about it.
+
+```plaintext
+proton account breaches get REF
+```
+
+```bash
+proton account breaches get Canva
+```
+
+## `list`
+
+[Section titled “list”](#list)
+
+List the breaches Proton found your addresses in, open ones first.
+
+Without a plan that includes Dark Web Monitoring, Proton names a few of them and withholds the rest, and the answer says how many.
+
+```plaintext
+proton account breaches list
+```
+
+```bash
+proton account breaches list
+proton account breaches list --output json
+```
+
+| Flag          | Description                                   |
+| ------------- | --------------------------------------------- |
+| `--limit int` | How many breaches per page; 0 for all of them |
+| `--page int`  | Which page of results, counting from zero     |
+
+## `reopen`
+
+[Section titled “reopen”](#reopen)
+
+Mark resolved breaches as open again.
+
+```plaintext
+proton account breaches reopen REF...
+```
+
+```bash
+proton account breaches reopen Canva
+```
+
+## `resolve`
+
+[Section titled “resolve”](#resolve)
+
+Mark breaches as resolved.
+
+```plaintext
+proton account breaches resolve REF...
+```
+
+```bash
+proton account breaches resolve Canva
+proton account breaches resolve 7Hq2Lm9x Pz81Kd0a
+```
 
 ***
 
@@ -2500,7 +2743,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton account settings`, with the arguments and flags it takes. For these commands in use, see [the account guide](/account/).
 
-Holds `emergency-access`, `get`, `list`, `password`, `recovery-contacts`, `recovery-email`, `recovery-phone`, `recovery-phrase`, `second-password`, `security-keys`, `set` and `two-factor`.
+Holds `emergency-access`, `get`, `list`, `notifications`, `password`, `recovery-contacts`, `recovery-email`, `recovery-phone`, `recovery-phrase`, `second-password`, `security-keys`, `sentinel`, `set` and `two-factor`.
 
 ## `emergency-access`
 
@@ -2724,6 +2967,64 @@ proton account settings list
 ```bash
 proton account settings list
 ```
+
+## `notifications`
+
+[Section titled “notifications”](#notifications)
+
+The emails and in-app notices Proton sends you.
+
+Critical account notifications are sent whatever is off here. The daily email about new mail is a Mail setting: `proton mail settings set daily-notifications`.
+
+Holds `disable`, `enable` and `list`.
+
+### `notifications disable`
+
+[Section titled “notifications disable”](#notifications-disable)
+
+Stop emails or notices Proton sends you.
+
+```plaintext
+proton account settings notifications disable REF...
+```
+
+```bash
+proton account settings notifications disable offers newsletter
+proton account settings notifications disable in-app
+```
+
+### `notifications enable`
+
+[Section titled “notifications enable”](#notifications-enable)
+
+Have Proton send you emails or notices.
+
+```plaintext
+proton account settings notifications enable REF...
+```
+
+```bash
+proton account settings notifications enable newsletter
+```
+
+### `notifications list`
+
+[Section titled “notifications list”](#notifications-list)
+
+List what Proton sends you, and what is on.
+
+```plaintext
+proton account settings notifications list
+```
+
+```bash
+proton account settings notifications list
+```
+
+| Flag          | Description                                        |
+| ------------- | -------------------------------------------------- |
+| `--limit int` | How many notifications per page; 0 for all of them |
+| `--page int`  | Which page of results, counting from zero          |
 
 ## `password`
 
@@ -3346,6 +3647,72 @@ proton account settings security-keys update "Spare key" --name "Key in the safe
 | Flag            | Description                   |
 | --------------- | ----------------------------- |
 | `--name string` | New name for the security key |
+
+## `sentinel`
+
+[Section titled “sentinel”](#sentinel)
+
+Proton Sentinel, the heightened protection for your account.
+
+It needs a plan that includes it. While it is on, Proton chooses which recovery methods the account may use. An organization that turns it on for its members decides it for them.
+
+Holds `disable`, `enable` and `get`.
+
+### `sentinel disable`
+
+[Section titled “sentinel disable”](#sentinel-disable)
+
+Turn Proton Sentinel off.
+
+–emails stops only the emails it sends, and leaves it on.
+
+```plaintext
+proton account settings sentinel disable
+```
+
+```bash
+proton account settings sentinel disable
+proton account settings sentinel disable --emails
+```
+
+| Flag       | Description              |
+| ---------- | ------------------------ |
+| `--emails` | Only the emails it sends |
+
+### `sentinel enable`
+
+[Section titled “sentinel enable”](#sentinel-enable)
+
+Turn Proton Sentinel on.
+
+–emails turns on the emails it sends about what it finds as well, and turns it on first if it was off.
+
+```plaintext
+proton account settings sentinel enable
+```
+
+```bash
+proton account settings sentinel enable
+proton account settings sentinel enable --emails
+```
+
+| Flag       | Description              |
+| ---------- | ------------------------ |
+| `--emails` | Also the emails it sends |
+
+### `sentinel get`
+
+[Section titled “sentinel get”](#sentinel-get)
+
+Show whether Proton Sentinel is on.
+
+```plaintext
+proton account settings sentinel get
+```
+
+```bash
+proton account settings sentinel get
+```
 
 ## `set`
 
@@ -8283,6 +8650,8 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 **Post-quantum keys are read, never generated or imported.** An account that opted in during Proton’s rollout signs in, and mail and shares reach others who opted in. Turning the setting on is done in Proton’s own settings. On such an account, adding an address and generating a key are refused, and a post-quantum key file is imported in a Proton client.
 
+**An account that signed up with another provider’s address is not given a Proton address, and its unverified sign-in address is not corrected.** Both are done in [Proton’s own settings](https://account.proton.me).
+
 **Account keys are listed and exported, never generated or deleted.** Generating an account key, and deleting one a password reset locked, are done in [Proton’s own settings](https://account.proton.me).
 
 **A recurring event needs a zone that can be named.** proton reads one from `TZ`, `/etc/localtime` or `/etc/timezone`, then from your Proton calendar settings. Where none of those answers, a recurring event drifts by an hour when the clocks change. Pass `--zone Europe/Vienna` to be sure.
@@ -9891,6 +10260,16 @@ proton mail settings addresses update me@proton.me --signature - < signature.htm
 Every key has a fixed set of values, checked before anything is sent. A value is given by its name, or by the number Proton stores for it where there is one.
 
 Signatures are stored as HTML. Plain text is escaped and its newlines become line breaks; `--html` passes markup through.
+
+### Get a daily email about new mail
+
+[Section titled “Get a daily email about new mail”](#get-a-daily-email-about-new-mail)
+
+```bash
+proton mail settings set daily-notifications on
+```
+
+The email goes to your recovery address, and turning it on is refused while the account has none. Set one with [`proton account settings recovery-email set`](/account/#set-a-recovery-email-or-phone).
 
 # proton mail conversations
 
@@ -13149,6 +13528,7 @@ proton mail settings set KEY VALUE
 proton mail settings set pm-signature off
 proton mail settings set view-mode conversations
 proton mail settings set font-face georgia
+proton mail settings set daily-notifications on
 ```
 
 ## `smtp-tokens`
@@ -13868,6 +14248,29 @@ STATE says what has to happen next. An address you added is `unverified` until y
 
 `delete` removes an address you added, and its breach history with it. To stop Proton watching one of your own addresses or an alias, use `disable`. Pausing an alias also leaves it out of the password checks above, which is the same switch.
 
+### Pause every alias at once
+
+[Section titled “Pause every alias at once”](#pause-every-alias-at-once)
+
+```bash
+proton pass breaches disable --type alias
+proton pass breaches enable --type alias
+```
+
+This needs a paid Pass plan. `--type proton` does the same for the addresses on your account. While a kind is paused, every address of it lists as `paused`, and none can be switched on its own. Resuming leaves the ones you paused one at a time paused. Addresses you added are paused one at a time.
+
+### Mark breaches resolved
+
+[Section titled “Mark breaches resolved”](#mark-breaches-resolved)
+
+```bash
+proton pass breaches resolve jane@proton.me
+```
+
+Every current breach of the address is marked resolved, and `get` shows each one’s state. They cannot be reopened in Pass. A breach found later is reported as new. Resolving needs a plan that includes the detail of each breach.
+
+The breaches of the addresses on your account are also listed one by one in [Dark Web Monitoring](/account/#check-your-addresses-for-data-breaches).
+
 # proton pass aliases
 
 > Hide-my-email addresses that forward to you.
@@ -14056,7 +14459,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton pass breaches`, with the arguments and flags it takes. For these commands in use, see [the pass guide](/pass/).
 
-Holds `create`, `delete`, `disable`, `enable`, `get`, `list`, `resend` and `verify`.
+Holds `create`, `delete`, `disable`, `enable`, `get`, `list`, `resend`, `resolve` and `verify`.
 
 ## `create`
 
@@ -14102,13 +14505,20 @@ Works on an address on your account, on an alias in one of your vaults, and on a
 
 Pausing an alias also leaves it out of `items list --risk`, which is the same switch.
 
+–type proton or –type alias switches watching for every address of that kind at once, on a paid Pass plan. While it is off, no single one can be switched, and turning it back on leaves the ones you paused one at a time paused.
+
 ```plaintext
-proton pass breaches disable REF
+proton pass breaches disable [REF]
 ```
 
 ```bash
 proton pass breaches disable jane@proton.me
+proton pass breaches disable --type alias
 ```
+
+| Flag            | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--type string` | Every address of this kind at once, instead of one: proton, custom, alias |
 
 ## `enable`
 
@@ -14120,13 +14530,20 @@ Works on an address on your account, on an alias in one of your vaults, and on a
 
 Pausing an alias also leaves it out of `items list --risk`, which is the same switch.
 
+–type proton or –type alias switches watching for every address of that kind at once, on a paid Pass plan. While it is off, no single one can be switched, and turning it back on leaves the ones you paused one at a time paused.
+
 ```plaintext
-proton pass breaches enable REF
+proton pass breaches enable [REF]
 ```
 
 ```bash
 proton pass breaches enable jane@proton.me
+proton pass breaches enable --type alias
 ```
+
+| Flag            | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `--type string` | Every address of this kind at once, instead of one: proton, custom, alias |
 
 ## `get`
 
@@ -14134,7 +14551,7 @@ proton pass breaches enable jane@proton.me
 
 Show the breaches one address has appeared in.
 
-Names each breach, when it happened, what it exposed, and the last few characters of the password if one leaked in the clear.
+Names each breach, when it happened, what it exposed, whether it is resolved, and the last few characters of the password if one leaked in the clear.
 
 An address you added is refused until you verify it: Proton is not watching it until then.
 
@@ -14156,7 +14573,7 @@ List the addresses Proton watches, and how many breaches each is in.
 
 Worst first. Three kinds of address are watched: the ones on your account, the hide-my-email aliases in your vaults, and the ones you added with `breaches create`. Listing the aliases reads your vaults, so this costs what `items list` costs.
 
-STATE is what has to happen next: an address you added is unverified until you hand back the code Proton emailed it, and paused means watching is off.
+STATE is what has to happen next: an address you added is unverified until you hand back the code Proton emailed it, and paused means watching is off, for the address itself or for every address of its kind.
 
 To see which breaches an address is in and what they exposed, run `breaches get` on it.
 
@@ -14166,14 +14583,16 @@ proton pass breaches list
 
 ```bash
 proton pass breaches list
+proton pass breaches list --type alias
 ```
 
-| Flag            | Description                                            |
-| --------------- | ------------------------------------------------------ |
-| `--desc`        | Reverse the order                                      |
-| `--limit int`   | How many watched addresses per page; 0 for all of them |
-| `--page int`    | Which page of results, counting from zero              |
-| `--sort string` | Order by: breaches, email (default `breaches`)         |
+| Flag            | Description                                             |
+| --------------- | ------------------------------------------------------- |
+| `--desc`        | Reverse the order                                       |
+| `--limit int`   | How many watched addresses per page; 0 for all of them  |
+| `--page int`    | Which page of results, counting from zero               |
+| `--sort string` | Order by: breaches, email (default `breaches`)          |
+| `--type string` | List only addresses of this kind: proton, custom, alias |
 
 ## `resend`
 
@@ -14187,6 +14606,24 @@ proton pass breaches resend REF
 
 ```bash
 proton pass breaches resend me@example.com
+```
+
+## `resolve`
+
+[Section titled “resolve”](#resolve)
+
+Mark an address’s current breaches as resolved.
+
+Pass has no way to reopen them. A breach found later is reported as new.
+
+Resolving needs a plan that includes the detail of each breach.
+
+```plaintext
+proton pass breaches resolve REF...
+```
+
+```bash
+proton pass breaches resolve jane@proton.me
 ```
 
 ## `verify`
