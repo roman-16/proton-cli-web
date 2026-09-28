@@ -907,6 +907,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton mail messages reply`](/mail/messages/#reply)                                             | Reply to a message                                                  |
 | [`proton mail messages send`](/mail/messages/#send)                                               | Compose and send a message                                          |
 | [`proton mail messages star`](/mail/messages/#star)                                               | Star messages                                                       |
+| [`proton mail messages trackers list`](/mail/messages/#trackers-list)                             | List the trackers blocked in a message                              |
 | [`proton mail messages trash`](/mail/messages/#trash)                                             | Move messages to the trash                                          |
 | [`proton mail messages unlabel`](/mail/messages/#unlabel)                                         | Detach a label from messages                                        |
 | [`proton mail messages unschedule`](/mail/messages/#unschedule)                                   | Cancel a scheduled send, returning the message to drafts            |
@@ -9112,7 +9113,7 @@ Listings come back newest first. `--sort size` orders by how much room a message
 proton mail messages list --folder all --sort size --limit 10
 ```
 
-`get` shows the plain-text body by default. `--render html` gives you the original markup, `--render raw` the untouched body, and `--strip-quotes` drops quoted reply blocks.
+`get` shows the plain-text body by default. `--render html` gives you the markup, `--render raw` the body exactly as it was sent, and `--strip-quotes` drops quoted reply blocks.
 
 A `Signature:` line reports the verdict of the signature check against the sender’s key.
 
@@ -9161,6 +9162,24 @@ proton mail messages mark phishing REF        # report it, and file it as spam
 `mark legitimate` settles the `Flagged:` verdict on that message alone, and the `DMARC:` line stays. To let a sender through from now on, see [Who reaches the inbox](#who-reaches-the-inbox).
 
 `mark phishing` sends the message to Proton decrypted, body included, for their anti-abuse team to read. Nothing withdraws a report. To keep a sender out without reporting anything, use `proton mail settings senders block`.
+
+## See who tried to track you
+
+[Section titled “See who tried to track you”](#see-who-tried-to-track-you)
+
+While `image-proxy` is on, links in `get` come without their tracking, and a `Links:` line counts the ones that had some. Replies and forwards quote the cleaned links.
+
+```bash
+proton mail messages trackers list 'The north trail is open again'
+```
+
+Each row is an image a known tracker serves, or a link that carried tracking. An image row names who serves it, and nothing in the message is loaded to find out. A link row names the parameters taken out, or `redirect` for a link that went through a click-tracking address.
+
+With `image-proxy` off, links stay as they were sent and `trackers list` refuses. To turn it on:
+
+```bash
+proton mail settings set image-proxy on
+```
 
 ## Search
 
@@ -10046,6 +10065,8 @@ proton mail conversations forward 'Quarterly numbers' --to jane@example.com
 
 Show a whole thread, decrypted.
 
+While `mail settings set image-proxy` is on, links come without their tracking and each message’s Links line counts the ones that had some. `--render raw` prints the bodies as they were sent.
+
 ```plaintext
 proton mail conversations get REF
 ```
@@ -10790,7 +10811,7 @@ Every command also takes the [flags that work everywhere](/about/commands/#flags
 
 Every command under `proton mail messages`, with the arguments and flags it takes. For these commands in use, see [the mail guide](/mail/).
 
-Holds `attachments`, `count`, `delete`, `empty`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `receipt`, `reply`, `send`, `star`, `trash`, `unlabel`, `unschedule`, `unstar`, `unsubscribe`, `update` and `watch`.
+Holds `attachments`, `count`, `delete`, `empty`, `export`, `forward`, `get`, `label`, `list`, `mark`, `move`, `receipt`, `reply`, `send`, `star`, `trackers`, `trash`, `unlabel`, `unschedule`, `unstar`, `unsubscribe`, `update` and `watch`.
 
 ## `attachments`
 
@@ -11013,6 +11034,8 @@ Show one message, decrypted.
 
 A message Proton flagged carries a Flagged line reading phishing or suspicious; `mark legitimate` overrules it. DMARC: failed means the sender’s domain did not vouch for the message, so the address it claims to come from may not be the address it came from.
 
+While `mail settings set image-proxy` is on, links come without their tracking and a Links line counts the ones that had some. `--render raw` prints the body as it was sent.
+
 ```plaintext
 proton mail messages get REF
 ```
@@ -11020,6 +11043,7 @@ proton mail messages get REF
 ```bash
 proton mail messages get 'Invoice #2291'
 proton mail messages get 5bH2mQxK --render html
+proton mail messages get 5bH2mQxK --render raw
 proton mail messages get 5bH2mQxK --body-only --strip-quotes
 ```
 
@@ -11392,6 +11416,31 @@ proton mail messages star 'Invoice #2291'
 | `--to string`         | Match a recipient’s address                                                             |
 | `--unread`            | Match unread messages                                                                   |
 | `--via string`        | Match mail that arrived at, or left from, this address of yours                         |
+
+## `trackers`
+
+[Section titled “trackers”](#trackers)
+
+Trackers blocked in a message.
+
+Holds `list`.
+
+### `trackers list`
+
+[Section titled “trackers list”](#trackers-list)
+
+List the trackers blocked in a message.
+
+An image row names who serves it; nothing is loaded to find out. A link row names the tracking taken out of it, or redirect for a link that went through a click-tracking address, and `--output json` adds the cleaned link. Needs `mail settings set image-proxy on`.
+
+```plaintext
+proton mail messages trackers list REF
+```
+
+```bash
+proton mail messages trackers list 'The north trail is open again'
+proton mail messages trackers list 9xL4pQrT --output json
+```
 
 ## `trash`
 
