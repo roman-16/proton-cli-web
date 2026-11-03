@@ -1639,7 +1639,7 @@ proton account keys reactivate \
 proton account export --dest-dir ~/proton-backup
 ```
 
-The directory has to be new, empty, or one an earlier export wrote. Run the same command again to continue a run that stopped, or later to bring the copy up to date: only what is missing or changed is downloaded. Nothing is removed from the copy, so what you delete in Proton stays in it.
+The directory has to be new, empty, or one an earlier export wrote. Run the same command again to continue a run that stopped, or later to bring the copy up to date: only what is missing or changed is downloaded. Nothing is removed from the copy, so what you delete in Proton stays in it, and putting the copy back brings it back.
 
 Name apps to export only those, and preview what each one holds:
 
@@ -1665,6 +1665,10 @@ The Pass archive holds every password in the clear unless you lock it:
 ```bash
 proton account export --dest-dir ~/proton-backup --passphrase-file ~/.backup-passphrase
 ```
+
+Every later run needs the same passphrase. A run without it, or with another one, is refused and leaves the archive as it is. To lock the archive with a new passphrase, move `pass/proton-pass-export.zip` away and run the export again.
+
+A calendar file that no longer reads back is left as it is and named in a warning. Move it away and run the export again to write it afresh.
 
 ## Sign out
 
@@ -2126,9 +2130,9 @@ Write a copy of the account to a directory.
 
 Name the apps to export, or none for all of them: calendar, contacts, drive, mail and pass. The directory has to be new, empty, or one this command wrote before.
 
-Run it again into the same directory to continue a run that stopped, or later to bring the copy up to date. Only what is missing or changed is fetched, and nothing is removed from the copy.
+Run it again into the same directory to continue a run that stopped, or later to bring the copy up to date. Only what is missing or changed is fetched, and nothing is removed from the copy, not even what you deleted in Proton.
 
-Everything is written decrypted. Only the Pass archive can be locked, with –passphrase-file.
+Everything is written decrypted. Only the Pass archive can be locked, with –passphrase-file, and every later run needs the same passphrase.
 
 ```plaintext
 proton account export [APP...]
@@ -4072,6 +4076,27 @@ Proton users are added directly. External addresses get an emailed invitation.
 
 A bare address invites somebody as required, and `--attendee jane@example.com:optional` as optional. A value that is not an address, or a role other than `optional` or `required`, is refused before anything is sent.
 
+`events get` lists each attendee with their answer: `accepted`, `tentative`, `declined` or `pending`. With `--output json` each attendee carries `answer`, `email` and `role`.
+
+```console
+$ proton calendar events get "Design review"
+Title:      Design review
+Start:      2026-04-20 10:00
+End:        2026-04-20 10:45
+Duration:   45m
+Status:     confirmed
+Organizer:  alice@proton.me
+Attendees:  jane@example.com (accepted)
+            bob@example.com (optional, tentative)
+            carol@proton.me (pending)
+Calendar:   Work
+ID:         4f2a1b9c/8d3e7a21
+```
+
+Somebody outside Proton answers by email. Reading that email with `proton mail messages get` or `proton mail conversations get` records the answer on your event, and so does opening it in Proton Mail. `--dry-run` shows the answer without recording it.
+
+An answer stays out of the event, with a note saying why, when it is about one occurrence, about another version of the event, or older than the answer already recorded. An answer from somebody who is not invited is left out too.
+
 ### Proton Meet links
 
 [Section titled “Proton Meet links”](#proton-meet-links)
@@ -4721,6 +4746,8 @@ proton calendar events export --calendar Work --all --dest-dir .
 [Section titled “get”](#get)
 
 Show one event, decrypted.
+
+Each attendee is listed with their answer: accepted, tentative, declined or pending. Somebody outside Proton answers by email, and the answer shows once that email is opened in Proton Mail or with `mail messages get`.
 
 ```plaintext
 proton calendar events get REF
@@ -5426,20 +5453,59 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Adding a version section here is what publishes a release, so this file is the one place a version is decided: see [Releases](https://github.com/roman-16/proton-cli/blob/main/CONTRIBUTING.md#releases). Versions that shipped before this file existed are on the [releases page](https://github.com/roman-16/proton-cli/releases).
 
+## \[5.4.0] - 2026-11-03
+
+[Section titled “\[5.4.0\] - 2026-11-03”](#540---2026-11-03)
+
+### Highlights
+
+[Section titled “Highlights”](#highlights)
+
+* **See who is coming** - `calendar events get` shows each attendee’s answer. Answers that guests outside Proton send by email are recorded when you read them with `mail messages get`.
+* **A copy that keeps what you delete** - `account export` keeps the events, contacts and Pass items you delete in Proton, so putting the copy back brings them back.
+
+### Added
+
+[Section titled “Added”](#added)
+
+* `calendar events get` shows each attendee’s answer: `accepted`, `tentative`, `declined` or `pending`.
+* `mail messages get` and `mail conversations get` record an answer to an invitation you sent on your event. `--dry-run` shows the answer without recording it.
+
+### Changed
+
+[Section titled “Changed”](#changed)
+
+* **Breaking.** `attendees` in the JSON of `calendar events get` and `events list` holds objects with `answer`, `email` and `role` instead of addresses with `:optional` after them. Read the address from `.attendees[].email`.
+* **Breaking.** `account export` refuses a locked Pass archive when it runs without the passphrase the archive was locked with, instead of replacing the archive. Move the archive away to start one with a new passphrase.
+* `account export` keeps events, contacts and Pass items you deleted in Proton.
+* `calendar events export` and the calendars `account export` writes carry each attendee’s answer.
+
+### Fixed
+
+[Section titled “Fixed”](#fixed)
+
+* `calendar events list --keyword` with a calendar index stopped finding an event that changed after the index was made.
+
+### Security
+
+[Section titled “Security”](#security)
+
+* A locked Pass archive from `account export` no longer has a fingerprint of each item stored beside it, which let a guessed password be checked without the passphrase.
+
 ## \[5.3.0] - 2026-10-30
 
 [Section titled “\[5.3.0\] - 2026-10-30”](#530---2026-10-30)
 
 ### Highlights
 
-[Section titled “Highlights”](#highlights)
+[Section titled “Highlights”](#highlights-1)
 
 * **A copy of your whole account** - `account export --dest-dir DIR` writes your mail, files, photos, calendars, contacts and Pass into one directory. Running it again continues a run that stopped, or brings the copy up to date.
 * **Folder downloads you can resume** - running `drive items download --recursive` again skips what already arrived, and every Drive download keeps the modification time it has in Drive.
 
 ### Added
 
-[Section titled “Added”](#added)
+[Section titled “Added”](#added-1)
 
 * `account export --dest-dir DIR` writes the account to a directory: mail as `.eml` files that Proton’s Mail Export Tool restores, Drive files, computers and photos, a `.ics` per calendar you own, `contacts.vcf` and the Pass archive. Running it again fetches only what is missing or changed, and naming apps such as `mail drive` exports only those.
 * `calendar events export --all` exports every event, in a file named after the calendar.
@@ -5447,7 +5513,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed)
+[Section titled “Changed”](#changed-1)
 
 * `drive items download --recursive` skips a file already there with the size and modification time it has in Drive, and refuses one that differs before downloading anything. `--force` still downloads everything.
 * `drive items download` and `drive photos download` give each file the modification time it has in Drive.
@@ -5459,14 +5525,14 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Highlights
 
-[Section titled “Highlights”](#highlights-1)
+[Section titled “Highlights”](#highlights-2)
 
 * **Proton Meet** - `meet meetings` schedules, moves and deletes your meetings, and `meet rooms` keeps rooms and your personal room. Each prints the link people join by.
 * **Meet links on calendar events** - `calendar events create --meet` gives an event a Proton Meet link, and events with guests get one by default, as in Proton’s apps. Editing an event keeps the link it has.
 
 ### Added
 
-[Section titled “Added”](#added-1)
+[Section titled “Added”](#added-2)
 
 * `meet meetings` lists, shows, schedules, moves, renames and deletes Proton Meet meetings. `get` and `create` print the link; a listing never does.
 * `meet rooms` lists, shows, creates, renames and deletes rooms, and `rooms rotate personal` gives your personal room a new link, once every 24 hours.
@@ -5476,7 +5542,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-1)
+[Section titled “Changed”](#changed-2)
 
 * **Breaking.** `calendar events create` with an `--attendee` gives the event a Proton Meet link while `auto-add-meet-links` is on, which is Proton’s default. `--no-meet` leaves it out.
 * **Breaking.** An event’s description in `calendar events get`, `events list` and their JSON leaves out the join instructions of its video call. Read the link from `video_call.url` in `events get`.
@@ -5493,7 +5559,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed)
+[Section titled “Fixed”](#fixed-1)
 
 * `calendar events update` dropped an event’s Proton Meet or Zoom link, and anything else another app had stored on it.
 * An invitation its organizer cancelled read as `confirmed`, and `calendar reminders` still raised it.
@@ -5504,14 +5570,14 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Highlights
 
-[Section titled “Highlights”](#highlights-2)
+[Section titled “Highlights”](#highlights-3)
 
 * **Pass folders** - `pass folders` makes, renames and deletes folders inside a vault. `items create --folder` and `items move --into` file items in them, and `items list --folder` shows what one holds.
 * **Choose where a login fills in** - `--url` on `pass items create` and `update` takes a rule in front of an address, such as `never:` or `exact-url:`, and `items get` shows each one.
 
 ### Added
 
-[Section titled “Added”](#added-2)
+[Section titled “Added”](#added-3)
 
 * `pass folders` lists, creates, renames and deletes folders inside a vault, each named by its path from the vault: `Personal/Banking`. Making, renaming and filling folders needs a paid Pass plan.
 * `pass items create --folder` puts a new item in a folder, and `pass items move --into` takes a folder as well as a vault.
@@ -5522,7 +5588,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-2)
+[Section titled “Changed”](#changed-3)
 
 * `pass items get` and its JSON show each URL with its rule in front, the way `--url` takes it, so a URL Pass never fills on reads `never:https://…`.
 * `pass export` writes each vault’s folders and the folder each item is in.
@@ -5530,7 +5596,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-1)
+[Section titled “Fixed”](#fixed-2)
 
 * Pass items in a folder were left out of every listing as items that could not be decrypted, and could not be read, edited, moved, shared or exported.
 * `pass import` of a Proton Pass CSV dropped each URL’s rule, so a URL meant never to fill filled everywhere.
@@ -5541,7 +5607,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-3)
+[Section titled “Changed”](#changed-4)
 
 * Building from source needs Go 1.27 or newer.
 
@@ -5553,13 +5619,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-2)
+[Section titled “Fixed”](#fixed-3)
 
 * Files uploaded to Drive, attached to mail or added to Pass items were typed from the system’s own list of file types, so on a system without one most were stored as `application/octet-stream` and the Drive index skipped their text. They get the type Proton’s web client gives them, on every system.
 
 ### Security
 
-[Section titled “Security”](#security)
+[Section titled “Security”](#security-1)
 
 * Releases are built with Go 1.27, which carries Go’s August fixes to TLS, HTTP and URL handling that 5.0.0 was built without.
 
@@ -5569,7 +5635,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Highlights
 
-[Section titled “Highlights”](#highlights-3)
+[Section titled “Highlights”](#highlights-4)
 
 * **Sign in without typing a password** - `account login --qr` prints a code that a device already signed in approves, and `account sessions create` approves one from here, so a machine reached over SSH never sees your password.
 * **The rest of Proton’s security pages** - `account keys` manages the keys of your addresses, `account settings emergency-access` and `recovery-contacts` choose who can help you back in, `account breaches` is Dark Web Monitoring, and `account delete` closes the account.
@@ -5578,7 +5644,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-3)
+[Section titled “Added”](#added-4)
 
 * `account login --qr` signs in by approving a code on a device that already holds a session, with nothing typed here, and `account sessions create CODE` is the approving side.
 * `account keys` lists, shows, exports, creates, imports and deletes the keys of your account and addresses, and `keys update` moves the primary or marks a key obsolete or compromised. Every change asks for your password, even signed in.
@@ -5614,7 +5680,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-4)
+[Section titled “Changed”](#changed-5)
 
 * **Breaking.** `contacts keys pin` and `unpin` are `contacts keys trust` and `untrust`, and report `trusted` and `untrusted`. Their `--scheme` and `--no-encrypt` are `contacts emails update --scheme` and `--encrypt off`, and `contacts keys list` drops ENCRYPT and SCHEME.
 * **Breaking.** Contact JSON carries `nicknames`, `organizations`, `job_titles`, `roles`, `notes`, `languages` and `timezones` lists in place of `nickname`, `org`, `title`, `role`, `note`, `language` and `timezone`.
@@ -5652,7 +5718,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-3)
+[Section titled “Fixed”](#fixed-4)
 
 * Changing your default address made `account login --user` with the old one exit `4` until the profile was signed out, and could break every command that asks for your password again. Any of the account’s addresses resumes the session.
 * `account login --dry-run` signed in for real. It previews and changes nothing.
@@ -5672,7 +5738,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Security
 
-[Section titled “Security”](#security-1)
+[Section titled “Security”](#security-2)
 
 * A message signed by a key its owner marked compromised reads `Signature: invalid`, and Pass invitations and forwardings no longer trust such a key.
 
@@ -5682,7 +5748,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Highlights
 
-[Section titled “Highlights”](#highlights-4)
+[Section titled “Highlights”](#highlights-5)
 
 * **Your account’s own security settings** - the password, two-password mode, an authenticator app, security keys, and recovery by email, phone or phrase are set from `proton account settings`, and `proton account security-log` reads Proton’s record of the sign-ins. Every write reads its secrets from files, so an unattended script can make the change.
 * **Search inside your files** - `drive items list --keyword` matches what your text files say, not only what they are called, once `proton index create drive` has read them.
@@ -5691,7 +5757,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-4)
+[Section titled “Added”](#added-5)
 
 * `account settings` reaches what Proton’s security page does: `password set`, `second-password` for two-password mode, `two-factor` for an authenticator app, and `recovery-email`, `recovery-phone` and `recovery-phrase`. Each proves your current password and reads every secret from a file, so an unattended run can make the change; recovery codes and a recovery phrase are shown once and kept nowhere.
 * `account settings security-keys` registers a security key you plug in, renames it and removes it. Registering one used to mean going to the browser.
@@ -5705,7 +5771,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-5)
+[Section titled “Changed”](#changed-6)
 
 * **Breaking.** A listing’s JSON key is one word, so `pass breaches list --output json` keys its rows under `watched_addresses` rather than `watched addresses`. Every other collection is unaffected.
 * **Breaking.** `pass settings domains list --output json` rows carry `status`, `id`, `aliases` and `created` in place of `mx_verified`.
@@ -5716,7 +5782,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-4)
+[Section titled “Fixed”](#fixed-5)
 
 * `account keys reactivate --recovery-phrase` failed with `Path not found`. Those endpoints answer at Proton’s account host, and the CLI was asking the host Mail is served from.
 * Proton temporarily limiting an account exited `4`, which a script reads as an ambiguous reference. It exits `5`, the code to wait and retry on.
@@ -5727,7 +5793,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-5)
+[Section titled “Fixed”](#fixed-6)
 
 * A calendar this account cannot open stopped taking in changes after the first one, so a search over it answered as of the build. It keeps up now, each event indexed by the day and time Proton keeps in the clear.
 * `index list` counted a calendar’s unreadable events again every time the calendar was read, so the number grew past what the index holds. It counts what is in the index.
@@ -5738,7 +5804,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-6)
+[Section titled “Fixed”](#fixed-7)
 
 * A message that arrived or was edited while its body could not be fetched was missing from every indexed listing until the mailbox was read again. It is indexed by its envelope, and the next run fetches the body.
 * A page of changes the index could not apply was skipped for good - by `index watch`, and on disk by `index update` for a calendar. It is asked for again.
@@ -5756,14 +5822,14 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-6)
+[Section titled “Changed”](#changed-7)
 
 * Mail is indexed in two passes: every message first, then the bodies newest first. A filtered listing such as `--unread`, `--from` or `--after` is answered from the index minutes into a build rather than after the hours the bodies take, and a `--keyword` search says how many bodies it has read while the rest arrive. `index list` names both counts, and `--output json` carries `bodies`.
 * `index watch` finishes a build that was interrupted, and reads an app again where Proton could not say what changed. It still indexes nothing that has no index.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-7)
+[Section titled “Fixed”](#fixed-8)
 
 * Downloading from or uploading into a share link failed with `Path not found`. Proton retired the endpoints behind `--link` and `--shared`.
 * An index went on reporting itself complete after Proton could not describe what had changed, silently missing whatever happened in the gap. `index create` and `index update` read the app again and take out what is gone, and a search says the index has fallen behind until they do.
@@ -5781,13 +5847,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-5)
+[Section titled “Added”](#added-6)
 
 * `proton index` keeps an encrypted copy of your mail, files and events under `~/.config/proton-cli/index/`, and a search reads it once it exists: `--keyword` reaches message bodies, `--from` and `--to` match display names, a Drive `--pattern` is answered without opening every folder, and an event is found by what it says. A build can be stopped and resumed, `index update` and `index watch` keep it current, and `index delete` takes it off the machine. Proton’s search operators stop applying to an indexed search, which matches every term literally.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-8)
+[Section titled “Fixed”](#fixed-9)
 
 * `calendar events list` and `events export` take any date range. Proton refuses a window wider than a few months, so a semester failed outright; the range is fetched six weeks at a time and the answers joined.
 * A calendar that cannot be read is reported under the listing or export rather than leaving it short without a word, and an export says which events it could not decrypt.
@@ -5800,7 +5866,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-7)
+[Section titled “Changed”](#changed-8)
 
 * **Breaking.** A calendar listing given one end of its range takes the other 30 days away from it, rather than always ending 30 days from today. `calendar events list --after 2027-01-01` lists that January instead of nothing, and `--after 2020-01-01` lists January 2020 rather than everything since. `events export` and `reminders list` read the same way.
 * **Breaking.** A mail listing refuses `--before` earlier than `--after`, as a calendar listing already did. It used to return an empty listing and exit `0`.
@@ -5808,7 +5874,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-9)
+[Section titled “Fixed”](#fixed-10)
 
 * `calendar events list` and `events export` said to narrow the range with `--start` and `--end`; the flags are `--after` and `--before`. All three calendar listings now state their default range as well.
 * `mail messages reply --help` described `--all`; the flag is `--everyone`.
@@ -5816,7 +5882,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Security
 
-[Section titled “Security”](#security-2)
+[Section titled “Security”](#security-3)
 
 * The diagnostic log no longer keeps the name of a Pass item, vault, attachment or Drive file written into a failure. `proton report` stands `<name>` in its place.
 
@@ -5826,7 +5892,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-6)
+[Section titled “Added”](#added-7)
 
 * `pass breaches` watches an address for leaks: the account’s own addresses and the hide-my-email aliases in your vaults are listed beside each other, and an address you own elsewhere can be added, verified, paused and removed. `pass items list --risk compromised|missing-2fa|reused|weak` is the password half; only `compromised` reaches the network, sending six characters of a password’s SHA-1 and never the password.
 * `drive items share add` and `pass vaults|items share add` take an address with no Proton account. Proton emails an invitation, `share get` says who is ready, and `share confirm` hands the key over once they have joined. `update`, `remove` and `resend` reach the held offers too.
@@ -5835,7 +5901,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-8)
+[Section titled “Changed”](#changed-9)
 
 * **Breaking.** One name per idea across the tree: `--page-size` is `--limit`, `--edit` is `--access viewer|editor`, `--move-to` is `--into`, `--plain` is `--html=false`, `--message` on `mail settings autoreply set` is `--body`, `--clear-catch-all` is `--catch-all none`, and `update`’s `--check` and `--reinstall` are `--dry-run` and `--force`.
 * **Breaking.** A Pass vault’s `--icon` and `--color` take Pass’s names rather than numbers: `--icon star --color teal`.
@@ -5852,7 +5918,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-10)
+[Section titled “Fixed”](#fixed-11)
 
 * A listing the CLI pages itself answers whole unless a page is asked for. `pass aliases list` reported fewer aliases than the account holds, which read as a short answer rather than a wrong one.
 * `curl … | sh -s -- --help` prints the help instead of failing with an awk error - the one flow the script’s own header documents.
@@ -5865,7 +5931,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-7)
+[Section titled “Added”](#added-8)
 
 * `pass import` reads exports from sixteen password managers, and `--manager` names which one wrote the file. `pass export --format csv|json` writes the two flat shapes beside the archive.
 * Files go on a Pass item with `--attach` and `--detach`, and `pass items attachments` lists, downloads, renames and restores them. They need a paid Pass plan, and a backup carries them both ways.
@@ -5874,7 +5940,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-9)
+[Section titled “Changed”](#changed-10)
 
 * Data sealed to a key a password reset locked says so and names the remedy, instead of failing as a bug worth reporting.
 * A message that will not decrypt fails the read rather than printing `(decryption failed)` where the body goes. A thread drops that message and warns, an export keeps the armour, and a reply refuses rather than quoting ciphertext.
@@ -5884,7 +5950,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-11)
+[Section titled “Fixed”](#fixed-12)
 
 * A Pass backup restores with its dates, its trash and its alias addresses intact, and an export carries trashed items.
 * An archive too large to read says so, instead of being reported as a file some other password manager wrote.
@@ -5892,7 +5958,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Security
 
-[Section titled “Security”](#security-3)
+[Section titled “Security”](#security-4)
 
 * A raw `proton api` request counts as a deletion whichever method it carries, so `PROTON_CONFIRM='deletions=deny'` covers it. Proton deletes with `PUT` as well as `DELETE`, so a fence reading the method never held. That policy now turns `proton api` off entirely, reads included.
 * An export written with `--force` is private whatever the permissions of the file it replaced. Files are published by rename, so a destination cannot be swapped for a symlink between the moment it is checked and the moment it is written.
@@ -5906,7 +5972,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-8)
+[Section titled “Added”](#added-9)
 
 * `drive items list`, `get` and `download` take `--link URL`, opening a public link somebody sent you - with no Proton account at all, if you have none. `drive shared add` keeps a link so `--shared REF` opens it later, and `shared remove` forgets one.
 * `--computer NAME` works inside a computer syncing through the Drive desktop app, and `--shared REF` inside an item somebody shared with you. A path still means what it always meant; the flag says which tree it is in.
@@ -5920,7 +5986,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-10)
+[Section titled “Changed”](#changed-11)
 
 * Forwarding one of your addresses outside Proton costs that address its end-to-end encryption. `forwarding create` says so before it acts, and taking the last one down turns encryption back on.
 * Every file uploaded to Drive now carries its own encrypted record of itself - size, block sizes, modification time and SHA-1 - so uploads report a checksum and other clients show the real modification date.
@@ -5933,7 +5999,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-12)
+[Section titled “Fixed”](#fixed-13)
 
 * Sending mail and creating Drive share links from an address that has ever accepted a forwarding. Everything leaving the address was encrypted to every key it holds, and a forwarding key carries no encryption key at all, so the send failed outright and told you to file a report. Affects any account whose address holds one, however the forwarding was accepted.
 * `mail settings forwarding create` was refused by Proton every time. The key it published was not shaped like the ones Proton’s own clients write.
@@ -5947,7 +6013,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-11)
+[Section titled “Changed”](#changed-12)
 
 * **Breaking.** `--page-size 0` on a mail listing returns the whole folder rather than the first 25, and a size above 150 is filled rather than cut short. Affects `mail messages list`, `mail conversations list` and `mail drafts list`.
 * **Breaking.** `--limit 0` on a mail bulk verb lifts the cap rather than acting on the first 25; the default is still 150.
@@ -5957,7 +6023,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-13)
+[Section titled “Fixed”](#fixed-14)
 
 * `pass items revisions list` and `revisions get` reached only an item’s 50 most recent revisions.
 
@@ -5967,7 +6033,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-9)
+[Section titled “Added”](#added-10)
 
 * `proton skill` prints the instructions an AI agent reads before using proton: what it is for, how to name things, which filters a listing takes, and to preview a change and ask before making it. It is written from the installed build, so it names exactly the commands you have. `--body-only` leaves the frontmatter off, for an agent that reads it as it runs rather than from a saved file.
 
@@ -5977,7 +6043,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-10)
+[Section titled “Added”](#added-11)
 
 * `calendar events create` and `update` take `--color`, giving one event a colour of its own by accent name or hex; `events get` reports it. It colours what the reference names: one occurrence, `--onwards` for that one and every later one, or the whole series. A colour can only be changed, never taken off, and Proton’s own apps draw a per-event colour only on a paid plan.
 * `calendar events export` carries an event’s own colour as a `COLOR` property, and `import` reads one back as the nearest of Proton’s twenty accents, so a round trip keeps it.
@@ -5986,7 +6052,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-12)
+[Section titled “Changed”](#changed-13)
 
 * **Breaking.** What you write decides whether a calendar event has a time of day. `events create --start 2026-07-01` needs `--all-day` to agree, and `--all-day` beside a time of day or a duration under a day is refused. `events update --start` with a bare day moves the event and keeps its time of day instead of dropping it to midnight; `--all-day=false` gives one back, with a `--start` saying which time.
 * **Breaking.** `--end` on an all-day event is the last day it runs through, not the midnight after it. A script that added a day to compensate now books one day too many.
@@ -5998,7 +6064,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-14)
+[Section titled “Fixed”](#fixed-15)
 
 * An all-day calendar event could not be given a time of day back: a `--start` naming one was accepted, discarded, and reported as a success.
 * Colour in a Windows console. Nothing there sets `TERM`, so every screen was drawn plain.
@@ -6011,7 +6077,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-15)
+[Section titled “Fixed”](#fixed-16)
 
 * `contacts create`, `update`, `import` and `merge` were refused with `Invalid PGP packets` on an account holding more than one user key. A contact card is now sealed to your primary user key alone, which is what Proton’s own clients send.
 * `contacts update` and `contacts merge` added a second copy of the address and of every pinned key each time they ran. `contacts export` and `contacts keys list` showed one copy per past edit; running `contacts update` on an affected contact once more clears it.
@@ -6023,13 +6089,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-11)
+[Section titled “Added”](#added-12)
 
 * `proton mail settings forwarding` hands mail arriving at one of your addresses to another Proton account, end-to-end encrypted: `list`, `get`, `create`, `delete`, `enable`, `disable`, `resend`. Accepting a forwarding somebody sent you is not built - that happens in a Proton client.
 
 ### Changed
 
-[Section titled “Changed”](#changed-13)
+[Section titled “Changed”](#changed-14)
 
 * An account or recipient using post-quantum encryption now works instead of exiting `8`. Signing in, sending, and sharing a calendar, file or vault all read Proton’s ML-DSA and ML-KEM keys. `proton` still never creates one.
 * Sharing with an address outside Proton exits `1` with a sentence naming the address, instead of `4` carrying Proton’s own error. Affects `calendar settings calendars share add`, `pass vaults share add` and `drive items share add`.
@@ -6044,7 +6110,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-16)
+[Section titled “Fixed”](#fixed-17)
 
 * Sharing with a Proton address whose key this build cannot read says so, instead of calling it an address outside Proton.
 * `proton report` carries the whole run. A report of a listing that made 750 requests held two lines. A run too large for an issue form is trimmed to its first and last records plus everything above debug between them, and says how many it left out; `--dest` writes all of it.
@@ -6056,14 +6122,14 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-12)
+[Section titled “Added”](#added-13)
 
 * Tab completion offers back what your listings showed: where a command takes a reference, the short ID and the subject, name or address beside it. It reads what this machine remembers rather than asking Proton, so a collection you have not listed yet offers nothing and says which listing would fill it.
 * Exit code `8` means the command reached a Proton feature this build does not implement. Nothing about the command was wrong, and neither a retry nor different arguments changes the answer.
 
 ### Changed
 
-[Section titled “Changed”](#changed-14)
+[Section titled “Changed”](#changed-15)
 
 * A short ID printed by a `get` resolves in the next command. Only what a listing showed was remembered before.
 * An account or recipient whose keys use post-quantum encryption says so and exits `8`. Signing in to such an account failed as a wrong password, and sending to one as an unreadable key.
@@ -6074,7 +6140,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-13)
+[Section titled “Added”](#added-14)
 
 * `proton report` prints what a bug report needs: the build, your settings and a redacted trace of the run that failed. It needs no account and no network. `--all` takes every run still kept, `--dest` writes a file to attach.
 * Every run records what it did to `~/.config/proton-cli/logs/`, one file per day, whatever `--log-level` says. Addresses, IDs and filenames are replaced by stand-ins before anything is written, so a log is safe to attach to an issue. The last 16 files are kept; `--no-log`, `PROTON_NO_LOG` or `no-log:` in the config file writes none.
@@ -6082,7 +6148,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-15)
+[Section titled “Changed”](#changed-16)
 
 * A crash prints one line pointing at `proton report` instead of a Go stack trace.
 * Refusals that arrived as bare text now say what to do: a pinned key that does not match the recipient’s, an inline attachment with no `--html`, a reply to a message with no reply address, an unknown `pass items create --type`, an alias in a Pass import, and a `--remind` that is not a warning time.
@@ -6090,7 +6156,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-17)
+[Section titled “Fixed”](#fixed-18)
 
 * A listing that cannot decrypt something says how many are missing instead of dropping them in silence, and `--output json` carries a `skipped` count.
 * “Failed to unlock any address keys.” now says which of four things went wrong, and the log records it per key.
@@ -6102,7 +6168,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-14)
+[Section titled “Added”](#added-15)
 
 * A config file. `~/.config/proton-cli/config.yaml` holds what you would otherwise retype on every command or export as its own variable - `output`, `profile`, `zone`, `quiet`, `log-level` and the rest - with a `per-profile:` section for narrowing one to an account. It does not exist until you write it, and a key it does not recognise is an error rather than a line quietly ignored. `--config` and `PROTON_CONFIG` read a different one.
 * A confirmation policy says what `proton` must stop for and what it must not do at all: `--confirm`, `PROTON_CONFIRM`, or `confirm:` in the config file, scoped as narrowly as one command. A denied command exits `6` and nothing answers it - not `--yes`, not `--dry-run`, not a `--confirm` on the command line. Nothing you can write makes `proton` less careful than it is with no configuration at all.
@@ -6120,7 +6186,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-16)
+[Section titled “Changed”](#changed-17)
 
 * **Breaking.** `--output` means the response format on every command. The commands that write bytes to disk take `--dest` and `--dest-dir` for where they go - every `download`, plus `mail messages export`, `contacts export`, `calendar events export` and `pass export`. A script passing a path to `--output` now fails, naming the three formats it accepts.
 * **Breaking.** A secret is never a flag value. `pass items create|update` no longer take `--password`, `--totp-uri`, `--totp-field`, `--hidden`, `--number`, `--cvv`, `--pin` or `--private-key`; use `--secret-file NAME=FILE`, `--secret-stdin NAME` or `--generate-password`. `drive items share link --password` is now `--link-password-file` / `--link-password-stdin`, with `--clear-link-password` to take one off. `--eo-password` on `mail messages send`, `reply`, `forward` and `drafts send` is now `--eo-password-file` / `--eo-password-stdin`.
@@ -6135,7 +6201,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-18)
+[Section titled “Fixed”](#fixed-19)
 
 * `drive trash list` shows everything `drive trash empty` deletes. Trashed photos sit on a volume of their own and were missing from the listing while `empty` destroyed them anyway, so the number you confirmed was not the number that went.
 * A filtered Drive command counts a folder and the files inside it once rather than twice - a folder is trashed, deleted, moved and copied whole - and names what Proton refused rather than reporting the count it hoped for.
@@ -6145,7 +6211,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Security
 
-[Section titled “Security”](#security-4)
+[Section titled “Security”](#security-5)
 
 * A failed Drive block transfer no longer quotes the signed storage URL it was talking to. That URL is a credential for the block it names, and it was landing in error text that gets logged and pasted into issues. A redirect off the host Proton named is no longer followed with the storage token in hand.
 
@@ -6155,7 +6221,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-15)
+[Section titled “Added”](#added-16)
 
 * Signing in with a security key. An account with one is asked to touch it, and one that also has an authenticator app reaches for the key when the code prompt is answered with nothing. The same answer satisfies the re-authentication guarding `calendar settings calendars delete`, `mail messages expire` and `mail settings autoreply set`, which an account with only a key could not give before.
 * A CAPTCHA can be solved on any device. `proton` prints the page, opens it in your browser where it can, and waits while you solve it - here, on your phone, anywhere. A machine with no display signs in like any other.
@@ -6163,7 +6229,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-17)
+[Section titled “Changed”](#changed-18)
 
 * A CAPTCHA opens in your own browser rather than a window `proton` draws. Nothing to install on Linux: `libwebkit2gtk`, `libgtk-3` and `glib-networking` are no longer needed, the `.deb` and `.rpm` packages no longer depend on GTK or WebKit, and a `go install` build verifies exactly as a release binary does.
 
@@ -6179,7 +6245,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-16)
+[Section titled “Added”](#added-17)
 
 * Accounts in Proton’s two-password mode can be used at all: `account login` asks for the second password once the sign-in is through, or reads it from `--second-password-file` or `--second-password-stdin`. Such an account used to sign in and then fail on every key it tried to open.
 * `account settings get` says whether an account keeps the password that signs it in apart from the one that opens its data, as a `Two-Password Mode` row and as `two_password_mode`.
@@ -6187,7 +6253,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-18)
+[Section titled “Changed”](#changed-19)
 
 * A `--help` screen ends with a link to that command’s page instead of repeating the global flags, which are listed on `proton --help` alone.
 * A short ID starts after the dash an ID may begin with, so nothing a listing shortens can be read as a flag when it is pasted back. About one ID in sixty-four begins with one, and a short ID copied for such a thing before this release needs listing again.
@@ -6196,7 +6262,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-19)
+[Section titled “Fixed”](#fixed-20)
 
 * Installing an older version from the APT repository works again: it carries the last ten releases rather than only the newest, so `apt install proton-cli=2.8.0` and a rollback find something to install.
 * The key password kept with a session is a cache: one that has stopped opening the keys is worked out again instead of leaving a profile that decrypts nothing, which is what a password changed elsewhere used to leave behind. Signing in drops the one a previous session left, so `account get` no longer calls such a profile unlocked.
@@ -6208,19 +6274,19 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-17)
+[Section titled “Added”](#added-18)
 
 * Messages say which thread they belong to: `conversation_id` is on every message under `--output json` and `--output yaml`, from `mail messages list`, `watch` and `get`. Acting on the whole thread no longer costs a second lookup.
 
 ### Changed
 
-[Section titled “Changed”](#changed-19)
+[Section titled “Changed”](#changed-20)
 
 * `calendar reminders list` and `calendar reminders watch` report the event a reminder warns about in full - its location, description, attendees and the rest sit on the row beside `fires`, `remind` and `says`. `reminders list` gains a `LOCATION` column, so a script reading that text output by column position will shift.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-20)
+[Section titled “Fixed”](#fixed-21)
 
 * Signing in survives a bad moment at Proton’s edge: a 502 or a dropped connection is waited out and asked again, instead of coming out as a complaint about JSON and exit `1`. Only what spends nothing is ever asked twice - a two-factor code least of all.
 * A sign-in refused for a wrong password or two-factor code exits `2`, and one that outlasts the waiting - a rate limit included - exits `5`, so a scheduled job can tell “fix the password” from “come back later”.
@@ -6231,7 +6297,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-18)
+[Section titled “Added”](#added-19)
 
 * `mail messages watch` prints a line the moment a message arrives and stays attached until you stop it. Without `--folder` it covers the inbox and every folder set to notify, and a thread coming back from snooze counts as arriving.
 * `calendar reminders list` says which reminders fall due between two dates, and `calendar reminders watch` prints each one at the second it is due. When a reminder fires is Proton’s own answer, so an all-day event reminds at the hour its calendar chose rather than at midnight.
@@ -6240,7 +6306,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-20)
+[Section titled “Changed”](#changed-21)
 
 * `mail settings folders list` shows a `NOTIFY` column, and a folder carries `notify` in JSON. A script reading that text output by column position will shift.
 
@@ -6250,7 +6316,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-19)
+[Section titled “Added”](#added-20)
 
 * Calendar sharing: `calendar settings calendars share add|list|remove` hands a calendar to another Proton account, and `calendar invitations list|accept|decline` is the other side of it.
 * `calendar settings calendars create --url` subscribes to a calendar published elsewhere, and `calendar settings calendars get` shows one in full.
@@ -6280,7 +6346,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-21)
+[Section titled “Changed”](#changed-22)
 
 * **Breaking.** `mail messages search` and `mail conversations search` are gone. `mail messages list` and `mail conversations list` take the same filters; they were always one request to Proton.
 * **Breaking.** `drive folders create` is now `drive items create`, and `drive share ...` is now `drive items share ...`. Update any scripts that call them.
@@ -6288,7 +6354,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-21)
+[Section titled “Fixed”](#fixed-22)
 
 * `contacts create` reports Proton’s refusal instead of exiting `0` having written nothing. Proton answers inside a successful response, and only the response was being read.
 * `contacts groups add` puts every one of a contact’s addresses in the group, as it always said it would, and `--email` acts on the address you named rather than one that happens to belong to another contact.
@@ -6301,7 +6367,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-20)
+[Section titled “Added”](#added-21)
 
 * An install no package manager owns says when a release lands: once a day, under the command’s own output. `PROTON_NO_UPDATE_CHECK=1` ends it, and a package-managed copy, a pipe and `--quiet` never see it.
 * `proton changelog` says what a release changed, including one you have not installed. `--since` and `--until` cover the ground between two.
@@ -6309,13 +6375,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-22)
+[Section titled “Changed”](#changed-23)
 
 * `update --dry-run` and `uninstall --dry-run` no longer ask you to sign in: they change this machine, not your account.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-22)
+[Section titled “Fixed”](#fixed-23)
 
 * Tab completion answers again - every shell’s completion script was being refused as a mistyped command.
 
@@ -6325,13 +6391,13 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-23)
+[Section titled “Changed”](#changed-24)
 
 * `drive items upload --recursive` sends a deep tree in fewer round trips.
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-23)
+[Section titled “Fixed”](#fixed-24)
 
 * `drive folders create /a/b/c` makes the folders above `c` instead of failing, and says how many it made.
 * `drive folders create` names the file standing in the path instead of failing with `Link has no hash key`.
@@ -6342,7 +6408,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-24)
+[Section titled “Changed”](#changed-25)
 
 * The command is `proton`. `proton-cli` stays on your `PATH` as a second name, so nothing already written breaks and upgrading does not sign you out.
 * **Breaking.** `go install github.com/roman-16/proton-cli/cmd/proton@latest` - the path gained `/cmd/proton`. Every other way of installing is unchanged.
@@ -6354,7 +6420,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Added
 
-[Section titled “Added”](#added-21)
+[Section titled “Added”](#added-22)
 
 * `drive items revisions download PATH REVISION_REF` reads an earlier version out to disk or into a pipe, leaving the file as it is.
 * `drive items revisions delete PATH REVISION_REF` removes an earlier version permanently.
@@ -6367,7 +6433,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Changed
 
-[Section titled “Changed”](#changed-25)
+[Section titled “Changed”](#changed-26)
 
 * **Breaking.** An unrecognised reference exits `3` (not found) rather than `1`. Update scripts that read `1` as “no such thing”.
 * **Breaking.** A bad command line exits `1` (user error) rather than `2` (authentication), even when signed out.
@@ -6388,7 +6454,7 @@ Adding a version section here is what publishes a release, so this file is the o
 
 ### Fixed
 
-[Section titled “Fixed”](#fixed-24)
+[Section titled “Fixed”](#fixed-25)
 
 * IDs that begin with `-` are no longer read as flags, in full, short and `SHARE/ITEM` references.
 * `drive items revisions restore` reports success instead of an error when Proton accepts it.
@@ -10073,6 +10139,8 @@ proton mail messages list --folder all --sort size --limit 10
 
 A `Signature:` line reports the verdict of the signature check against the sender’s key.
 
+Reading somebody’s answer to an invitation you sent records it on your event; see [Attendees](/calendar/#attendees).
+
 ## Count unread mail
 
 [Section titled “Count unread mail”](#count-unread-mail)
@@ -11032,6 +11100,8 @@ proton mail conversations forward 'Quarterly numbers' --to jane@example.com
 Show a whole thread, decrypted.
 
 While `mail settings set image-proxy` is on, links come without their tracking and each message’s Links line counts the ones that had some. `--render raw` prints the bodies as they were sent.
+
+Reading somebody’s answer to an invitation you sent records it on your event.
 
 ```plaintext
 proton mail conversations get REF
@@ -12001,6 +12071,8 @@ Show one message, decrypted.
 A message Proton flagged carries a Flagged line reading phishing or suspicious; `mark legitimate` overrules it. DMARC: failed means the sender’s domain did not vouch for the message, so the address it claims to come from may not be the address it came from.
 
 While `mail settings set image-proxy` is on, links come without their tracking and a Links line counts the ones that had some. `--render raw` prints the body as it was sent.
+
+Reading somebody’s answer to an invitation you sent records it on your event.
 
 ```plaintext
 proton mail messages get REF
