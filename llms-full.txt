@@ -82,11 +82,10 @@ Anything that removes permanently, or removes what a filter picked out rather th
 [Section titled “Sign out”](#sign-out)
 
 ```bash
-proton account logout             # forget the session on this machine
-proton account logout --revoke    # and invalidate it at Proton
+proton account logout
 ```
 
-Revoking also makes the credentials saved on this machine useless, even to someone who already copied them.
+Signing out ends the session at Proton, so the credentials saved on this machine stop working, even for someone who already copied them.
 
 ## Where to go next
 
@@ -665,7 +664,7 @@ Where a command shows `REF`, pass a full ID, the eight-character short ID a list
 | [`proton account export`](/account/account/#export)                                               | Write a copy of the account to a directory                          |
 | [`proton account get`](/account/account/#get)                                                     | Show the account, its storage and this machine’s session            |
 | [`proton account login`](/account/account/#login)                                                 | Sign in and save the session for this profile                       |
-| [`proton account logout`](/account/account/#logout)                                               | Discard the saved session for this profile                          |
+| [`proton account logout`](/account/account/#logout)                                               | Sign out, ending the session at Proton                              |
 | [`proton account breaches disable`](/account/breaches/#disable)                                   | Turn Dark Web Monitoring off                                        |
 | [`proton account breaches enable`](/account/breaches/#enable)                                     | Turn Dark Web Monitoring on                                         |
 | [`proton account breaches get`](/account/breaches/#get)                                           | Show one breach, and what it exposed                                |
@@ -1181,11 +1180,11 @@ There is no telemetry, and there is nothing to turn off. proton-cli never report
 
 The paths are listed under [Files on disk](/using/settings/#files-on-disk). Three of them hold something sensitive.
 
-**The session file**, one per profile, mode `0600`, holds the session tokens and your key password. The key password is stored encrypted with a key that Proton holds and hands out only to a live session, so it is never on disk in cleartext, and **revoking the session** - `proton account logout --revoke`, or from any Proton app - makes a leaked copy undecryptable. The file still holds the session’s refresh token, so it is not safe to share; revoking neutralises a leak, it does not excuse one.
+**The session file**, one per profile, mode `0600`, holds the session tokens and your key password. The key password is stored encrypted with a key that Proton holds and hands out only to a live session, so it is never on disk in cleartext, and **ending the session** - `proton account logout`, or from any Proton app - makes a leaked copy undecryptable. The file still holds the session’s refresh token, so it is not safe to share; revoking neutralises a leak, it does not excuse one.
 
 **The diagnostic log**, mode `0600`, holds what each run did, written so it can be handed to a stranger: addresses, IDs, paths, tokens, subjects, filenames, search terms and flag values never enter it. `--no-log` or `PROTON_NO_LOG` stops it being written ([Settings](/using/settings/#the-diagnostic-log)).
 
-**The local index**, mode `0600`, exists only after `proton index create` and holds a copy of what it indexed: for mail, every message with its subject, its addresses and its body as text; for Drive, the tree and the text of your text files up to 1 MB each. It is encrypted with AES-256-GCM under a key of its own, and that key is encrypted and signed to your account’s keys, so **revoking the session** makes a leaked copy unreadable the same way it does the session file. `proton index delete` removes it ([Local index](/local-index/)).
+**The local index**, mode `0600`, exists only after `proton index create` and holds a copy of what it indexed: for mail, every message with its subject, its addresses and its body as text; for Drive, the tree and the text of your text files up to 1 MB each. It is encrypted with AES-256-GCM under a key of its own, and that key is encrypted and signed to your account’s keys, so **ending the session** makes a leaked copy unreadable the same way it does the session file. `proton index delete` removes it ([Local index](/local-index/)).
 
 ## A file downloaded from a public link
 
@@ -1675,12 +1674,14 @@ A calendar file that no longer reads back is left as it is and named in a warnin
 [Section titled “Sign out”](#sign-out)
 
 ```bash
-proton account logout              # forget the session on this machine
-proton account logout --revoke     # also invalidate it at Proton
+proton account logout              # end the session at Proton and remove it here
 proton account logout --all        # every profile on this machine
+proton account logout --local      # remove it here only; it stays valid at Proton
 ```
 
-Revoking also makes a leaked copy of the session file worthless.
+Signing out makes a leaked copy of the session file worthless. `proton account profiles delete` ends the session the same way before it removes the profile.
+
+When Proton cannot be reached, the profile keeps its session and the error names it. Run the command again once Proton answers, or pass `--local`.
 
 ## More than one account
 
@@ -2211,11 +2212,9 @@ proton account login --qr
 
 [Section titled “logout”](#logout)
 
-Discard the saved session for this profile.
+Sign out, ending the session at Proton and removing it from this machine.
 
-The key password on disk is sealed with a key held by Proton, so deleting the session file is enough to make it unreadable.
-
-–revoke also invalidates the session at Proton, the same as signing out in a Proton app. Use it if the file may have been copied.
+When Proton cannot be reached, the profile keeps its session and nothing after it is signed out. Run the command again, or pass –local to remove the session from this machine only, leaving it valid at Proton.
 
 ```plaintext
 proton account logout
@@ -2223,14 +2222,14 @@ proton account logout
 
 ```bash
 proton account logout
-proton account logout --revoke
 proton account logout --all
+proton account logout --local
 ```
 
-| Flag       | Description                                      |
-| ---------- | ------------------------------------------------ |
-| `--all`    | Act on everything in scope, rather than a subset |
-| `--revoke` | Also invalidate the session at Proton            |
+| Flag      | Description                                                           |
+| --------- | --------------------------------------------------------------------- |
+| `--all`   | Act on everything in scope, rather than a subset                      |
+| `--local` | Remove the session from this machine only, leaving it valid at Proton |
 
 ***
 
@@ -2586,7 +2585,9 @@ Holds `delete` and `list`.
 
 [Section titled “delete”](#delete)
 
-Remove a profile and everything it keeps on this machine.
+Remove a profile and everything it keeps on this machine, ending its session at Proton first.
+
+When Proton cannot be reached, that profile and the ones after it stay as they are. Run the command again, or pass –local to remove them from this machine only, leaving their sessions valid at Proton.
 
 ```plaintext
 proton account profiles delete REF...
@@ -2594,7 +2595,12 @@ proton account profiles delete REF...
 
 ```bash
 proton account profiles delete work
+proton account profiles delete work --local
 ```
+
+| Flag      | Description                                                                        |
+| --------- | ---------------------------------------------------------------------------------- |
+| `--local` | Remove the profiles from this machine only, leaving their sessions valid at Proton |
 
 ## `list`
 
@@ -9283,8 +9289,6 @@ A refusal that comes from Proton rather than from proton-cli belongs to [Trouble
 
 [Section titled “Known gaps”](#known-gaps)
 
-**An update cannot be verified offline.** `proton update` checks the download against `checksums.txt` from the same release, and neither is signed. An install from a package manager is verified by the package manager.
-
 **Only a security key you plug in can be registered.** `proton account settings security-keys create` registers a key over USB. A built-in authenticator - Windows Hello, Touch ID, a machine’s own secure element - and a passkey held in a phone are registered in [Proton’s own settings](https://account.proton.me).
 
 **Post-quantum keys are read, never generated or imported.** An account that opted in during Proton’s rollout signs in, and mail and shares reach others who opted in. Turning the setting on is done in Proton’s own settings. On such an account, adding an address and generating a key are refused, and a post-quantum key file is imported in a Proton client.
@@ -9540,6 +9544,39 @@ Signing in again as the same account is harmless, so an unattended job can run i
 proton account login --user "$ACCOUNT" --password-file "$CRED"
 ```
 
+## “Your session has expired”
+
+[Section titled ““Your session has expired””](#your-session-has-expired)
+
+```console
+$ proton mail messages list
+Error: Your session has expired.
+Try:   proton account login
+```
+
+The session was ended at Proton, from another device or by signing out there. Sign in again.
+
+A command that renewed the session and could not save it warns first, and the next command then asks you to sign in:
+
+```console
+$ proton account sessions list
+! The renewed session could not be saved (open /home/you/.config/proton-cli/sessions/.default.json.1216707191: permission denied), so the next command will have to sign in again.
+```
+
+Make the directory writable again, then sign in.
+
+## “Your saved session is damaged”
+
+[Section titled ““Your saved session is damaged””](#your-saved-session-is-damaged)
+
+```console
+$ proton mail messages list
+Error: Your saved session is damaged.
+Try:   proton account login
+```
+
+The session file no longer reads as a session. Signing in again replaces it.
+
 ## It asks for my password again
 
 [Section titled “It asks for my password again”](#it-asks-for-my-password-again)
@@ -9732,11 +9769,14 @@ environment.systemPackages = [
 
 [Section titled “Download a binary”](#download-a-binary)
 
-Every release ships raw binaries, archives and `checksums.txt` on the [releases page](https://github.com/roman-16/proton-cli/releases/latest), named `proton-cli_<os>_<arch>` for `linux`, `darwin` and `windows` on `amd64` and `arm64`.
+Every release ships raw binaries, archives, `checksums.txt` and its signature `checksums.txt.sig` on the [releases page](https://github.com/roman-16/proton-cli/releases/latest). The binaries are named `proton-cli_<os>_<arch>` for `linux`, `darwin` and `windows` on `amd64` and `arm64`.
 
 ```bash
 curl -LO https://github.com/roman-16/proton-cli/releases/latest/download/proton-cli_linux_amd64
 curl -LO https://github.com/roman-16/proton-cli/releases/latest/download/checksums.txt
+curl -LO https://github.com/roman-16/proton-cli/releases/latest/download/checksums.txt.sig
+curl -fsSL https://roman-16.github.io/proton-cli/gpg.key | gpg --import
+gpg --verify checksums.txt.sig checksums.txt
 sha256sum --check --ignore-missing checksums.txt
 chmod +x proton-cli_linux_amd64
 sudo mv proton-cli_linux_amd64 /usr/local/bin/proton
@@ -9802,7 +9842,7 @@ It stays quiet when a package manager owns this copy, when stderr is not a termi
 
 Note
 
-`proton update` checks the download against `checksums.txt` from the same release, and neither is signed. An install from a package manager is verified by the package manager.
+`proton update` installs only a release signed with the key that also signs the APT repository, and only a download that matches its checksum. Releases up to 5.4.0 carry no signature, so download those by hand. An install from a package manager is verified by the package manager.
 
 ## Uninstalling
 
@@ -17765,7 +17805,7 @@ proton uninstall --yes --purge
 
 [Section titled “update”](#update)
 
-Replace this proton binary in place with the latest GitHub release (or a specific version), verifying the download against the published SHA-256 checksums.
+Replace this proton binary in place with the latest GitHub release (or a specific version). The release has to carry a signature from the proton-cli release key, and the download has to match its SHA-256 checksum, or nothing is installed. Releases up to 5.4.0 carry no signature, so download those from the releases page instead.
 
 –dry-run reports what it would install without installing it.
 
@@ -18849,6 +18889,7 @@ $ proton --quiet=false mail messages list
 | ---------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `~/.config/proton-cli/config.yaml`             | Your settings and confirmation policy. You write this one                                      |
 | `~/.config/proton-cli/sessions/<profile>.json` | Session tokens and the encrypted key password (mode `0600`)                                    |
+| `~/.config/proton-cli/sessions/<profile>.lock` | Empty. Lets one command at a time change the session                                           |
 | `~/.config/proton-cli/idcache/<profile>.json`  | Short-ID lookup table ([what that is](/using/naming/#short-ids))                               |
 | `~/.config/proton-cli/index/<profile>/`        | The encrypted copy `proton index create` builds (mode `0600`, [what it is for](/local-index/)) |
 | `~/.config/proton-cli/update-check.json`       | When proton last looked for a new release ([why](/install/#updating))                          |
